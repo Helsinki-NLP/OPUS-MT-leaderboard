@@ -16,3 +16,20 @@ move:
 	  mv $$o/chrf-scores.txt $$n/chrf-scores.$$b.unsorted.txt; \
 	  rmdir $$o; \
 	done
+
+
+LANGPAIRS = $(sort ${wildcard *-*})
+BENCHMARKS = $(sort $(notdir ${wildcard *-*/*}))
+
+
+benchmarks.txt:
+	for b in ${BENCHMARKS}; do \
+	  echo -n "$$b	" >> $@; \
+	  find . -name "$$b" -type d | cut -f2 -d/ | sort -u | tr "\n" ' ' >> $@; \
+	  echo "" >> $@; \
+	done
+#	@echo "${BENCHMARKS}" > $@
+
+langpairs.txt:
+	@echo "${LANGPAIRS}" > $@
+
