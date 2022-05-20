@@ -22,13 +22,17 @@ function test_input($data) {
 
 $srclang   = isset($_GET['src'])    ? test_input($_GET['src'])    : 'deu';
 $trglang   = isset($_GET['trg'])    ? test_input($_GET['trg'])    : 'eng';
-$benchmark = isset($_GET['test'])   ? test_input($_GET['test'])   : 'flores101-devtest';
+if (isset($_GET['langpair'])){
+    list($srclang,$trglang) = explode('-',$_GET['langpair']);
+}
+$benchmark = isset($_GET['test'])   ? test_input($_GET['test'])   : 'all';
 $metric    = isset($_GET['metric']) ? test_input($_GET['metric']) : 'bleu';
 $langpair  = implode('-',[$srclang,$trglang]);
 
 
 $leaderboard_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores';
 $testsets = file(implode('/',[$leaderboard_url,'benchmarks.txt']));
+$all_langpairs = file(implode('/',[$leaderboard_url,'langpairs.txt']));
 
 // url-encoded parameters
 $srclang_url = urlencode($srclang);
@@ -36,7 +40,56 @@ $trglang_url = urlencode($trglang);
 $benchmark_url = urlencode($benchmark);
 $metric_url = urlencode($metric);
 
+
+// form for selecting benchmarks and language pairs
+
 echo '<div class="header">';
+echo "<form action=\"index.php\" method=\"get\">";
+echo 'select benchmark: <select name="test" id="langpair" onchange="this.form.submit()">';
+echo "<option value=\"all\">all</option>";
+foreach ($testsets as $testset){
+    list($test,$langs) = explode("\t",$testset);
+    $test_url = urlencode($test);
+    if ($test == $benchmark){
+        echo "<option value=\"$test_url\" selected>$test</option>";
+        $testlangs = rtrim($langs);
+    }
+    else {
+        echo "<option value=\"$test_url\">$test</option>";
+    }
+}
+echo '</select>';
+
+// get list of language pairs in this benchmark
+// get all available language pairs if no specific benchmark is seslected
+
+if (($benchmark == "all")){
+    $langpairs = array_map('rtrim', file(implode('/',[$leaderboard_url,'langpairs.txt'])));
+    unset($_GET['test']);
+}
+else{
+    $langpairs = explode(' ',$testlangs);
+}
+
+
+echo '  select language pair: <select name="langpair" id="langpair" onchange="this.form.submit()">';
+foreach ($langpairs as $l){
+    if ($l == $langpair){
+        echo "<option value=\"$l\" selected>$l</option>";
+        $selected = $l;
+    }
+    else{
+        echo "<option value=\"$l\">$l</option>";
+    }
+}
+echo '</select>';
+echo '</form>';
+
+
+/*
+
+// OLD: list all benchmarks with hyperlinks
+
 foreach ($testsets as $testset){
     $parts = explode("\t",$testset);
     if ($parts[0] == $benchmark){
@@ -49,6 +102,8 @@ foreach ($testsets as $testset){
         echo("[<a href=\"$link\">$parts[0]</a>]");
     }    
 }
+*/
+
 
 echo '<hr/>';
 if (isset($_GET['test'])){
@@ -192,7 +247,7 @@ elseif (isset($_GET['test'])){
     echo("<li>language pair: $testset_srclink - $testset_trglink</li>");
     echo("<li>benchmark: $benchmark");
     $url_param = "metric=$metric_url&src=$srclang_url&trg=$trglang_url";
-    echo(" [<a href=\"index.php?$url_param\">all benchmarks</a>]</li>");
+    echo(" [<a href=\"index.php?$url_param&test=all\">all benchmarks</a>]</li>");
 }
 else{
     echo("<li>language pair: $langpair");
