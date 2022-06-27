@@ -31,5 +31,5 @@ benchmarks.txt:
 #	@echo "${BENCHMARKS}" > $@
 
 langpairs.txt:
-	@echo "${LANGPAIRS}" > $@
+	@echo "${LANGPAIRS}" | tr ' ' "\n" > $@
 
