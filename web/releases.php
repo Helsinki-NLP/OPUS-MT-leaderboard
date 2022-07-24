@@ -19,6 +19,7 @@ $modelhome = 'https://object.pouta.csc.fi/Tatoeba-MT-models';
 
 $lastdate = '';
 foreach ($releases as $release){
+    rtrim($release);
     list($date,$langpair,$model) = explode("\t",$release);
     if ($lastdate != $date){
         if ($lastdate != ''){
@@ -28,9 +29,11 @@ foreach ($releases as $release){
         $lastdate = $date;
     }
     $model_url = urlencode("$langpair/$model");
-    echo "<li><a href='$modelhome/$langpair/$model'>$langpair/$model</a> (<a href='index.php?langpair=$langpair&model=$model_url'>benchmark results</a>)</li>";
+    echo "<li><a href='$modelhome/$langpair/$model'>$langpair/$model</a> (<a href='index.php?model=$model_url'>benchmark results</a>)</li>";
 }
 
 ?>
 </body>
 </html>
+
+
