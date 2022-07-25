@@ -20,6 +20,7 @@ function test_input($data) {
 }
 
 
+$package   = isset($_GET['pkg'])    ? test_input($_GET['pkg'])    : 'Tatoeba-MT-models';
 $srclang   = isset($_GET['src'])    ? test_input($_GET['src'])    : 'deu';
 $trglang   = isset($_GET['trg'])    ? test_input($_GET['trg'])    : 'eng';
 if (isset($_GET['langpair'])){
@@ -28,7 +29,6 @@ if (isset($_GET['langpair'])){
 $benchmark = isset($_GET['test'])   ? test_input($_GET['test'])   : 'all';
 $metric    = isset($_GET['metric']) ? test_input($_GET['metric']) : 'bleu';
 $langpair  = implode('-',[$srclang,$trglang]);
-
 
 $leaderboard_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores';
 $testsets = file(implode('/',[$leaderboard_url,'benchmarks.txt']));
@@ -83,6 +83,7 @@ foreach ($langpairs as $l){
     }
 }
 echo '</select>';
+echo '  [<a href="releases.php">show release history<a/>]';
 echo '</form>';
 
 
@@ -103,7 +104,6 @@ foreach ($testsets as $testset){
     }    
 }
 */
-
 
 echo '<hr/>';
 if (isset($_GET['test'])){
@@ -274,7 +274,8 @@ if ($id>0 and $lines[0]){
     $url_param = "metric=$metric_url";    
     if (isset($_GET['model'])){
         $model_url = urlencode($_GET['model']);
-        $url_param .= "&model=$model_url";
+        $package_url = urlencode($package);
+        $url_param .= "&model=$model_url&pkg=$package_url";
         if (isset($_GET['scoreslang'])){
             $langpair_url = $_GET['scoreslang'];
             $url_param .= "&scoreslang=$langpair_url";
@@ -292,7 +293,7 @@ if ($id>0 and $lines[0]){
     echo '<div class="query">';
 
     if (isset($_GET['model'])){
-        print_score_table($_GET['model'],$_GET['scoreslang']);
+        print_score_table($_GET['model'],$_GET['scoreslang'],$package);
     }
     else{
 
@@ -314,8 +315,10 @@ if ($id>0 and $lines[0]){
         $model = explode('/',$parts[1]);
         $modelzip = array_pop($model);
         $modellang = array_pop($model);
+        // $modelpkg = array_pop($model);
         $modelbase = substr($modelzip, 0, -4);
         $baselink = substr($parts[1], 0, -4);
+        // $link = "<a href=\"$parts[1]\">$modelpkg/$modellang/$modelzip</a>";
         $link = "<a href=\"$parts[1]\">$modellang/$modelzip</a>";
         $evallink = "<a href=\"$baselink.eval.zip\">zipfile</a>";
         $model_url = urlencode("$modellang/$modelbase");
@@ -340,8 +343,8 @@ else{
 echo '</td></tr></table>';
 
 
-function print_score_table($model,$langpair){
-    $modelhome = 'https://object.pouta.csc.fi/Tatoeba-MT-models';
+function print_score_table($model,$langpair,$pkg='Tatoeba-MT-models'){
+    $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
     $score_file = implode('/',[$modelhome,$model]).'.scores.txt';
     $lines = file($score_file);
     echo('<table>');

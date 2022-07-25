@@ -9,13 +9,14 @@ function test_input($data) {
   return $data;
 }
 
+$package   = isset($_GET['pkg'])    ? test_input($_GET['pkg'])    : 'Tatoeba-MT-models';
 $srclang   = isset($_GET['src'])    ? test_input($_GET['src'])    : 'deu';
 $trglang   = isset($_GET['trg'])    ? test_input($_GET['trg'])    : 'eng';
 $benchmark = isset($_GET['test'])   ? test_input($_GET['test'])   : 'flores101-devtest';
 $metric    = isset($_GET['metric']) ? test_input($_GET['metric']) : 'bleu';
 
 if (isset($_GET['model'])){
-    $modelhome = 'https://object.pouta.csc.fi/Tatoeba-MT-models';
+    $modelhome = 'https://object.pouta.csc.fi/'.$package;
     // $modelbase = substr($_GET['model'], 0, -5);
     $file = implode('/',[$modelhome,$_GET['model']]).'.scores.txt';
     $lines = file($file);
