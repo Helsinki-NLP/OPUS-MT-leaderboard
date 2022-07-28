@@ -17,7 +17,8 @@ $metric    = isset($_GET['metric']) ? test_input($_GET['metric']) : 'bleu';
 
 if (isset($_GET['model'])){
     $modelhome = 'https://object.pouta.csc.fi/'.$package;
-    // $modelbase = substr($_GET['model'], 0, -5);
+    // $modelhome = 'https://object.pouta.csc.fi/Tatoeba-MT-models';
+    $modelbase = substr($_GET['model'], 0, -5);
     $file = implode('/',[$modelhome,$_GET['model']]).'.scores.txt';
     $lines = file($file);
     // $lines = file($_GET['scores']);
@@ -41,6 +42,7 @@ else{
 
 
 $data = array();
+$pkg = array();
 // read model-specific scores
 if (isset($_GET['model'])){
     $maxscore = 0;
@@ -56,6 +58,7 @@ if (isset($_GET['model'])){
         }
         $score = $metric == 'bleu' ? $array[3] : $array[2];
         array_push($data,$score);
+        array_push($pkg,$package);
         if ( $maxscore < $score ){
             $maxscore = $score;
         }
@@ -66,6 +69,8 @@ elseif (isset($_GET['test'])){
     foreach($lines as $line) {
         $array = explode("\t", $line);
         array_unshift($data,$array[0]);
+        $modelparts = explode('/',$array[1]);
+        array_unshift($pkg,$modelparts[count($modelparts)-3]);
     }
     $maxscore = end($data);
 }
@@ -75,6 +80,8 @@ else{
     foreach($lines as $line) {
         $array = explode("\t", $line);
         array_push($data,$array[1]);
+        $modelparts = explode('/',$array[2]);
+        array_push($pkg,$modelparts[count($modelparts)-3]);
         if ( $maxscore < $array[1] ){
             $maxscore = $array[1];
         }
@@ -141,6 +148,9 @@ $labelColor = $axisColor;
 $gridColor = imagecolorallocate($chart, 212, 212, 212);
 $barColor = imagecolorallocate($chart, 47, 133, 217);
 
+$barColors = array('Tatoeba-MT-models' => imagecolorallocate($chart, 47, 133, 217),
+                   'OPUS-MT-models' => imagecolorallocate($chart, 217, 133, 47));
+
 imagefill($chart, 0, 0, $backgroundColor);
 
 imagesetthickness($chart, $lineWidth);
@@ -188,7 +198,7 @@ foreach($data as $key => $value) {
     $x2 = $itemX + $barWidth / 2;
     $y2 = $gridBottom - 1;
 
-    imagefilledrectangle($chart, $x1, $y1, $x2, $y2, $barColor);
+    imagefilledrectangle($chart, $x1, $y1, $x2, $y2, $barColors[$pkg[$key]]);
 
     // Draw the label
     $labelBox = imagettfbbox($fontSize, 0, $font, $key);

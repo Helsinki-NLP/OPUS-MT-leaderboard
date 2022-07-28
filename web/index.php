@@ -223,7 +223,7 @@ if (isset($_GET['model'])){
     }
     else{
         if (isset($_GET['scoreslang'])){
-            $url_param = "metric=$metric_url&src=$srclang_url&trg=$trglang_url&model=$model_url";
+            $url_param = "metric=$metric_url&src=$srclang_url&trg=$trglang_url&model=$model_url&pkg=$package";
             if (isset($_GET['test'])){
                 $url_param .= "&test=$benchmark_url";
             }
@@ -232,7 +232,7 @@ if (isset($_GET['model'])){
         }
         else{
             $langpair_url = urlencode($langpair);
-            $url_param = "metric=$metric_url&src=$srclang_url&trg=$trglang_url&model=$model_url&scoreslang=$langpair_url";
+            $url_param = "metric=$metric_url&src=$srclang_url&trg=$trglang_url&model=$model_url&scoreslang=$langpair_url&pkg=$package";
             if (isset($_GET['test'])){
                 $url_param .= "&test=$benchmark_url";
             }
@@ -315,14 +315,14 @@ if ($id>0 and $lines[0]){
         $model = explode('/',$parts[1]);
         $modelzip = array_pop($model);
         $modellang = array_pop($model);
-        // $modelpkg = array_pop($model);
+        $modelpkg = array_pop($model);
         $modelbase = substr($modelzip, 0, -4);
         $baselink = substr($parts[1], 0, -4);
         // $link = "<a href=\"$parts[1]\">$modelpkg/$modellang/$modelzip</a>";
         $link = "<a href=\"$parts[1]\">$modellang/$modelzip</a>";
         $evallink = "<a href=\"$baselink.eval.zip\">zipfile</a>";
         $model_url = urlencode("$modellang/$modelbase");
-        $scoreslink = "<a href=\"index.php?$url_param&model=$model_url&scoreslang=$langpair_url\">scores</a>";
+        $scoreslink = "<a href=\"index.php?$url_param&model=$model_url&scoreslang=$langpair_url&pkg=$modelpkg\">scores</a>";
         if ( ! isset($_GET['test'])){
             echo("<tr><td>$count</td><td><a href=\"index.php?$url_param&test=$benchmark_url\">$benchmark</a></td>");
         }
