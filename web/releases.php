@@ -15,7 +15,7 @@ $releases_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderbo
 $releases = file($releases_url);
 
 $modelhome = 'https://object.pouta.csc.fi/Tatoeba-MT-models';
-$storage = 'https://object.pouta.csc.fi/';
+$storage = 'https://object.pouta.csc.fi';
 
 
 $lastdate = '';
@@ -31,7 +31,7 @@ foreach ($releases as $release){
     }
     if ($model != ''){
         $model_url = urlencode("$langpair/$model");
-        echo "<li><a href='$modelhome/$pkg/$langpair/$model'>$langpair/$model</a> (<a href='index.php?pkg=$pkg&model=$model_url'>benchmark results</a>)</li>";
+        echo "<li><a href='$storage/$pkg/$langpair/$model.zip'>$langpair/$model</a> (<a href='index.php?pkg=$pkg&model=$model_url'>benchmark results</a>)</li>";
     }
 }
 
