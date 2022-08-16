@@ -217,7 +217,14 @@ if (isset($_GET['model'])){
     $modelfile = array_pop($parts);
     $modellang = array_pop($parts);
     $model_url = urlencode($_GET['model']);
-    echo("<li>model: $modellang/$modelfile</li>");
+    $langpair_url = urlencode($langpair);
+    $url_param = "metric=$metric_url&langpair=$langpair_url&model1=$package/$model_url";
+    if (isset($_GET['scoreslang'])){
+        $showlang_url = urlencode($_GET['scoreslang']);
+        $url_param .= "&scoreslang=$langpair_url";
+    }
+    $comparelink = "[<a href=\"compare.php?$url_param\">compare</a>]";
+    echo("<li>model: $modellang/$modelfile $comparelink</li>");
     if ($modellang == $langpair){
         echo("<li>language pair: $langpair</li>");
     }
