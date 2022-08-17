@@ -28,7 +28,7 @@ $showlang  = isset($_GET['scoreslang']) ? test_input($_GET['scoreslang'])    : '
 $benchmark_url = urlencode($benchmark);
 $langpair_url  = urlencode($langpair);
 $showlang_url = urlencode($showlang);
-
+$metric_url = urlencode($metric);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -73,6 +73,7 @@ foreach ($langpairs as $l){
     }
 }
 echo '</select>';
+echo '  [<a href="index.php">compare scores<a/>]';
 echo '  [<a href="releases.php">show release history<a/>]';
 echo '</form>';
 echo '<hr/></div>';
@@ -83,7 +84,6 @@ echo '<hr/></div>';
 echo('<h1>Compare OPUS-MT models</h1>');
 
 if (isset($_GET['model1']) && isset($_GET['model2'])){
-    $metric_url = urlencode($metric);
     $model1_url = urlencode($_GET['model1']);
     $model2_url = urlencode($_GET['model2']);
     $url_param = "metric=$metric_url&model1=$model1_url&model2=$model2_url&langpair=$langpair_url";
@@ -147,9 +147,21 @@ if (isset($_GET['model1'])){
         }
         echo('</li>');
 
-        $model1 = urlencode($_GET['model1']);
-        $model2 = urlencode($_GET['model2']);
-        $url_param = "model1=$model1&model2=$model2&langpair=$langpair_url";
+        echo('<li><b>Metric(s):</b> ');
+        $metrics = array('bleu', 'chrf');
+        foreach ($metrics as $m){
+            if ($m == $metric){
+                echo("[$m]");
+            }
+            else{
+                echo("[<a href=\"compare.php?model1=$model1_url&model2=$model2_url&langpair=$langpair_url&scoreslang=$showlang_url&test=$benchmark_url&metric=$m\">$m</a>]");
+            }
+        }
+        echo('</li>');
+
+        // $model1_url = urlencode($_GET['model1']);
+        // $model2_url = urlencode($_GET['model2']);
+        // $url_param = "model1=$model1_url&model2=$model2_url&langpair=$langpair_url";
         echo('</ul><h2>Start with a new model</h2>');
     }
     else{
@@ -158,7 +170,7 @@ if (isset($_GET['model1'])){
     }
 }
 else{
-    echo('<h2>Select a model to compare with</h2>');
+    echo('<h2>Select a model</h2>');
 }
 
 $sorted_models = array();
@@ -188,12 +200,12 @@ foreach ($sorted_models as $model => $release){
             echo("<li>$modellang/$modelbase</li>");
         }
         else{
-            echo("<li><a href=\"compare.php?model1=$modelA&model2=$modelB&langpair=$langpair_url&test=$benchmark_url&scoreslang=$showlang_url\">$modellang/$modelbase</a></li>");
+            echo("<li><a href=\"compare.php?model1=$modelA&model2=$modelB&langpair=$langpair_url&test=$benchmark_url&scoreslang=$showlang_url&metric=$metric_url\">$modellang/$modelbase</a></li>");
         }
     }
     else{
         $modelA = urlencode(implode('/',[$modelpkg, $modellang, $modelbase]));
-        echo("<li><a href=\"compare.php?model1=$modelA&langpair=$langpair_url&test=$benchmark_url&scoreslang=$showlang_url\">$modellang/$modelbase</a></li>");
+        echo("<li><a href=\"compare.php?model1=$modelA&langpair=$langpair_url&test=$benchmark_url&scoreslang=$showlang_url&metric=$metric_url\">$modellang/$modelbase</a></li>");
     }   
 }
 echo("</ul></div>");
