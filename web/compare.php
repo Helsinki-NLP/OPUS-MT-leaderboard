@@ -290,6 +290,40 @@ function print_score_table($model1,$model2,$langpair='all',$benchmark='all'){
         if (array_key_exists($parts[0],$langpairs)){
             $common_langs[$parts[0]]++;
         }
+
+
+        if (array_key_exists($key,$scores)){
+            $parts2 = explode("\t",$scores[$key]);
+            $score2 = $metric == 'bleu' ? $parts2[3] : $parts2[2];
+            $score2_exists = true;
+
+            $diff = $score1 - $score2;
+            if ($metric == 'bleu'){
+                $diff_pretty = sprintf('%4.1f',$diff);
+            }
+            else{
+                $diff_pretty = sprintf('%5.3f',$diff);
+            }
+
+            if ($langpair == 'all' || $langpair == $parts[0]){
+                if ($benchmark == 'all' || $benchmark == $parts[1]){
+                    $avg_score1 += $score1;
+                    $count_scores1++;
+                    $avg_score2 += $score2;
+                    $count_scores2++;
+
+                    $lang_url = urlencode($parts[0]);
+                    $test_url = urlencode($parts[1]);
+                    $langlink = "<a rel=\"nofollow\" href=\"compare.php?$url_param&scoreslang=$lang_url&test=$benchmark_url\">$parts[0]</a>";
+                    $testlink = "<a rel=\"nofollow\" href=\"compare.php?$url_param&scoreslang=$showlang_url&test=$test_url\">$parts[1]</a>";
+                    echo("<tr><td>$id</td><td>$langlink</td><td>$testlink</td><td>$score1</td><td>$score2</td><td>$diff_pretty</td></tr>");
+                    $id++;
+                }
+            }
+        }
+    }
+        
+        /*
         if (array_key_exists($key,$scores)){
             $parts2 = explode("\t",$scores[$key]);
             $score2 = $metric == 'bleu' ? $parts2[3] : $parts2[2];
@@ -326,6 +360,7 @@ function print_score_table($model1,$model2,$langpair='all',$benchmark='all'){
             }
         }
     }
+        */
     if ($count_scores1 > 1){
         $avg_score1 /= $count_scores1;
     }

@@ -62,6 +62,16 @@ foreach($lines2 as $line2) {
 }
 
 foreach($scores1 as $key => $value) {
+    if (array_key_exists($key,$scores2)){
+        array_push($data,$value);
+        array_push($model,'model1');
+        array_push($data,$scores2[$key]);
+        array_push($model,'model2');
+    }
+}
+
+/*
+foreach($scores1 as $key => $value) {
     array_push($data,$value);
     array_push($model,'model1');
     if (array_key_exists($key,$scores2)){
@@ -72,6 +82,7 @@ foreach($scores1 as $key => $value) {
     }
     array_push($model,'model2');
 }
+*/
 
 if (sizeof($data) == 0){
     $data[0] = 0;

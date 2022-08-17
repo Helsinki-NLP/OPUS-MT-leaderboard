@@ -62,6 +62,7 @@ foreach($lines2 as $line2) {
     }
 }
 
+/*
 foreach($scores1 as $key => $value) {
     if (array_key_exists($key,$scores2)){
         $diff = $value - $scores2[$key];
@@ -83,6 +84,27 @@ foreach($scores1 as $key => $value) {
         }
     }
 }
+*/
+
+foreach($scores1 as $key => $value) {
+    if (array_key_exists($key,$scores2)){
+        $diff = $value - $scores2[$key];
+        array_push($data,$diff);
+        if ($diff > 0){
+            array_push($model,'model1');
+            if ( $maxscore < $diff ){
+                $maxscore = $diff;
+            }
+        }
+        else{
+            array_push($model,'model2');
+            if ( $diff < $minscore ){
+                $minscore = $diff;
+            }
+        }
+    }
+}
+
 
 // $maxscore = ceil($maxscore);
 // $minscore = floor($minscore);
