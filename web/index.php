@@ -29,6 +29,9 @@ if (isset($_GET['langpair'])){
 $benchmark = isset($_GET['test'])   ? test_input($_GET['test'])   : 'all';
 $metric    = isset($_GET['metric']) ? test_input($_GET['metric']) : 'bleu';
 $langpair  = implode('-',[$srclang,$trglang]);
+$showlang  = isset($_GET['scoreslang']) ? test_input($_GET['scoreslang']) : 'all';
+// $showlang  = isset($_GET['scoreslang']) ? test_input($_GET['scoreslang']) : $langpair;
+
 
 $leaderboard_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores';
 $testsets = file(implode('/',[$leaderboard_url,'benchmarks.txt']));
@@ -220,9 +223,9 @@ if (isset($_GET['model'])){
     $model_url = urlencode($_GET['model']);
     $langpair_url = urlencode($langpair);
     $url_param = "metric=$metric_url&langpair=$langpair_url&model1=$package/$model_url";
-    if (isset($_GET['scoreslang'])){
-        $showlang_url = urlencode($_GET['scoreslang']);
-        $url_param .= "&scoreslang=$langpair_url";
+    if ($showlang != 'all'){
+        $showlang_url = urlencode($showlang);
+        $url_param .= "&scoreslang=$showlang_url";
     }
     $comparelink = "[<a rel=\"nofollow\" href=\"compare.php?$url_param\">compare</a>]";
     echo("<li>model: $modellang/$modelfile $comparelink</li>");
@@ -230,7 +233,7 @@ if (isset($_GET['model'])){
         echo("<li>language pair: $langpair</li>");
     }
     else{
-        if (isset($_GET['scoreslang'])){
+        if ($showlang != 'all'){
             $url_param = "metric=$metric_url&src=$srclang_url&trg=$trglang_url&model=$model_url&pkg=$package";
             if (isset($_GET['test'])){
                 $url_param .= "&test=$benchmark_url";
@@ -289,8 +292,8 @@ if ($id>0){
         $model_url = urlencode($_GET['model']);
         $package_url = urlencode($package);
         $url_param .= "&model=$model_url&pkg=$package_url";
-        if (isset($_GET['scoreslang'])){
-            $langpair_url = $_GET['scoreslang'];
+        if ($showlang != 'all'){
+            $langpair_url = urlencode($showlang);
             $url_param .= "&scoreslang=$langpair_url";
         }
     }
@@ -306,7 +309,7 @@ if ($id>0){
     echo '<div class="query">';
 
     if (isset($_GET['model'])){
-        print_score_table($_GET['model'],$_GET['scoreslang'],$package);
+        print_score_table($_GET['model'],$showlang,$package);
     }
     else{
 
@@ -356,7 +359,7 @@ else{
 echo '</td></tr></table>';
 
 
-function print_score_table($model,$langpair,$pkg='Tatoeba-MT-models'){
+function print_score_table($model,$langpair='all',$pkg='Tatoeba-MT-models'){
     $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
     $score_file = implode('/',[$modelhome,$model]).'.scores.txt';
     $lines = file($score_file);
@@ -367,7 +370,7 @@ function print_score_table($model,$langpair,$pkg='Tatoeba-MT-models'){
     $langlinks = array();
     foreach ($lines as $line){
         $parts = explode("\t",$line);
-        if (isset($langpair)){
+        if ($langpair != 'all'){
             if ($parts[0] != $langpair){
                 continue;
             }
