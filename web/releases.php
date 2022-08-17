@@ -31,7 +31,7 @@ foreach ($releases as $release){
     }
     if ($model != ''){
         $model_url = urlencode("$langpair/$model");
-        echo "<li><a href='$storage/$pkg/$langpair/$model.zip'>$langpair/$model</a> (<a href='index.php?pkg=$pkg&model=$model_url'>benchmark results</a>)</li>";
+        echo "<li><a rel=\"nofollow\" href='$storage/$pkg/$langpair/$model.zip'>$langpair/$model</a> (<a href='index.php?pkg=$pkg&model=$model_url'>benchmark results</a>)</li>";
     }
 }
 

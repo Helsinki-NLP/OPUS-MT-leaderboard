@@ -130,12 +130,11 @@ $labelMargin = 8;
 $yMaxValue = $maxscore;
 
 // Distance between grid lines on y-axis
-// $yLabelSpan = 40;
 if ($metric == 'bleu'){
-    $yLabelSpan = floor($maxscore/4);
+    $yLabelSpan = ceil($maxscore/5);
 }
 else{
-    $yLabelSpan = floor($maxscore*25)/100;
+    $yLabelSpan = ceil($maxscore*20)/100;
 }
 
 // Init image
@@ -159,7 +158,7 @@ imagesetthickness($chart, $lineWidth);
  * Print grid lines bottom up
  */
 
-if ($yMaxValue > 0){
+if ($yMaxValue > 0 && $yLabelSpan > 0){
     for($i = 0; $i <= $yMaxValue; $i += $yLabelSpan) {
         $y = ceil($gridBottom - $i * $gridHeight / $yMaxValue);
         

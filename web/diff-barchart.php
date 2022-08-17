@@ -29,7 +29,14 @@ $data = array();
 $model = array();
 
 
-$maxscore = 0;
+if ($metric == 'chrf'){
+    $maxscore = 0.01;
+    $minscore = -0.01;
+}
+else{
+    $maxscore = 1;
+    $minscore = -1;
+}
 
 // read model-specific scores
 $scores1 = array();
@@ -40,9 +47,6 @@ foreach($lines1 as $line1) {
             $score = $metric == 'bleu' ? $array[3] : $array[2];
             $key = $array[0].'/'.$array[1];
             $scores1[$key] = $score;
-            if ( $maxscore < $score ){
-                $maxscore = $score;
-            }
         }
     }
 }
@@ -54,29 +58,40 @@ foreach($lines2 as $line2) {
             $score = $metric == 'bleu' ? $array[3] : $array[2];
             $key = $array[0].'/'.$array[1];
             $scores2[$key] = $score;
-            if ( $maxscore < $score ){
-                $maxscore = $score;
-            }
         }
     }
 }
 
 foreach($scores1 as $key => $value) {
-    array_push($data,$value);
-    array_push($model,'model1');
     if (array_key_exists($key,$scores2)){
-        array_push($data,$scores2[$key]);
+        $diff = $value - $scores2[$key];
     }
     else{
-        array_push($data,0);
+        $diff = $value;
     }
-    array_push($model,'model2');
+    array_push($data,$diff);
+    if ($diff > 0){
+        array_push($model,'model1');
+        if ( $maxscore < $diff ){
+            $maxscore = $diff;
+        }
+    }
+    else{
+        array_push($model,'model2');
+        if ( $diff < $minscore ){
+            $minscore = $diff;
+        }
+    }
 }
+
+// $maxscore = ceil($maxscore);
+// $minscore = floor($minscore);
 
 if (sizeof($data) == 0){
     $data[0] = 0;
 }
 $nrscores = sizeof($data);
+
 
 
 /*
@@ -92,8 +107,12 @@ $gridTop = 40;
 $gridLeft = 50;
 $gridBottom = 340;
 $gridRight = 650;
-$gridHeight = $gridBottom - $gridTop;
+$gridTotalHeight = $gridBottom - $gridTop;
 $gridWidth = $gridRight - $gridLeft;
+
+$gridZero = floor($gridTotalHeight*($maxscore/($maxscore-$minscore)))+$gridTop;
+$gridHeight = $gridZero - $gridTop;
+// $gridZero = 140;
 
 // Bar and line width
 $lineWidth = 1;
@@ -113,14 +132,15 @@ $labelMargin = 8;
 
 // Max value on y-axis
 $yMaxValue = $maxscore;
+$yMinValue = $minscore;
 
 // Distance between grid lines on y-axis
 // $yLabelSpan = 40;
 if ($metric == 'bleu'){
-    $yLabelSpan = ceil($maxscore/5);
+    $yLabelSpan = ceil(($maxscore-$minscore)/5);
 }
 else{
-    $yLabelSpan = ceil($maxscore*20)/100;
+    $yLabelSpan = ceil(($maxscore-$minscore)*20)/100;
 }
 
 // Init image
@@ -144,9 +164,10 @@ imagesetthickness($chart, $lineWidth);
  * Print grid lines bottom up
  */
 
+
 if ($yMaxValue > 0 && $yLabelSpan > 0){
-    for($i = 0; $i <= $yMaxValue; $i += $yLabelSpan) {
-        $y = ceil($gridBottom - $i * $gridHeight / $yMaxValue);
+    for($i = $yMinValue; $i <= $yMaxValue; $i += $yLabelSpan) {
+        $y = ceil($gridZero - $i * $gridHeight / $yMaxValue );
         
         // draw the line
         imageline($chart, $gridLeft, $y, $gridRight, $y, $gridColor);
@@ -167,7 +188,7 @@ if ($yMaxValue > 0 && $yLabelSpan > 0){
  */
 
 imageline($chart, $gridLeft, $gridTop, $gridLeft, $gridBottom, $axisColor);
-imageline($chart, $gridLeft, $gridBottom, $gridRight, $gridBottom, $axisColor);
+imageline($chart, $gridLeft, $gridZero, $gridRight, $gridZero, $axisColor);
 
 /*
  * Draw the bars with labels
@@ -176,30 +197,23 @@ imageline($chart, $gridLeft, $gridBottom, $gridRight, $gridBottom, $axisColor);
 $barSpacing = $gridWidth / count($data);
 $itemX = $gridLeft + $barSpacing / 2;
 
-$count = 0;
 foreach($data as $key => $value) {
     // Draw the bar
-    $x1 = $itemX - $barWidth / 2;
-    $y1 = $gridBottom - $value / $yMaxValue * $gridHeight;
-    $x2 = $itemX + $barWidth / 2;
-    $y2 = $gridBottom - 1;
+    $x1 = floor($itemX - $barWidth / 2);
+    $y1 = floor($gridZero - $value / $yMaxValue * $gridHeight);
+    $x2 = floor($itemX + $barWidth / 2);
+    $y2 = floor($gridZero - 1);
 
     imagefilledrectangle($chart, $x1, $y1, $x2, $y2, $barColors[$model[$key]]);
 
-    // special for this comparison: only label every second bar
-    // and adjust the ID to increment every second bar
-    $label = floor($key/2);
-    if ($label == ceil($key/2)){
-        // Draw the label
-        $labelBox = imagettfbbox($fontSize, 0, $font, $key);
-        $labelWidth = $labelBox[4] - $labelBox[0];
+    // Draw the label
+    $labelBox = imagettfbbox($fontSize, 0, $font, $key);
+    $labelWidth = $labelBox[4] - $labelBox[0];
 
-        $labelX = $itemX - $labelWidth / 2;
-        $labelX = $itemX;
-        $labelY = $gridBottom + $labelMargin + $fontSize;
+    $labelX = $itemX - $labelWidth / 2;
+    $labelY = $gridZero + $labelMargin + $fontSize;
 
-        imagettftext($chart, $fontSize, 0, $labelX, $labelY, $labelColor, $font, $label);
-    }
+    imagettftext($chart, $fontSize, 0, $labelX, $labelY, $labelColor, $font, $key);
 
     $itemX += $barSpacing;
 }
