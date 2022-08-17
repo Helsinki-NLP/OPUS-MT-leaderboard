@@ -30,6 +30,7 @@ $benchmark_url = urlencode($benchmark);
 $langpair_url  = urlencode($langpair);
 $showlang_url = urlencode($showlang);
 $metric_url = urlencode($metric);
+$chart_url = urlencode($chart);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -100,6 +101,7 @@ if (isset($_GET['model1']) && isset($_GET['model2'])){
         echo('[standard]');
         echo("[<a rel=\"nofollow\" href=\"compare.php?model1=$model1_url&model2=$model2_url&langpair=$langpair_url&scoreslang=$showlang_url&test=$benchmark_url&metric=$metric_url&chart=diff\">diff</a>]</li></ul></div>");
     }
+    $url_param .= "&chart=$chart_url";
     $langpairs = print_score_table($_GET['model1'],$_GET['model2'],$showlang,$benchmark);
 
     $modelhome = 'https://object.pouta.csc.fi';
@@ -242,7 +244,7 @@ echo("</ul></div>");
 
 
 function print_score_table($model1,$model2,$langpair='all',$benchmark='all'){
-    global $metric, $langpair_url;
+    global $metric, $langpair_url, $chart_url;
 
     $modelhome = 'https://object.pouta.csc.fi';
     $file1  = implode('/',[$modelhome,$_GET['model1']]).'.scores.txt';
@@ -269,7 +271,7 @@ function print_score_table($model1,$model2,$langpair='all',$benchmark='all'){
     $model2_url = urlencode($_GET['model2']);
     $showlang_url = urlencode($langpair);
     $benchmark_url = urlencode($benchmark);
-    $url_param = "metric=$metric_url&model1=$model1_url&model2=$model2_url&langpair=$langpair_url";
+    $url_param = "metric=$metric_url&model1=$model1_url&model2=$model2_url&langpair=$langpair_url&chart=$chart_url";
 
     $avg_score1 = 0;
     $avg_score2 = 0;
