@@ -91,16 +91,31 @@ if (isset($_GET['model1']) && isset($_GET['model2'])){
     $url_param = "metric=$metric_url&model1=$model1_url&model2=$model2_url&langpair=$langpair_url";
     if ($chart == 'diff'){
         // echo("<div id=\"chart\"><img src=\"diff-barchart.php?$url_param&scoreslang=$showlang_url&test=$benchmark_url\" alt=\"barchart\" /></div>");
-        echo("<div id=\"chart\"><img src=\"diff-barchart.php?$url_param&scoreslang=$showlang_url&test=$benchmark_url\" alt=\"barchart\" /><br/><ul><li>Chart Type: ");
+        echo("<div id=\"chart\"><img src=\"diff-barchart.php?$url_param&scoreslang=$showlang_url&test=$benchmark_url\" alt=\"barchart\" /><br/><ul>");
+        echo('<li>Chart Type: ');
         echo("[<a rel=\"nofollow\" href=\"compare.php?model1=$model1_url&model2=$model2_url&langpair=$langpair_url&scoreslang=$showlang_url&test=$benchmark_url&metric=$metric_url\">standard</a>]");
-            echo('[diff]</li></ul></div>');
+            echo('[diff]</li>');
     }
     else{
         // echo("<div id=\"chart\"><img src=\"compare-barchart.php?$url_param&scoreslang=$showlang_url&test=$benchmark_url\" alt=\"barchart\" /></div>");
         echo("<div id=\"chart\"><img src=\"compare-barchart.php?$url_param&scoreslang=$showlang_url&test=$benchmark_url\" alt=\"barchart\" /><br/><ul><li>Chart Type: ");
         echo('[standard]');
-        echo("[<a rel=\"nofollow\" href=\"compare.php?model1=$model1_url&model2=$model2_url&langpair=$langpair_url&scoreslang=$showlang_url&test=$benchmark_url&metric=$metric_url&chart=diff\">diff</a>]</li></ul></div>");
+        echo("[<a rel=\"nofollow\" href=\"compare.php?model1=$model1_url&model2=$model2_url&langpair=$langpair_url&scoreslang=$showlang_url&test=$benchmark_url&metric=$metric_url&chart=diff\">diff</a>]</li>");
     }
+    echo('<li>Evaluation Metric: ');
+    $metrics = array('bleu', 'chrf');
+    foreach ($metrics as $m){
+        if ($m == $metric){
+            echo("[$m]");
+        }
+        else{
+            echo("[<a rel=\"nofollow\" href=\"compare.php?model1=$model1_url&model2=$model2_url&langpair=$langpair_url&scoreslang=$showlang_url&test=$benchmark_url&metric=$m&chart=$chart_url\">$m</a>]");
+        }
+    }
+    echo('</li></ul></div>');
+
+
+    
     $url_param .= "&chart=$chart_url";
     $langpairs = print_score_table($_GET['model1'],$_GET['model2'],$showlang,$benchmark);
 
@@ -145,7 +160,7 @@ if (isset($_GET['model1'])){
         $m_link = "<a rel=\"nofollow\" href=\"index.php?model=$m_url&pkg=$p_url&langpair=$langpair_url&scoreslang=$showlang_url&test=$benchmark_url\">";
     
         echo('<li><b>Model 2 (orange):</b> '.$m_link.$_GET['model2'].'</a></li>');
-        echo('<li><b>Model Langpair(s):</b> ');
+        echo('<li><b>Comparable Model Langpair(s):</b> ');
         ksort($langpairs);
         foreach ($langpairs as $lp => $count){
             if ($lp == $showlang){
@@ -172,9 +187,9 @@ if (isset($_GET['model1'])){
             echo("[<a href=\"compare.php?model1=$model1_url&model2=$model2_url&langpair=$langpair_url&scoreslang=$showlang_url&test=$benchmark_url&metric=$metric_url&chart=diff\">diff</a>]");
         }
         echo('</li>');
-        */
+
         
-        echo('<li><b>Metric(s):</b> ');
+        echo('<li><b>Evaluation Metric(s):</b> ');
         $metrics = array('bleu', 'chrf');
         foreach ($metrics as $m){
             if ($m == $metric){
@@ -185,7 +200,7 @@ if (isset($_GET['model1'])){
             }
         }
         echo('</li>');
-
+        */
 
 
         // $model1_url = urlencode($_GET['model1']);
