@@ -7,14 +7,14 @@ include 'functions.php';
 
 // get query parameters
 $package   = get_param('pkg', 'Tatoeba-MT-models');
-$srclang   = get_param('src', 'deu');
-$trglang   = get_param('trg', 'eng');
 $benchmark = get_param('test', 'all');
 $metric    = get_param('metric', 'bleu');
 $showlang  = get_param('scoreslang', 'all');
 $model     = get_param('model', 'all');
 
-$langpair = implode('-',[$srclang,$trglang]);
+list($srclang, $trglang, $langpair) = get_langpair();
+
+
 $lines = read_scores($langpair, $benchmark, $metric, $model, $package);
 
 $data = array();

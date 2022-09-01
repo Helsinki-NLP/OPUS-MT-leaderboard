@@ -18,21 +18,12 @@ include 'functions.php';
 
 // get query parameters
 $package   = get_param('pkg', 'Tatoeba-MT-models');
-$srclang   = get_param('src', 'deu');
-$trglang   = get_param('trg', 'eng');
 $benchmark = get_param('test', 'all');
 $metric    = get_param('metric', 'bleu');
 $showlang  = get_param('scoreslang', 'all');
 $model     = get_param('model', 'all');
 
-
-// overwrite srclang and trglang parameters if langpair is given
-if (isset($_GET['langpair'])){
-    list($srclang,$trglang) = explode('-',$_GET['langpair']);
-    set_param('src', $srclang);
-    set_param('trg', $trglang);
-}
-$langpair  = implode('-',[$srclang,$trglang]);
+list($srclang, $trglang, $langpair) = get_langpair();
 
 
 /*
@@ -95,13 +86,7 @@ if ($model != 'all'){
 
     $model1 = implode('/',[$package, $model]);
     
-    # $url_param = "metric=$metric_url&langpair=$langpair_url&model1=$package/$model_url";
-    # if ($showlang != 'all'){
-    #    $showlang_url = urlencode($showlang);
-    #    $url_param .= "&scoreslang=$showlang_url";
-    # }
-
-    $url_param = make_query(array('model1' => $model1));
+    $url_param = make_query(['model1' => $model1]);
     $comparelink = "[<a rel=\"nofollow\" href=\"compare.php?". SID . '&'.$url_param."\">compare</a>]";
     echo("<li>model: $modellang/$modelfile $comparelink</li>");
     if ($modellang == $langpair){
@@ -109,19 +94,12 @@ if ($model != 'all'){
     }
     else{
         if ($showlang != 'all'){
-            $url_param = "metric=$metric_url&src=$srclang_url&trg=$trglang_url&model=$model_url&pkg=$package";
-            if ($benchmark != 'all'){
-                $url_param .= "&test=$benchmark_url";
-            }
-            $lang_link = "<a rel=\"nofollow\" href=\"index.php?$url_param&scoreslang=all\">all languages</a>";
+            $url_param = make_query(['scoreslang' => 'all']);
+            $lang_link = "<a rel=\"nofollow\" href=\"index.php?$url_param\">all languages</a>";
             echo("<li>language pair: $langpair [$lang_link]</li>");
         }
         else{
-            $langpair_url = urlencode($langpair);
-            $url_param = "metric=$metric_url&src=$srclang_url&trg=$trglang_url&model=$model_url&scoreslang=$langpair_url&pkg=$package";
-            if ($benchmark != 'all'){
-                $url_param .= "&test=$benchmark_url";
-            }
+            $url_param = make_query(['scoreslang' => $langpair]);
             $lang_link = "<a rel=\"nofollow\" href=\"index.php?$url_param\">$langpair</a>";
             echo("<li>language pair: [$lang_link] all languages</li>");
         }
@@ -132,8 +110,8 @@ elseif ($benchmark != 'all'){
     $testset_trglink = "<a rel=\"nofollow\" href=\"$testset_trg\">$trglang</a>";
     echo("<li>language pair: $testset_srclink - $testset_trglink</li>");
     echo("<li>benchmark: $benchmark");
-    $url_param = "metric=$metric_url&src=$srclang_url&trg=$trglang_url";
-    echo(" [<a rel=\"nofollow\" href=\"index.php?$url_param&test=all\">all benchmarks</a>]</li>");
+    $url_param = make_query(['test' => 'all']);
+    echo(" [<a rel=\"nofollow\" href=\"index.php?$url_param\">all benchmarks</a>]</li>");
 }
 else{
     echo("<li>language pair: $langpair");
@@ -253,7 +231,7 @@ function print_score_table($model,$langpair='all',$pkg='Tatoeba-MT-models'){
             $langs = explode('-',$parts[0]);
             $srclang_url = urlencode($langs[0]);
             $trglang_url = urlencode($langs[1]);
-            $langlink = "<a rel=\"nofollow\" href=\"index.php?src=$srclang_url&trg=$trglang_url&model=all\">$parts[0]</a>";
+            $langlink = "<a rel=\"nofollow\" href=\"index.php?src=$srclang_url&trg=$trglang_url&model=all&test=all\">$parts[0]</a>";
             $langlinks[$parts[0]] = $langlink;
         }
         echo("<tr><td>$id</td><td>$langlink</td><td>$parts[1]</td><td>$parts[2]</td><td>$parts[3]</td></tr>");

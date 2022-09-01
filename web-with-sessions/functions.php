@@ -29,6 +29,20 @@ function set_param($key, $value){
     $_SESSION['params'][$key] = $value;
 }
 
+function get_langpair(){
+    if (isset($_GET['langpair'])){
+        list($srclang,$trglang) = explode('-',$_GET['langpair']);
+        $_SESSION['params']['src'] = $srclang;
+        $_SESSION['params']['trg'] = $trglang;
+    }
+    else{
+        $srclang   = get_param('src', 'deu');
+        $trglang   = get_param('trg', 'eng');
+    }
+    $langpair  = implode('-',[$srclang,$trglang]);
+    return [$srclang, $trglang, $langpair];
+}
+
 function make_query($data){
     if ( isset( $_COOKIE['PHPSESSID'] ) ) {
         return http_build_query($data);

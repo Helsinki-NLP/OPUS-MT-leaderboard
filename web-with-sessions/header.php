@@ -48,6 +48,7 @@ foreach ($langpairs as $l){
     }
 }
 echo '</select>';
+echo '  [<a href="index.php">compare scores<a/>]';
 echo '  [<a href="compare.php">compare models<a/>]';
 echo '  [<a href="releases.php">show release history<a/>]';
 echo '</form>';
