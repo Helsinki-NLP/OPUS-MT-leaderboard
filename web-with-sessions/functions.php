@@ -75,6 +75,8 @@ function read_scores($langpair, $benchmark, $metric, $model='all', $pkg='Tatoeba
         $file  = implode('/',[$leaderboard_url,$langpair,'top-'.$metric.'-scores.txt']);
     }
 
+    // echo $file;
+
     if (! array_key_exists('cached-scores', $_SESSION)){
         $_SESSION['cached-scores'] = array();
         $_SESSION['next-cache-key'] = 0;

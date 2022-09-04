@@ -9,14 +9,17 @@ include 'functions.php';
 $benchmark = get_param('test', 'all');
 $metric    = get_param('metric', 'bleu');
 $showlang  = get_param('scoreslang', 'all');
+$model1    = get_param('model1', 'unknown');
+$model2    = get_param('model2', 'unknown');
 
-if (isset($_GET['model1'])){
-    list($pkg1, $lang1, $name1) = explode('/',$_GET['model1']);
+
+if ($model1 != 'unknown'){
+    list($pkg1, $lang1, $name1) = explode('/',$model1);
     $lines1 = read_scores($langpair, 'all', 'all', implode('/',[$lang1,$name1]), $pkg1);
 }
 
-if (isset($_GET['model2'])){
-    list($pkg2, $lang2, $name2) = explode('/',$_GET['model2']);
+if ($model2 != 'unknown'){
+    list($pkg2, $lang2, $name2) = explode('/',$model2);
     $lines2 = read_scores($langpair, 'all', 'all', implode('/',[$lang2,$name2]), $pkg2);
 }
 
@@ -47,6 +50,7 @@ foreach($lines1 as $line1) {
     }
 }
 
+$scores2 = array();
 foreach($lines2 as $line2) {
     $array = explode("\t", $line2);
     if ($showlang == 'all' || $showlang == $array[0]){
