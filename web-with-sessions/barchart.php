@@ -29,6 +29,11 @@ if ($model != 'all'){
                 continue;
             }
         }
+        if ($benchmark != 'all'){
+            if ($array[1] != $benchmark){
+                continue;
+            }
+        }
         $score = $metric == 'bleu' ? $array[3] : $array[2];
         array_push($data,$score);
         array_push($pkg,$package);

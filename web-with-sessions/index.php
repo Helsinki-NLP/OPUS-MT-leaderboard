@@ -99,6 +99,11 @@ if ($model != 'all'){
             echo("<li>language pair: [$lang_link] all languages</li>");
         }
     }
+    if ($benchmark != 'all'){
+        $url_param = make_query(['test' => 'all']);
+        $test_link = "<a rel=\"nofollow\" href=\"index.php?$url_param\">all benchmarks</a>";
+        echo("<li>benchmark: $benchmark [$test_link]</li>");
+    }
 }
 elseif ($benchmark != 'all'){
     $testset_srclink = "<a rel=\"nofollow\" href=\"$testset_src\">$srclang</a>";
@@ -139,7 +144,7 @@ if ($id>0){
     echo '<div class="query">';
 
     if ($model != 'all'){
-        print_score_table($model,$showlang,$package);
+        print_score_table($model,$showlang,$benchmark,$package);
     }
     else{
 
@@ -152,9 +157,7 @@ if ($id>0){
     foreach ($lines as $line){
         $id--;
         $parts = explode("\t",rtrim($line));
-        if ( $benchmark == 'all'){
-            $test = array_shift($parts);
-        }
+        $test = $benchmark == 'all' ? array_shift($parts) : $benchmark;
         $model = explode('/',$parts[1]);
         $modelzip = array_pop($model);
         $modellang = array_pop($model);
@@ -162,9 +165,12 @@ if ($id>0){
         $modelbase = substr($modelzip, 0, -4);
         $baselink = substr($parts[1], 0, -4);
         $link = "<a rel=\"nofollow\" href=\"$parts[1]\">$modellang/$modelzip</a>";
-        $evallink = "<a rel=\"nofollow\" href=\"$baselink.eval.zip\">zipfile</a>";
+        $evallink = "<a rel=\"nofollow\" href=\"$baselink.eval.zip\">zip</a>";
         
-        $url_param = make_query(['model' => implode('/',[$modellang,$modelbase]), 'pkg' => $modelpkg, 'scoreslang' => $langpair ]);
+        $url_param = make_query(['model' => implode('/',[$modellang,$modelbase]),'pkg' => $modelpkg,'test' => $test,'langpair' => $langpair ]);
+        $translink = "<a rel=\"nofollow\" href=\"translations.php?".SID.'&'.$url_param."\">txt</a>";
+        
+        $url_param = make_query(['model' => implode('/',[$modellang,$modelbase]), 'pkg' => $modelpkg, 'scoreslang' => $langpair, 'test' => 'all' ]);
         $scoreslink = "<a rel=\"nofollow\" href=\"index.php?$url_param\">scores</a>";
 
         if ( $benchmark == 'all'){
@@ -174,7 +180,7 @@ if ($id>0){
         else{
             echo("<tr><td>$id</td>");
         }
-        echo("<td>$parts[0]</td><td>$scoreslink</td><td>$evallink</td><td>$link</td></tr>");
+        echo("<td>$parts[0]</td><td>$scoreslink</td><td>$translink, $evallink</td><td>$link</td></tr>");
         $count++;
     }
     }
@@ -188,17 +194,22 @@ else{
 echo '</td></tr></table>';
 
 
-function print_score_table($model,$langpair='all',$pkg='Tatoeba-MT-models'){
+function print_score_table($model,$langpair='all',$benchmark='all', $pkg='Tatoeba-MT-models'){
     
     $lines = read_scores($langpair, 'all', 'all', $model, $pkg);
     echo('<table>');
-    echo("<tr><th>ID</th><th>Language</th><th>Benchmark</th><th>ChrF</th><th>BLEU</th></tr>");
+    echo("<tr><th>ID</th><th>Language</th><th>Benchmark</th><th>output</th><th>ChrF</th><th>BLEU</th></tr>");
     $id = 0;
     $langlinks = array();
     foreach ($lines as $line){
         $parts = explode("\t",$line);
         if ($langpair != 'all'){
             if ($parts[0] != $langpair){
+                continue;
+            }
+        }
+        if ($benchmark != 'all'){
+            if ($parts[1] != $benchmark){
                 continue;
             }
         }
@@ -211,7 +222,17 @@ function print_score_table($model,$langpair='all',$pkg='Tatoeba-MT-models'){
             $langlink = "<a rel=\"nofollow\" href=\"index.php?$query\">$parts[0]</a>";
             $langlinks[$parts[0]] = $langlink;
         }
-        echo("<tr><td>$id</td><td>$langlink</td><td>$parts[1]</td><td>$parts[2]</td><td>$parts[3]</td></tr>");
+
+        $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
+        $evallink = "<a rel=\"nofollow\" href=\"$modelhome/$model.eval.zip\">zip</a>";
+        
+        $url_param = make_query(['test' => $parts[1],'langpair' => $parts[0]]);
+        $translink = "<a rel=\"nofollow\" href=\"translations.php?".SID.'&'.$url_param."\">txt</a>";
+
+        $url_param = make_query(['test' => $parts[1]]);
+        $testlink = "<a rel=\"nofollow\" href=\"index.php?$url_param\">$parts[1]</a>";
+
+        echo("<tr><td>$id</td><td>$langlink</td><td>$testlink</td><td>$translink, $evallink</td><td>$parts[2]</td><td>$parts[3]</td></tr>");
         $id++;
     }
     echo('</table>');

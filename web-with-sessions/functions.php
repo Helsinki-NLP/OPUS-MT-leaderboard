@@ -86,7 +86,7 @@ function read_scores($langpair, $benchmark, $metric, $model='all', $pkg='Tatoeba
     if ($key !== false){
         if (array_key_exists('scores', $_SESSION)){
             if (array_key_exists($key, $_SESSION['scores'])){
-                // echo "read scores from cache with key $key";
+                // echo "read scores from cached file with key $key";
                 return $_SESSION['scores'][$key];
             }
         }
@@ -105,6 +105,59 @@ function read_scores($langpair, $benchmark, $metric, $model='all', $pkg='Tatoeba
     
 }
 
+
+// fetch the file with all benchmark translations for a specific model
+
+function get_translation_file($model, $pkg='Tatoeba-MT-models'){
+    $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
+    $file = implode('/',[$modelhome,$model]).'.eval.zip';
+
+    $tmpfile = tempnam(sys_get_temp_dir(),'opusmteval');
+    if (copy($file, $tmpfile)) {
+        return $tmpfile;
+    }
+}
+
+
+// fetch benchmark translation file and use a cache to keep a certain number
+// of them without reloading them
+
+function get_translation_file_with_cache($model, $pkg='Tatoeba-MT-models', $cache_size=10){
+
+    $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
+    $file = implode('/',[$modelhome,$model]).'.eval.zip';
+    
+    if (! array_key_exists('cached-files', $_SESSION)){
+        $_SESSION['cached-files'] = array();
+        $_SESSION['next-filecache-key'] = 0;
+    }
+    $key = array_search($file, $_SESSION['cached-files']);
+    if ($key !== false){
+        if (array_key_exists('files', $_SESSION)){
+            if (array_key_exists($key, $_SESSION['files'])){
+                if (file_exists($_SESSION['files'][$key])){
+                    // echo "read translations from cache with key $key in file ".$_SESSION['files'][$key];
+                    return $_SESSION['files'][$key];
+                }
+            }
+        }
+    }
+
+    if ($_SESSION['next-filecache-key'] >= $cache_size){
+        $_SESSION['next-filecache-key'] = 0;
+    }
+
+    $key = $_SESSION['next-filecache-key'];
+    // echo "save scores for $file in cache with key $key";
+    $_SESSION['cached-files'][$key] = $file;
+    
+    $tmpfile = tempnam(sys_get_temp_dir(),'opusmteval');
+    if (copy($file, $tmpfile)) {
+        $_SESSION['files'][$key] = $tmpfile;
+        $_SESSION['next-filecache-key']++;
+        return $_SESSION['files'][$key];
+    }
+}
 
 
 ?>

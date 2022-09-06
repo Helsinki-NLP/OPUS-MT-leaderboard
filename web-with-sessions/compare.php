@@ -222,7 +222,7 @@ function print_score_table($model1,$model2,$langpair='all',$benchmark='all', $me
 
     
     echo('<div id="scores"><div class="query"><table>');
-    echo("<tr><th>ID</th><th>Language</th><th>Benchmark ($metric)</th><th>Model 1</th><th>Model 2</th><th>Diff</th></tr>");
+    echo("<tr><th>ID</th><th>Language</th><th>Benchmark ($metric)</th><th>Output</th><th>Model 1</th><th>Model 2</th><th>Diff</th></tr>");
     $id = 0;
 
     foreach($scores1 as $key => $score1) {
@@ -254,8 +254,12 @@ function print_score_table($model1,$model2,$langpair='all',$benchmark='all', $me
                         $query = make_query(['test' => $test]);
                         $test_query[$test] = '<a rel="nofollow" href="compare.php?'.$query.'">'.$test.'</a>';
                     }
+
+                    $query = make_query(['test' => $test,'langpair' => $lang]);
+                    $translink = "<a rel=\"nofollow\" href=\"compare-translations.php?".SID.'&'.$query."\">compare</a>";
+                    
                     echo('<tr><td>');
-                    echo(implode('</td><td>',[$id, $lang_query[$lang], $test_query[$test], $score1, $score2, $diff_pretty]));
+                    echo(implode('</td><td>',[$id, $lang_query[$lang], $test_query[$test], $translink, $score1, $score2, $diff_pretty]));
                     echo('</td></tr>');
                     $id++;
                 }
@@ -298,6 +302,7 @@ function print_score_table($model1,$model2,$langpair='all',$benchmark='all', $me
                 $testlink = "<a rel=\"nofollow\" href=\"compare.php?".$url_param."\">show all</a>";
             }
         }
+        
         if ($langlink != '' || $testlink != ''){
             echo("<tr><td></td><td>$langlink</td><td>$testlink</td><td></td><td></td><td></td></tr>");
         }
