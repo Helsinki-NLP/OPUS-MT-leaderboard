@@ -18,9 +18,9 @@ echo("<h1>OPUS-MT Example Translations</h1>");
 // get query parameters
 $package   = get_param('pkg', 'Tatoeba-MT-models');
 $benchmark = get_param('test', 'all');
-$metric    = get_param('metric', 'bleu');
-$showlang  = get_param('scoreslang', 'all');
 $model     = get_param('model', 'all');
+$start     = get_param('start', 0);
+$end       = get_param('end', 9);
 
 list($srclang, $trglang, $langpair) = get_langpair();
 
@@ -28,28 +28,29 @@ list($srclang, $trglang, $langpair) = get_langpair();
 if ($model != 'all'){
     if ($benchmark != 'all'){
 
+        $trans = get_selected_translations($benchmark, $langpair, $model, $package, $start, $end);
+
         $query = make_query(array('model' => $model, 'test' => 'all'));
         echo '<ul><li>Model: <a rel="nofollow" href="index.php?'.$query.'">'.$model.'</a></li>';
         echo '<li>Test Set: '.$benchmark.'</li>';
-        echo '<li>Language Pair: '.$langpair.'</li></ul>';
-        echo 'The following shows blocks of three lines with <ol><li>INPUT</li><li>REFERENCE TRANSLATION</li><li>SYSTEM OUTPUT</li></ol><hr/>';
+        echo '<li>Language Pair: '.$langpair.'</li>';
+        $query = make_query(['diff' => 'wdiff']);
+        echo '<li><a rel="nofollow" href="diff-references.php?'.$query.'">Highlight difference between reference and model translation</a></li>';
+        $query = make_query(['test' => 'all']);
+        echo '<li><a rel="nofollow" href="index.php?'.$query.'">Return to score comparison</a></li>';
+        echo '</ul>';
+        // echo 'The following shows blocks of three lines with <ol><li>INPUT</li><li>REFERENCE TRANSLATION</li><li>SYSTEM OUTPUT</li></ol>';
+        show_page_links($start, $end, count($trans));
+        echo '<hr/>';
 
-        $tmpfile = get_translation_file_with_cache($model, $package);
-        $zip = new ZipArchive;
-        if ($zip->open($tmpfile) === TRUE) {
-            $evalfile = implode('.',[$benchmark, $langpair, 'compare']);
-            echo '<pre>';
-            echo $zip->getFromName($evalfile);
-            echo '</pre>';
-            $zip->close();
-        } else {
-            echo 'failed';
+        echo '<pre>';
+        $nr_examples = floor(count($trans)/4);
+        for ($i=0; $i<$nr_examples; $i++){
+            echo '   SOURCE: '.$trans[$i*4]."\n";
+            echo 'REFERENCE: '.$trans[$i*4+1]."\n";
+            echo '    MODEL: '.$trans[$i*4+2]."\n\n";
         }
-
-        // TODO: when do we remove tempfiles if we use session cache?
-        if ( ! isset( $_COOKIE['PHPSESSID'] ) ) {
-            unlink($tmpfile);
-        }
+        echo '</pre>';
     }
 }
 

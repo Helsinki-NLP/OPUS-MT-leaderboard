@@ -255,7 +255,7 @@ function print_score_table($model1,$model2,$langpair='all',$benchmark='all', $me
                         $test_query[$test] = '<a rel="nofollow" href="compare.php?'.$query.'">'.$test.'</a>';
                     }
 
-                    $query = make_query(['test' => $test,'langpair' => $lang]);
+                    $query = make_query(['test' => $test,'langpair' => $lang, 'start' => 0, 'end' => 9]);
                     $translink = "<a rel=\"nofollow\" href=\"compare-translations.php?".SID.'&'.$query."\">compare</a>";
                     
                     echo('<tr><td>');
@@ -285,7 +285,7 @@ function print_score_table($model1,$model2,$langpair='all',$benchmark='all', $me
         $avg2 = sprintf('%5.3f',$avg_score2);
         $diff = sprintf('%5.3f',$diff);
     }
-    echo("<tr><th></th><th></th><th>average</th><th>$avg1</th><th>$avg2</th><th>$diff</th></tr>");
+    echo("<tr><th></th><th></th><th>average</th><th></th><th>$avg1</th><th>$avg2</th><th>$diff</th></tr>");
 
     if ($langpair != 'all' || $benchmark != 'all'){
         $langlink = '';

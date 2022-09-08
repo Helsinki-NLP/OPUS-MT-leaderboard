@@ -48,7 +48,12 @@ function make_query($data){
         return http_build_query($data);
     }
     else{
-        $params = $_SESSION['params'];
+        if (array_key_exists('params', $_SESSION)){
+            $params = $_SESSION['params'];
+        }
+        else{
+            $params = array();
+        }
         foreach ($data as $key => $value){
             $params[$key] = $value;
         }
@@ -159,5 +164,128 @@ function get_translation_file_with_cache($model, $pkg='Tatoeba-MT-models', $cach
     }
 }
 
+
+function get_translations ($benchmark, $langpair, $model, $pkg='Tatoeba-MT-models'){
+    
+    $evalfile = implode('.',[$benchmark, $langpair, 'compare']);
+    $tmpfile = get_translation_file_with_cache($model, $pkg);
+
+    $zip = new ZipArchive;
+    if ($zip->open($tmpfile) === TRUE) {
+        $content = $zip->getFromName($evalfile);
+        $zip->close();
+    }
+    
+    if ( ! isset( $_COOKIE['PHPSESSID'] ) ) {
+        unlink($tmpfile);
+    }    
+    return $content;
+}
+
+
+// read only a certain slice of examples
+// (assumes that the data is 4 lines per example)
+
+function get_selected_translations ($benchmark, $langpair, $model, $pkg='Tatoeba-MT-models', $start=0, $end=99){
+    
+    $evalfile = implode('.',[$benchmark, $langpair, 'compare']);
+    $tmpfile = get_translation_file_with_cache($model, $pkg);
+
+    $examples = array();
+    $count = 0;
+    
+    $zip = new ZipArchive;
+    if ($zip->open($tmpfile) === TRUE) {
+        if ($fp = $zip->getStream($evalfile)){
+            $buffer = '';
+            while (!feof($fp)) {
+                $contents = fread($fp, 8192);
+                $lines = explode("\n",$buffer.$contents);
+                $buffer = array_pop($lines);
+                foreach ($lines as $line){
+                    array_push($examples, $line);
+                }
+                $count = floor(count($examples)/4);
+                if ($count >= $end){
+                    break;
+                }
+            }
+            array_push($examples, $buffer);
+            fclose($fp);
+        }
+        $zip->close();
+    }
+    if ( ! isset( $_COOKIE['PHPSESSID'] ) ) {
+        unlink($tmpfile);
+    }
+    return array_slice($examples, $start*4, ($end-$start+1)*4);
+}
+
+function show_page_links($start=0, $end=9, $nr_shown=10){
+
+    $nr_examples = $end-$start+1;
+    if ($start > 0){
+        $newstart = $start-$nr_examples;
+        if ($newstart < 0){
+            $newstart = 0;
+        }
+        $newend = $newstart+$end-$start;
+        $query = make_query(['start' => $newstart, 'end' => $newend]);
+        echo '[<a href="'.$_SERVER['PHP_SELF'].'?'.$query.'">show previous</a>] ';
+    }
+    echo 'show examples '.$start.' - '.$end;
+    if ($nr_shown>$nr_examples){
+        $newstart = $end+1;
+        $newend = $end+$nr_examples;
+        $query = make_query(['start' => $newstart, 'end' => $newend]);
+        echo ' [<a href="'.$_SERVER['PHP_SELF'].'?'.$query.'">show next</a>]';
+    }
+}
+
+
+function print_file_diff($file1, $file2, $diffstyle = 'wdiff'){
+    
+    // TODO: how safe is this?
+    // TODO: ansi2html.sh should not be in this dir, should it?
+    // TODO: ansi2html.sh produces a new HTML header (things are already included above, cleanup!)
+
+    echo '<div class="f9 b9"><pre>';
+    if ($diffstyle == 'gitdiff'){
+        system("git diff --color-words --no-index  $file1 $file2 | ./ansi2html.sh");
+    }
+    elseif ($diffstyle == 'diff'){
+        system("diff -u $file1 $file2 | colordiff | perl /usr/share/doc/git/contrib/diff-highlight/diff-highlight | ./ansi2html.sh --body-only");
+    }
+    else{
+        system("wdiff $file1 $file2 | colordiff | perl /usr/share/doc/git/contrib/diff-highlight/diff-highlight | ./ansi2html.sh --body-only");
+    }
+    echo '</pre></div>';
+}
+
+function print_diffstyle_options($diffstyle='wdiff'){
+    $diffstyles = array('diff','wdiff','gitdiff');    
+    foreach ($diffstyles as $style){
+        if ($style == $diffstyle){
+            echo '['.$style.']';
+        }
+        else{
+            $query = make_query(['diff' => $style]);
+            echo '[<a rel="nofollow" href="'.$_SERVER['PHP_SELF'].'?'.$query.'">'.$style.'</a>]';
+        }
+    }
+}
+
+function print_diffbg_options($diffbg='light'){
+    $diffbgs    = array('light','dark');    
+    foreach ($diffbgs as $bg){
+        if ($bg == $diffbg){
+            echo '['.$bg.']';
+        }
+        else{
+            $query = make_query(['diffbg' => $bg]);
+            echo '[<a rel="nofollow" href="'.$_SERVER['PHP_SELF'].'?'.$query.'">'.$bg.'</a>]';
+        }
+    }
+}
 
 ?>

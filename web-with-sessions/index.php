@@ -167,7 +167,9 @@ if ($id>0){
         $link = "<a rel=\"nofollow\" href=\"$parts[1]\">$modellang/$modelzip</a>";
         $evallink = "<a rel=\"nofollow\" href=\"$baselink.eval.zip\">zip</a>";
         
-        $url_param = make_query(['model' => implode('/',[$modellang,$modelbase]),'pkg' => $modelpkg,'test' => $test,'langpair' => $langpair ]);
+        $url_param = make_query(['model' => implode('/',[$modellang,$modelbase]),
+                                 'pkg' => $modelpkg,'test' => $test,'langpair' => $langpair,
+                                 'start' => 0, 'end' => 9 ]);
         $translink = "<a rel=\"nofollow\" href=\"translations.php?".SID.'&'.$url_param."\">txt</a>";
         
         $url_param = make_query(['model' => implode('/',[$modellang,$modelbase]), 'pkg' => $modelpkg, 'scoreslang' => $langpair, 'test' => 'all' ]);
@@ -226,7 +228,7 @@ function print_score_table($model,$langpair='all',$benchmark='all', $pkg='Tatoeb
         $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
         $evallink = "<a rel=\"nofollow\" href=\"$modelhome/$model.eval.zip\">zip</a>";
         
-        $url_param = make_query(['test' => $parts[1],'langpair' => $parts[0]]);
+        $url_param = make_query(['test' => $parts[1],'langpair' => $parts[0], 'start' => 0, 'end' => 9]);
         $translink = "<a rel=\"nofollow\" href=\"translations.php?".SID.'&'.$url_param."\">txt</a>";
 
         $url_param = make_query(['test' => $parts[1]]);
