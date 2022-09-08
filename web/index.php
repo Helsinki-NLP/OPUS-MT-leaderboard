@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
 <html>
@@ -10,176 +11,35 @@
 
 <?php
 
+// DEBUGGING: reset session variable:
+// $_SESSION = array();
+     
+include 'functions.php';
 
 
-function test_input($data) {
-  $data = trim($data);
-  $data = stripslashes($data);
-  $data = htmlspecialchars($data);
-  return $data;
-}
+// get query parameters
+$package   = get_param('pkg', 'Tatoeba-MT-models');
+$benchmark = get_param('test', 'all');
+$metric    = get_param('metric', 'bleu');
+$showlang  = get_param('scoreslang', 'all');
+$model     = get_param('model', 'all');
 
-
-$package   = isset($_GET['pkg'])    ? test_input($_GET['pkg'])    : 'Tatoeba-MT-models';
-$srclang   = isset($_GET['src'])    ? test_input($_GET['src'])    : 'deu';
-$trglang   = isset($_GET['trg'])    ? test_input($_GET['trg'])    : 'eng';
-if (isset($_GET['langpair'])){
-    list($srclang,$trglang) = explode('-',$_GET['langpair']);
-}
-$benchmark = isset($_GET['test'])   ? test_input($_GET['test'])   : 'all';
-$metric    = isset($_GET['metric']) ? test_input($_GET['metric']) : 'bleu';
-$langpair  = implode('-',[$srclang,$trglang]);
-$showlang  = isset($_GET['scoreslang']) ? test_input($_GET['scoreslang']) : 'all';
-// $showlang  = isset($_GET['scoreslang']) ? test_input($_GET['scoreslang']) : $langpair;
-
-
-$leaderboard_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores';
-$testsets = file(implode('/',[$leaderboard_url,'benchmarks.txt']));
-$all_langpairs = file(implode('/',[$leaderboard_url,'langpairs.txt']));
-
-// url-encoded parameters
-$srclang_url = urlencode($srclang);
-$trglang_url = urlencode($trglang);
-$benchmark_url = urlencode($benchmark);
-$metric_url = urlencode($metric);
-
-
-// form for selecting benchmarks and language pairs
-
-echo '<div class="header">';
-echo "<form action=\"index.php\" method=\"get\">";
-echo 'select benchmark: <select name="test" id="langpair" onchange="this.form.submit()">';
-echo "<option value=\"all\">all</option>";
-foreach ($testsets as $testset){
-    list($test,$langs) = explode("\t",$testset);
-    $test_url = urlencode($test);
-    if ($test == $benchmark){
-        echo "<option value=\"$test_url\" selected>$test</option>";
-        $testlangs = rtrim($langs);
-    }
-    else {
-        echo "<option value=\"$test_url\">$test</option>";
-    }
-}
-echo '</select>';
-
-// get list of language pairs in this benchmark
-// get all available language pairs if no specific benchmark is seslected
-
-if (($benchmark == "all")){
-    $langpairs = array_map('rtrim', file(implode('/',[$leaderboard_url,'langpairs.txt'])));
-    unset($_GET['test']);
-}
-else{
-    $langpairs = explode(' ',$testlangs);
-}
-
-
-echo '  select language pair: <select name="langpair" id="langpair" onchange="this.form.submit()">';
-foreach ($langpairs as $l){
-    if ($l == $langpair){
-        echo "<option value=\"$l\" selected>$l</option>";
-        $selected = $l;
-    }
-    else{
-        echo "<option value=\"$l\">$l</option>";
-    }
-}
-echo '</select>';
-echo '  [<a href="compare.php">compare models<a/>]';
-echo '  [<a href="releases.php">show release history<a/>]';
-echo '</form>';
+list($srclang, $trglang, $langpair) = get_langpair();
 
 
 /*
-
-// OLD: list all benchmarks with hyperlinks
-
-foreach ($testsets as $testset){
-    $parts = explode("\t",$testset);
-    if ($parts[0] == $benchmark){
-        echo("[$parts[0]]");
-        $testlangs = rtrim($parts[1]);
-    }
-    else{
-        $test_url = urlencode($parts[0]);
-        $link = "index.php?src=$srclang_url&trg=$trglang_url&test=$test_url&metric=$metric_url";
-        echo("[<a href=\"$link\">$parts[0]</a>]");
-    }    
+// DEBUGGING: show parameters in session variable
+foreach ($_SESSION['params'] as $key => $value){
+    echo "$key => $value <br/>";
 }
 */
 
-echo '<hr/>';
-if (isset($_GET['test'])){
-$langpairs = explode(' ',$testlangs);
-if (sizeof($langpairs) > 20){
-    $srclangs = array();
-    $trglangs = array();
-    foreach ($langpairs as $l){
-        $langs = explode('-',$l);
-        array_push($srclangs,$langs[0]);
-        array_push($trglangs,$langs[1]);
-    }
-    $srclangs = array_unique($srclangs);
-    $trglangs = array_unique($trglangs);
-    echo('<table><tr><td>source:</td><td>');
-    foreach ($srclangs as $l){
-        if ($l == $srclang){
-            echo("[$l]");
-        }
-        else{
-            $lang_url = urlencode($l);
-            $link = "index.php?src=$lang_url&trg=$trglang_url&test=$benchmark_url&metric=$metric_url";
-            echo("[<a rel=\"nofollow\" href=\"$link\">$l</a>]");
-        }
-    }
-    echo('</td></tr><tr><td>target:</td><td>');
-    foreach ($trglangs as $l){
-        if ($l == $trglang){
-            echo("[$l]");
-        }
-        else{
-            $link = "index.php?src=$srclang&trg=$l&test=$benchmark&metric=$metric";
-            echo("[<a rel=\"nofollow\" href=\"$link\">$l</a>]");
-        }
-    }
-    echo('</td></tr></table>');
-}
-// elseif (sizeof($langpairs) > 1){
-else{
-    echo('<table><tr><td>language pair:</td><td>');
-    $invalid = true;
-    foreach ($langpairs as $l){
-        if ($l == $langpair){
-            $invalid = false;
-        }
-        $langs = explode('-',$l);
-        if (sizeof($langs) == 2){
-            if ($l == $langpair){
-                echo("[$l]");
-            }
-            else{
-                $s_url = urlencode($langs[0]);
-                $t_url = urlencode($langs[1]);
-                $link = "index.php?src=$langs[0]&trg=$langs[1]&test=$benchmark_url&metric=$metric_url";
-                echo("[<a rel=\"nofollow\" href=\"$link\">$l</a>]");
-            }
-        }
-    }
-    echo('</td></tr></table>');
-    if ( $invalid ){
-        $oldlang = $langpair;
-        $langpair = $langpairs[0];
-        $parts = explode('-',$langpair);
-        $srclang = $parts[0];
-        $trglang = $parts[1];
-        $srclang_url = urlencode($srclang);
-        $trglang_url = urlencode($trglang);
-        echo("Invalid language pair $oldlang for this benchmark: change to $langpair!");
-    }
-}
-}
-echo '</div>';
+
+
+include 'header.php';
+
+
+
 
 
 echo '<br/><table><tr><td>';
@@ -190,14 +50,12 @@ $metrics = array('bleu', 'chrf');
 $metriclinks = array();
 foreach ($metrics as $m){
     if ($m != $metric){
-        $m_url = urlencode($m);
-        $metriclinks[$m] = "index.php?src=$srclang_url&trg=$trglang_url&metric=$m_url";
-        if (isset($_GET['test'])){
-            $metriclinks[$m] .= "&test=$benchmark_url";
-        }
+        $query = make_query(array('metric' => $m));
+        $metriclinks[$m] = $_SERVER['PHP_SELF'].'?'.$query;
     }
 }
 
+// links to the test sets
 $testset_url = 'https://github.com/Helsinki-NLP/OPUS-MT-testsets/tree/master/testsets';
 if ($benchmark == 'flores101-dev'){
     $testset_src = implode('/',[$testset_url,'flores101_dataset','dev',$srclang]).".dev";
@@ -216,49 +74,44 @@ else{
 
 
 echo("<ul>");
-if (isset($_GET['model'])){
-    $parts = explode('/',$_GET['model']);
+if ($model != 'all'){
+    $parts = explode('/',$model);
     $modelfile = array_pop($parts);
     $modellang = array_pop($parts);
-    $model_url = urlencode($_GET['model']);
-    $langpair_url = urlencode($langpair);
-    $url_param = "metric=$metric_url&langpair=$langpair_url&model1=$package/$model_url";
-    if ($showlang != 'all'){
-        $showlang_url = urlencode($showlang);
-        $url_param .= "&scoreslang=$showlang_url";
-    }
-    $comparelink = "[<a rel=\"nofollow\" href=\"compare.php?$url_param\">compare</a>]";
+
+    $model1 = implode('/',[$package, $model]);
+    
+    $url_param = make_query(['model1' => $model1, 'model2' => 'unknown']);
+    $comparelink = "[<a rel=\"nofollow\" href=\"compare.php?". SID . '&'.$url_param."\">compare</a>]";
     echo("<li>model: $modellang/$modelfile $comparelink</li>");
     if ($modellang == $langpair){
         echo("<li>language pair: $langpair</li>");
     }
     else{
         if ($showlang != 'all'){
-            $url_param = "metric=$metric_url&src=$srclang_url&trg=$trglang_url&model=$model_url&pkg=$package";
-            if (isset($_GET['test'])){
-                $url_param .= "&test=$benchmark_url";
-            }
+            $url_param = make_query(['scoreslang' => 'all']);
             $lang_link = "<a rel=\"nofollow\" href=\"index.php?$url_param\">all languages</a>";
             echo("<li>language pair: $langpair [$lang_link]</li>");
         }
         else{
-            $langpair_url = urlencode($langpair);
-            $url_param = "metric=$metric_url&src=$srclang_url&trg=$trglang_url&model=$model_url&scoreslang=$langpair_url&pkg=$package";
-            if (isset($_GET['test'])){
-                $url_param .= "&test=$benchmark_url";
-            }
+            $url_param = make_query(['scoreslang' => $langpair]);
             $lang_link = "<a rel=\"nofollow\" href=\"index.php?$url_param\">$langpair</a>";
             echo("<li>language pair: [$lang_link] all languages</li>");
         }
     }
+    if ($benchmark != 'all'){
+        $url_param = make_query(['test' => 'all']);
+        $test_link = "<a rel=\"nofollow\" href=\"index.php?$url_param\">all benchmarks</a>";
+        echo("<li>benchmark: $benchmark [$test_link]</li>");
+    }
 }
-elseif (isset($_GET['test'])){
+elseif ($benchmark != 'all'){
     $testset_srclink = "<a rel=\"nofollow\" href=\"$testset_src\">$srclang</a>";
     $testset_trglink = "<a rel=\"nofollow\" href=\"$testset_trg\">$trglang</a>";
     echo("<li>language pair: $testset_srclink - $testset_trglink</li>");
     echo("<li>benchmark: $benchmark");
-    $url_param = "metric=$metric_url&src=$srclang_url&trg=$trglang_url";
-    echo(" [<a rel=\"nofollow\" href=\"index.php?$url_param&test=all\">all benchmarks</a>]</li>");
+    $url_param = make_query(['test' => 'all']);
+    echo(" [<a rel=\"nofollow\" href=\"index.php?$url_param\">all benchmarks</a>]</li>");
 }
 else{
     echo("<li>language pair: $langpair");
@@ -271,15 +124,7 @@ echo("</li></ul>");
 
 
 
-
-if (isset($_GET['test'])){
-    $file  = implode('/',[$leaderboard_url,$langpair,$benchmark,$metric.'-scores.txt']);
-}
-else{
-    $file  = implode('/',[$leaderboard_url,$langpair,'top-'.$metric.'-scores.txt']);
-}
-
-$lines = file($file);
+$lines = read_scores($langpair, $benchmark, $metric);
 if ($lines == false){
     $lines = array();
 }
@@ -287,65 +132,57 @@ $id    = sizeof($lines);
 
 // if ($id>0 and $lines[0]){
 if ($id>0){
-    $url_param = "metric=$metric_url";    
-    if (isset($_GET['model'])){
-        $model_url = urlencode($_GET['model']);
-        $package_url = urlencode($package);
-        $url_param .= "&model=$model_url&pkg=$package_url";
-        if ($showlang != 'all'){
-            $langpair_url = urlencode($showlang);
-            $url_param .= "&scoreslang=$langpair_url";
-        }
+    if ( isset( $_COOKIE['PHPSESSID'] ) ) {
+        echo("<img src=\"barchart.php?". SID ."\" alt=\"barchart\" />");
     }
     else{
-        $url_param .= "&src=$srclang_url&trg=$trglang_url";
-        if (isset($_GET['test'])){
-            $url_param .= "&test=$benchmark_url";
-        }
+        $url_param = make_query([]);
+        echo("<img src=\"barchart.php?$url_param\" alt=\"barchart\" />");
     }
-    echo("<img src=\"barchart.php?$url_param\" alt=\"barchart\" />");
     echo '</div><div id="scores">';
     // echo '</td><td><div class="query">';
     echo '<div class="query">';
 
-    if (isset($_GET['model'])){
-        print_score_table($_GET['model'],$showlang,$package);
+    if ($model != 'all'){
+        print_score_table($model,$showlang,$benchmark,$package);
     }
     else{
 
     echo('<table><tr><th>ID</th>');
-    if ( ! isset($_GET['test'])){
+    if ( $benchmark == 'all'){
         echo("<th>Benchmark</th>");
     }
     echo("<th>$metric</th><th>other</th><th>output</th><th>model</th></tr>");
-    $langpair_url = urlencode($langpair);
-    $url_param = "src=$srclang_url&trg=$trglang_url&metric=$metric_url";
     $count=0;
     foreach ($lines as $line){
         $id--;
         $parts = explode("\t",rtrim($line));
-        if ( ! isset($_GET['test'])){
-            $benchmark = array_shift($parts);
-            $benchmark_url = urlencode($benchmark);
-        }
+        $test = $benchmark == 'all' ? array_shift($parts) : $benchmark;
         $model = explode('/',$parts[1]);
         $modelzip = array_pop($model);
         $modellang = array_pop($model);
         $modelpkg = array_pop($model);
         $modelbase = substr($modelzip, 0, -4);
         $baselink = substr($parts[1], 0, -4);
-        // $link = "<a href=\"$parts[1]\">$modelpkg/$modellang/$modelzip</a>";
         $link = "<a rel=\"nofollow\" href=\"$parts[1]\">$modellang/$modelzip</a>";
-        $evallink = "<a rel=\"nofollow\" href=\"$baselink.eval.zip\">zipfile</a>";
-        $model_url = urlencode("$modellang/$modelbase");
-        $scoreslink = "<a rel=\"nofollow\" href=\"index.php?$url_param&model=$model_url&scoreslang=$langpair_url&pkg=$modelpkg\">scores</a>";
-        if ( ! isset($_GET['test'])){
-            echo("<tr><td>$count</td><td><a rel=\"nofollow\" href=\"index.php?$url_param&test=$benchmark_url\">$benchmark</a></td>");
+        $evallink = "<a rel=\"nofollow\" href=\"$baselink.eval.zip\">zip</a>";
+        
+        $url_param = make_query(['model' => implode('/',[$modellang,$modelbase]),
+                                 'pkg' => $modelpkg,'test' => $test,'langpair' => $langpair,
+                                 'start' => 0, 'end' => 9 ]);
+        $translink = "<a rel=\"nofollow\" href=\"translations.php?".SID.'&'.$url_param."\">txt</a>";
+        
+        $url_param = make_query(['model' => implode('/',[$modellang,$modelbase]), 'pkg' => $modelpkg, 'scoreslang' => $langpair, 'test' => 'all' ]);
+        $scoreslink = "<a rel=\"nofollow\" href=\"index.php?$url_param\">scores</a>";
+
+        if ( $benchmark == 'all'){
+            $url_param = make_query(['test' => $test, 'scoreslang' => $langpair ]);
+            echo("<tr><td>$count</td><td><a rel=\"nofollow\" href=\"index.php?$url_param\">$test</a></td>");
         }
         else{
             echo("<tr><td>$id</td>");
         }
-        echo("<td>$parts[0]</td><td>$scoreslink</td><td>$evallink</td><td>$link</td></tr>");
+        echo("<td>$parts[0]</td><td>$scoreslink</td><td>$translink, $evallink</td><td>$link</td></tr>");
         $count++;
     }
     }
@@ -359,14 +196,12 @@ else{
 echo '</td></tr></table>';
 
 
-function print_score_table($model,$langpair='all',$pkg='Tatoeba-MT-models'){
-    $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
-    $score_file = implode('/',[$modelhome,$model]).'.scores.txt';
-    $lines = file($score_file);
+function print_score_table($model,$langpair='all',$benchmark='all', $pkg='Tatoeba-MT-models'){
+    
+    $lines = read_scores($langpair, 'all', 'all', $model, $pkg);
     echo('<table>');
-    echo("<tr><th>ID</th><th>Language</th><th>Benchmark</th><th>ChrF</th><th>BLEU</th></tr>");
+    echo("<tr><th>ID</th><th>Language</th><th>Benchmark</th><th>output</th><th>ChrF</th><th>BLEU</th></tr>");
     $id = 0;
-    // $url_param = "metric=$metric_url&src=$srclang_url&trg=$trglang_url";
     $langlinks = array();
     foreach ($lines as $line){
         $parts = explode("\t",$line);
@@ -375,17 +210,31 @@ function print_score_table($model,$langpair='all',$pkg='Tatoeba-MT-models'){
                 continue;
             }
         }
+        if ($benchmark != 'all'){
+            if ($parts[1] != $benchmark){
+                continue;
+            }
+        }
         if (array_key_exists($parts[0],$langlinks)){
             $langlink = $langlinks[$parts[0]];
         }
         else{            
             $langs = explode('-',$parts[0]);
-            $srclang_url = urlencode($langs[0]);
-            $trglang_url = urlencode($langs[1]);
-            $langlink = "<a rel=\"nofollow\" href=\"index.php?src=$srclang_url&trg=$trglang_url\">$parts[0]</a>";
+            $query = make_query(['src' => $langs[0], 'trg' => $langs[1],'model' => 'all', 'test' => 'all']);
+            $langlink = "<a rel=\"nofollow\" href=\"index.php?$query\">$parts[0]</a>";
             $langlinks[$parts[0]] = $langlink;
         }
-        echo("<tr><td>$id</td><td>$langlink</td><td>$parts[1]</td><td>$parts[2]</td><td>$parts[3]</td></tr>");
+
+        $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
+        $evallink = "<a rel=\"nofollow\" href=\"$modelhome/$model.eval.zip\">zip</a>";
+        
+        $url_param = make_query(['test' => $parts[1],'langpair' => $parts[0], 'start' => 0, 'end' => 9]);
+        $translink = "<a rel=\"nofollow\" href=\"translations.php?".SID.'&'.$url_param."\">txt</a>";
+
+        $url_param = make_query(['test' => $parts[1]]);
+        $testlink = "<a rel=\"nofollow\" href=\"index.php?$url_param\">$parts[1]</a>";
+
+        echo("<tr><td>$id</td><td>$langlink</td><td>$testlink</td><td>$translink, $evallink</td><td>$parts[2]</td><td>$parts[3]</td></tr>");
         $id++;
     }
     echo('</table>');

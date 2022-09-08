@@ -1,58 +1,36 @@
 <?php
+session_start();
 
 // adapted from https://www.infscripts.com/how-to-create-a-bar-chart-in-php
 
-function test_input($data) {
-  $data = trim($data);
-  $data = stripslashes($data);
-  $data = htmlspecialchars($data);
-  return $data;
-}
+include 'functions.php';
 
-$package   = isset($_GET['pkg'])    ? test_input($_GET['pkg'])    : 'Tatoeba-MT-models';
-$srclang   = isset($_GET['src'])    ? test_input($_GET['src'])    : 'deu';
-$trglang   = isset($_GET['trg'])    ? test_input($_GET['trg'])    : 'eng';
-$benchmark = isset($_GET['test'])   ? test_input($_GET['test'])   : 'flores101-devtest';
-$metric    = isset($_GET['metric']) ? test_input($_GET['metric']) : 'bleu';
+// get query parameters
+$package   = get_param('pkg', 'Tatoeba-MT-models');
+$benchmark = get_param('test', 'all');
+$metric    = get_param('metric', 'bleu');
+$showlang  = get_param('scoreslang', 'all');
+$model     = get_param('model', 'all');
 
-if (isset($_GET['model'])){
-    $modelhome = 'https://object.pouta.csc.fi/'.$package;
-    // $modelhome = 'https://object.pouta.csc.fi/Tatoeba-MT-models';
-    $modelbase = substr($_GET['model'], 0, -5);
-    $file = implode('/',[$modelhome,$_GET['model']]).'.scores.txt';
-    $lines = file($file);
-    // $lines = file($_GET['scores']);
-}
-else{
-    $leaderboard_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores';
-    $langpair = implode('-',[$srclang,$trglang]);
-    if (isset($_GET['test'])){
-        $file     = implode('/',[$leaderboard_url,$langpair,$benchmark,$metric.'-scores.txt']);
-    }
-    else{
-        $file     = implode('/',[$leaderboard_url,$langpair,'top-'.$metric.'-scores.txt']);
-    }
-    $lines = file($file);
-}
+list($srclang, $trglang, $langpair) = get_langpair();
 
 
-// $lines = file("https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores/deu-eng/top-bleu-scores.txt");
-// $lines = file("https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores/deu-eng/newstest2018/bleu-scores.txt");
-// https://object.pouta.csc.fi/Tatoeba-MT-models/fin-eng/opusTCv20210807+bt-2021-11-09.scores.txt
-
+$lines = read_scores($langpair, $benchmark, $metric, $model, $package);
 
 $data = array();
 $pkg = array();
-// read model-specific scores
-if (isset($_GET['model'])){
+// get model-specific scores
+if ($model != 'all'){
     $maxscore = 0;
-    if (isset($_GET['scoreslang'])){
-        $langpair = $_GET['scoreslang'];
-    }
     foreach($lines as $line) {
         $array = explode("\t", $line);
-        if (isset($langpair)){
-            if ($langpair != $array[0]){
+        if ($showlang != 'all'){
+            if ($showlang != $array[0]){
+                continue;
+            }
+        }
+        if ($benchmark != 'all'){
+            if ($array[1] != $benchmark){
                 continue;
             }
         }
@@ -64,8 +42,8 @@ if (isset($_GET['model'])){
         }
     }
 }
-// read from benchmark-specific leaderboard
-elseif (isset($_GET['test'])){
+// get scores from benchmark-specific leaderboard
+elseif ($benchmark != 'all'){
     foreach($lines as $line) {
         $array = explode("\t", $line);
         array_unshift($data,$array[0]);
@@ -74,7 +52,7 @@ elseif (isset($_GET['test'])){
     }
     $maxscore = end($data);
 }
-// read from top-score files
+// get top-scores
 else{
     $maxscore = 0;
     foreach($lines as $line) {
