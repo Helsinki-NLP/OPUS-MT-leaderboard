@@ -1,27 +1,26 @@
 <?php
+session_start();
 
 // adapted from https://www.infscripts.com/how-to-create-a-bar-chart-in-php
 
-function test_input($data) {
-  $data = trim($data);
-  $data = stripslashes($data);
-  $data = htmlspecialchars($data);
-  return $data;
+include 'functions.php';
+
+// get query parameters
+$benchmark = get_param('test', 'all');
+$metric    = get_param('metric', 'bleu');
+$showlang  = get_param('scoreslang', 'all');
+$model1    = get_param('model1', 'unknown');
+$model2    = get_param('model2', 'unknown');
+
+
+if ($model1 != 'unknown'){
+    list($pkg1, $lang1, $name1) = explode('/',$model1);
+    $lines1 = read_scores($langpair, 'all', 'all', implode('/',[$lang1,$name1]), $pkg1);
 }
 
-$showlang  = isset($_GET['scoreslang']) ? test_input($_GET['scoreslang'])   : 'all';
-$benchmark = isset($_GET['test'])       ? test_input($_GET['test'])         : 'all';
-$metric    = isset($_GET['metric'])     ? test_input($_GET['metric'])       : 'bleu';
-
-$modelhome = 'https://object.pouta.csc.fi';
-if (isset($_GET['model1'])){
-    $file1 = implode('/',[$modelhome,$_GET['model1']]).'.scores.txt';
-    $lines1 = file($file1);
-}
-
-if (isset($_GET['model2'])){
-    $file2 = implode('/',[$modelhome,$_GET['model2']]).'.scores.txt';
-    $lines2 = file($file2);
+if ($model2 != 'unknown'){
+    list($pkg2, $lang2, $name2) = explode('/',$model2);
+    $lines2 = read_scores($langpair, 'all', 'all', implode('/',[$lang2,$name2]), $pkg2);
 }
 
 
@@ -69,20 +68,6 @@ foreach($scores1 as $key => $value) {
         array_push($model,'model2');
     }
 }
-
-/*
-foreach($scores1 as $key => $value) {
-    array_push($data,$value);
-    array_push($model,'model1');
-    if (array_key_exists($key,$scores2)){
-        array_push($data,$scores2[$key]);
-    }
-    else{
-        array_push($data,0);
-    }
-    array_push($model,'model2');
-}
-*/
 
 if (sizeof($data) == 0){
     $data[0] = 0;
