@@ -11,8 +11,11 @@
 
 <?php
 
-// DEBUGGING: reset session variable:
-// $_SESSION = array();
+if (isset($_GET['session'])){
+    if ($_GET['session'] == 'clear'){
+        $_SESSION = array();
+    }
+}
           
 include 'functions.php';
 
@@ -29,8 +32,9 @@ list($srclang, $trglang, $langpair) = get_langpair();
 $showlang  = get_param('scoreslang', $langpair);
 
 
-/*
+
 // DEBUGGING: show parameters in session variable
+/*
 foreach ($_SESSION['params'] as $key => $value){
     echo "$key => $value <br/>";
 }
@@ -41,18 +45,35 @@ foreach ($_SESSION['params'] as $key => $value){
 include 'header.php';
 echo('<h1>Compare OPUS-MT models</h1>');
 
+
+if ($model1 != 'unknown'){
+    echo('<div id="chart"><ul>');
+    
+    list($m1_pkg, $m1_lang, $m1_name) = explode('/',$model1);
+    $url_param = make_query(['model' => $m1_lang.'/'.$m1_name, 'pkg' => $m1_pkg]);
+    $m_link = "<a rel=\"nofollow\" href=\"index.php?".$url_param."\">";
+    echo('<li><b>Model 1 (blue):</b> '.$m_link.$model1.'</a></li>');
+
+    if ($model2 != 'unknown'){
+        list($m2_pkg, $m2_lang, $m2_name) = explode('/',$model2);
+        $url_param = make_query(['model' => $m2_lang.'/'.$m2_name, 'pkg' => $m2_pkg]);    
+        echo('<li><b>Model 2 (orange):</b> '.$m_link.$model2.'</a></li>');
+    }
+    echo('</ul>');
+}
+
 if (($model1 != 'unknown') && ($model2 != 'unknown')){
     $chart_script = $chart == 'diff' ? 'diff-barchart.php' : 'compare-barchart.php';
     if ( isset( $_COOKIE['PHPSESSID'] ) ) {
-        echo('<div id="chart"><img src="'.$chart_script.'?'. SID .'" alt="barchart" /><br/><ul>');
+        echo('<img src="'.$chart_script.'?'. SID .'" alt="barchart" /><br/><ul>');
     }
     else{
         $url_param = make_query([]);
-        echo('<div id="chart"><img src="'.$chart_script.'?'. $url_param .'" alt="barchart" /><br/><ul>');
+        echo('<img src="'.$chart_script.'?'. $url_param .'" alt="barchart" /><br/><ul>');
     }
 
     $chart_types = array('standard', 'diff');
-    echo('<ul><li>Chart Type: ');
+    echo('<li>Chart Type: ');
     foreach ($chart_types as $c){
         if ($c == $chart){
             echo("[$c]");
@@ -75,10 +96,11 @@ if (($model1 != 'unknown') && ($model2 != 'unknown')){
             echo("[<a rel=\"nofollow\" href=\"compare.php?".$url_param."\">$m</a>]");
         }
     }
-    echo('</li></ul></div>');
-    
+    echo('</li></ul></div><div id="scores">');    
     $langpairs = print_score_table($model1,$model2,$showlang,$benchmark, $metric);
+    echo('</div>');
 }
+
 
 
 // TODO: do we also want to cache model lists in the SESSION variable?
@@ -87,41 +109,29 @@ $models = file(implode('/',[$leaderboard_url,$langpair,'model-list.txt']));
 
 
 if ($model1 != 'unknown'){
-    echo('<div id="scores"><h2>Selected models</h2>');
-    echo('<ul>');
-    
-    list($m1_pkg, $m1_lang, $m1_name) = explode('/',$model1);
-    $url_param = make_query(['model' => $m1_lang.'/'.$m1_name, 'pkg' => $m1_pkg]);
-    $m_link = "<a rel=\"nofollow\" href=\"index.php?".$url_param."\">";
-
-    echo('<li><b>Model 1 (blue):</b> '.$m_link.$model1.'</a></li>');
-
     if ($model2 != 'unknown'){
-
-        list($m2_pkg, $m2_lang, $m2_name) = explode('/',$model2);
-        $url_param = make_query(['model' => $m2_lang.'/'.$m2_name, 'pkg' => $m2_pkg]);
-    
-        echo('<li><b>Model 2 (orange):</b> '.$m_link.$model2.'</a></li>');
-        echo('<li><b>Comparable Model Langpair(s):</b> ');
-        ksort($langpairs);
-        foreach ($langpairs as $lp => $count){
-            if ($lp == $showlang){
-                echo("[$showlang]");
+        echo('<br/><div id="list">');
+        if (count($langpairs) > 1){
+            echo('<ul><li><b>Langpair(s):</b> ');
+            ksort($langpairs);
+            foreach ($langpairs as $lp => $count){
+                if ($lp == $showlang){
+                    echo("[$showlang]");
+                }
+                else{
+                    $url_param = make_query(['scoreslang' => $lp]);
+                    echo("[<a rel=\"nofollow\" href=\"compare.php?".$url_param."\">$lp</a>]");
+                }
+            }            
+            if ($showlang != 'all'){
+                $url_param = make_query(['scoreslang' => 'all']);
+                echo("[<a rel=\"nofollow\" href=\"compare.php?".$url_param."\">all</a>]");
             }
-            else{
-                $url_param = make_query(['scoreslang' => $lp]);
-                echo("[<a rel=\"nofollow\" href=\"compare.php?".$url_param."\">$lp</a>]");
-            }
+            echo('</li></ul>');
         }
-        if ($showlang != 'all'){
-            $url_param = make_query(['scoreslang' => 'all']);
-            echo("[<a rel=\"nofollow\" href=\"compare.php?".$url_param."\">all</a>]");
-        }
-        echo('</li>');
-        echo('</ul><h2>Start with a new model</h2>');
+        echo('<h2>Start with a new model</h2>');
     }
     else{
-        echo('</ul>');
         echo('<h2>Select the second model to compare with</h2>');
     }
 }
@@ -149,7 +159,7 @@ foreach ($sorted_models as $model => $release){
     $modelbase = substr($modelzip, 0, -4);
     $new_model = implode('/',[$modelpkg, $modellang, $modelbase]);
 
-    if (($model1 != 'unkown') && ($model2 == 'unknown')){
+    if (($model1 != 'unknown') && ($model2 == 'unknown')){
         if ($model1 == $new_model){
             echo("<li>$modellang/$modelbase</li>");
         }

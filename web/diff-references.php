@@ -18,7 +18,7 @@ else{
 }
 ?>
 </head>
-<body>
+<body class="f9 b9">
 <?php     
 
 
@@ -43,13 +43,13 @@ if ($model != 'all'){
         $trans = get_selected_translations($benchmark, $langpair, $model, $package, $start, $end);
 
         $query = make_query(array('model' => $model, 'pkg' => $package, 'test' => 'all'));
-        echo '<ul><li>Model: <a rel="nofollow" href="index.php?'.$query.'">'.$model.'</a></li>';
+        echo '<ul><li>Model (diff = green): <a rel="nofollow" href="index.php?'.$query.'">'.$model.'</a></li>';
         echo '<li>Test Set: '.$benchmark.'</li>';
         echo '<li>Language Pair: '.$langpair.'</li>';
         echo '<li>Diff Style: ';
         print_diffstyle_options($diffstyle);
-        echo ' (Model 1 = red, Model 2 = green)</li>';
-        echo '<li>Background: ';
+        // echo ' (Reference = red, Model = green)</li>';
+        // echo '<li>Background: ';
         print_diffbg_options($diffbg);
         echo '</li>';
         $query = make_query(['test' => $benchmark]);

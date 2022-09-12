@@ -26,14 +26,17 @@ td { padding-right:5px;padding-left:5px;vertical-align:top; }
 th { padding-right:5px;padding-left:5px;vertical-align:top; }
 
 
-#chart {float:left;}
-#scores {float:left; padding-top: 20px;}
+#info {float: top;}
+#chart {float: left;}
+#scores {float: left; padding-left: 10px;}
+#list {clear: left;}
 
 img {	-ms-interpolation-mode: bicubic; border: 0; height: auto; max-width: 100%; vertical-align: middle;}
 
 @media screen and (max-width: 844px) {
-    #chart {float:left;}
-    #scores {float:left;}
+    #chart {float: left;}
+    #scores {float: left; padding-left: 10px;}
+    #list {clear: left; padding-top: 10px;}
 }
 
 

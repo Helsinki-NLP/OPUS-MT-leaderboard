@@ -18,7 +18,7 @@ else{
 }
 ?>
 </head>
-<body>
+<body class="f9 b9">
 <?php     
 
 
@@ -56,17 +56,19 @@ if ($model1 != 'all' && $model2 != 'all'){
         $trans2 = get_selected_translations ($benchmark, $langpair, $model2, $pkg2, $start, $end);
 
         $query = make_query(array('model' => $model1, 'pkg' => $pkg1, 'test' => 'all'));
-        echo '<ul><li>Model 1: <a rel="nofollow" href="index.php?'.$query.'">'.$model1.'</a></li>';
+        echo '<ul><li>Model 1 (diff = red): <a rel="nofollow" href="index.php?'.$query.'">'.$model1.'</a></li>';
         $query = make_query(array('model' => $model2, 'pkg' => $pkg2, 'test' => 'all'));
-        echo '<li>Model 2: <a rel="nofollow" href="index.php?'.$query.'">'.$model2.'</a></li>';
+        echo '<li>Model 2 (diff = green): <a rel="nofollow" href="index.php?'.$query.'">'.$model2.'</a></li>';
         echo '<li>Test Set: '.$benchmark.'</li>';
         echo '<li>Language Pair: '.$langpair.'</li>';
         echo '<li>Diff Style: ';
         print_diffstyle_options($diffstyle);
-        echo ' (Model 1 = red, Model 2 = green)</li>';
-        echo '<li>Background: ';
         print_diffbg_options($diffbg);
+        // echo ' (Model 1 = red, Model 2 = green)</li>';
         echo '</li>';
+        // echo '<li>Background: ';
+        // print_diffbg_options($diffbg);
+        // echo '</li>';
         $query = make_query(['test' => $benchmark]);
         echo '<li><a rel="nofollow" href="compare-translations.php?'.$query.'">Show translation without highlighting difference</a></li>';
         $query = make_query(['test' => 'all']);

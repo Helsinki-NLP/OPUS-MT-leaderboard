@@ -8,9 +8,12 @@ include 'functions.php';
 // get query parameters
 $benchmark = get_param('test', 'all');
 $metric    = get_param('metric', 'bleu');
-$showlang  = get_param('scoreslang', 'all');
 $model1    = get_param('model1', 'unknown');
 $model2    = get_param('model2', 'unknown');
+
+list($srclang, $trglang, $langpair) = get_langpair();
+
+$showlang  = get_param('scoreslang', $langpair);
 
 
 if ($model1 != 'unknown'){

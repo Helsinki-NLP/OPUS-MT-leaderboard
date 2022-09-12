@@ -16,6 +16,9 @@ list($srclang, $trglang, $langpair) = get_langpair();
 
 
 $lines = read_scores($langpair, $benchmark, $metric, $model, $package);
+if ($benchmark == 'avg'){
+    $averaged_benchmarks = array_shift($lines);
+}
 
 $data = array();
 $pkg = array();
@@ -48,7 +51,20 @@ elseif ($benchmark != 'all'){
         $array = explode("\t", $line);
         array_unshift($data,$array[0]);
         $modelparts = explode('/',$array[1]);
-        array_unshift($pkg,$modelparts[count($modelparts)-3]);
+        /*
+        if (strpos($array[1],'transformer-big') !== false){
+            array_unshift($pkg,'transformer-big');
+        }
+        */
+        if (strpos($array[1],'transformer-small') !== false){
+            array_unshift($pkg,'transformer-small');
+        }
+        elseif (strpos($array[1],'transformer-tiny') !== false){
+            array_unshift($pkg,'transformer-tiny');
+        }
+        else{
+            array_unshift($pkg,$modelparts[count($modelparts)-3]);
+        }
     }
     $maxscore = end($data);
 }
@@ -59,7 +75,15 @@ else{
         $array = explode("\t", $line);
         array_push($data,$array[1]);
         $modelparts = explode('/',$array[2]);
-        array_push($pkg,$modelparts[count($modelparts)-3]);
+        if (strpos($array[1],'transformer-small') !== false){
+            array_unshift($pkg,'transformer-small');
+        }
+        elseif (strpos($array[1],'transformer-tiny') !== false){
+            array_unshift($pkg,'transformer-tiny');
+        }
+        else{
+            array_push($pkg,$modelparts[count($modelparts)-3]);
+        }
         if ( $maxscore < $array[1] ){
             $maxscore = $array[1];
         }
@@ -126,7 +150,11 @@ $gridColor = imagecolorallocate($chart, 212, 212, 212);
 $barColor = imagecolorallocate($chart, 47, 133, 217);
 
 $barColors = array('Tatoeba-MT-models' => imagecolorallocate($chart, 47, 133, 217),
-                   'OPUS-MT-models' => imagecolorallocate($chart, 217, 133, 47));
+                   'OPUS-MT-models' => imagecolorallocate($chart, 217, 133, 47),
+                   // 'transformer-small' => imagecolorallocate($chart, 133, 217, 47),
+                   'transformer-small' => imagecolorallocate($chart, 47, 196, 47),
+                   'transformer-tiny' => imagecolorallocate($chart, 47, 196, 47),
+                   'transformer-big' => imagecolorallocate($chart, 217, 47, 47));
 
 imagefill($chart, 0, 0, $backgroundColor);
 

@@ -65,13 +65,16 @@ function make_query($data){
 
 // read scores from session cache or from file
 
-function read_scores($langpair, $benchmark, $metric, $model='all', $pkg='Tatoeba-MT-models', $cache_size=10){
+function read_scores($langpair, $benchmark, $metric='bleu', $model='all', $pkg='Tatoeba-MT-models', $cache_size=10){
     
     $leaderboard_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores';
     $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
 
     if ($model != 'all'){
         $file = implode('/',[$modelhome,$model]).'.scores.txt';
+    }
+    elseif ($benchmark == 'avg'){
+        $file  = implode('/',[$leaderboard_url,$langpair,'avg-'.$metric.'-scores.txt']);
     }
     elseif ($benchmark != 'all'){
         $file  = implode('/',[$leaderboard_url,$langpair,$benchmark,$metric.'-scores.txt']);
@@ -230,6 +233,8 @@ function show_page_links($start=0, $end=9, $nr_shown=10){
             $newstart = 0;
         }
         $newend = $newstart+$end-$start;
+        $query = make_query(['start' => 0, 'end' => $nr_examples-1]);
+        echo '[<a href="'.$_SERVER['PHP_SELF'].'?'.$query.'">start</a>] ';
         $query = make_query(['start' => $newstart, 'end' => $newend]);
         echo '[<a href="'.$_SERVER['PHP_SELF'].'?'.$query.'">show previous</a>] ';
     }
@@ -247,14 +252,13 @@ function print_file_diff($file1, $file2, $diffstyle = 'wdiff'){
     
     // TODO: how safe is this?
     // TODO: ansi2html.sh should not be in this dir, should it?
-    // TODO: ansi2html.sh produces a new HTML header (things are already included above, cleanup!)
 
     echo '<div class="f9 b9"><pre>';
     if ($diffstyle == 'gitdiff'){
-        system("git diff --color-words --no-index  $file1 $file2 | ./ansi2html.sh");
+        system("git diff --color-words --no-index  $file1 $file2 | tail -n +6 | sed 's/\@\@.*\@\@//' | ./ansi2html.sh --body-only");
     }
     elseif ($diffstyle == 'diff'){
-        system("diff -u $file1 $file2 | colordiff | perl /usr/share/doc/git/contrib/diff-highlight/diff-highlight | ./ansi2html.sh --body-only");
+        system("diff -u $file1 $file2 | colordiff | perl /usr/share/doc/git/contrib/diff-highlight/diff-highlight | tail -n +4 | grep -v '\@\@.*\@\@' | ./ansi2html.sh --body-only");
     }
     else{
         system("wdiff $file1 $file2 | colordiff | perl /usr/share/doc/git/contrib/diff-highlight/diff-highlight | ./ansi2html.sh --body-only");

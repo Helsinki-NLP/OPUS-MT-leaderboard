@@ -2,16 +2,21 @@
 
 $leaderboard_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores';
 
-$testsets = file(implode('/',[$leaderboard_url,'benchmarks.txt']));
-$all_langpairs = file(implode('/',[$leaderboard_url,'langpairs.txt']));
+// $testsets = file(implode('/',[$leaderboard_url,'benchmarks.txt']));
+// $all_langpairs = file(implode('/',[$leaderboard_url,'langpairs.txt']));
 
 
 // form for selecting benchmarks and language pairs
 
 echo '<div class="header">';
 echo '<form action="'.$_SERVER['PHP_SELF'].'" method="get">';
+echo '<input type="hidden" id="model" name="model" value="all">';
+
+/*
 echo 'select benchmark: <select name="test" id="langpair" onchange="this.form.submit()">';
+echo "<option value=\"avg\">average</option>";
 echo "<option value=\"all\">all</option>";
+
 foreach ($testsets as $testset){
     list($test,$langs) = explode("\t",$testset);
     $test_url = urlencode($test);
@@ -28,15 +33,17 @@ echo '</select>';
 // get list of language pairs in this benchmark
 // get all available language pairs if no specific benchmark is seslected
 
-if (($benchmark == "all")){
+if (($benchmark == "all") || ($benchmark == "avg")){
     $langpairs = array_map('rtrim', file(implode('/',[$leaderboard_url,'langpairs.txt'])));
     unset($_GET['test']);
 }
 else{
     $langpairs = explode(' ',$testlangs);
 }
+*/
 
 
+$langpairs = array_map('rtrim', file(implode('/',[$leaderboard_url,'langpairs.txt'])));
 echo '  select language pair: <select name="langpair" id="langpair" onchange="this.form.submit()">';
 foreach ($langpairs as $l){
     if ($l == $langpair){
@@ -48,14 +55,16 @@ foreach ($langpairs as $l){
     }
 }
 echo '</select>';
-echo '  [<a href="index.php">compare scores<a/>]';
-echo '  [<a href="compare.php">compare models<a/>]';
+echo '  [<a href="index.php?session=clear">compare scores<a/>]';
+echo '  [<a href="compare.php?session=clear">compare models<a/>]';
 echo '  [<a href="releases.php">show release history<a/>]';
 echo '</form>';
 
 
 
 echo '<hr/>';
+
+/*
 if (isset($_GET['test'])){
     $langpairs = explode(' ',$testlangs);
     if (sizeof($langpairs) > 20){
@@ -124,6 +133,7 @@ if (isset($_GET['test'])){
         }
     }
 }
+*/
 echo '</div>';
 
 
