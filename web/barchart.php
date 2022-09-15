@@ -37,7 +37,8 @@ if ($model != 'all'){
                 continue;
             }
         }
-        $score = $metric == 'bleu' ? $array[3] : $array[2];
+        // $score = $metric == 'bleu' ? $array[3] : $array[2];
+        $score = $array[2];
         array_push($data,$score);
         array_push($pkg,$package);
         if ( $maxscore < $score ){

@@ -85,7 +85,7 @@ if (($model1 != 'unknown') && ($model2 != 'unknown')){
     }
     echo('</li>');
     
-    $metrics = array('bleu', 'chrf');
+    $metrics = array('bleu', 'chrf', 'comet');
     echo('<li>Evaluation Metric: ');
     foreach ($metrics as $m){
         if ($m == $metric){
@@ -295,28 +295,22 @@ function print_score_table($model1,$model2,$langpair='all',$benchmark='all', $me
         $avg2 = sprintf('%5.3f',$avg_score2);
         $diff = sprintf('%5.3f',$diff);
     }
-    echo("<tr><th></th><th></th><th>average</th><th></th><th>$avg1</th><th>$avg2</th><th>$diff</th></tr>");
 
-    if ($langpair != 'all' || $benchmark != 'all'){
-        $langlink = '';
-        $testlink = '';
-        if ($langpair != 'all'){
-            if (sizeof($common_langs) > 1){
-                $url_param = make_query(['scoreslang' => 'all']);
-                $langlink = "<a rel=\"nofollow\" href=\"compare.php?".$url_param."\">show all</a>";
-            }
-        }
-        if ($benchmark != 'all'){
-            if (sizeof($testsets) > 1){
-                $url_param = make_query(['test' => 'all']);
-                $testlink = "<a rel=\"nofollow\" href=\"compare.php?".$url_param."\">show all</a>";
-            }
-        }
-        
-        if ($langlink != '' || $testlink != ''){
-            echo("<tr><td></td><td>$langlink</td><td>$testlink</td><td></td><td></td><td></td></tr>");
+    $langlink = '';
+    $testlink = '';
+    if ($langpair != 'all'){
+        if (sizeof($common_langs) > 1){
+            $url_param = make_query(['scoreslang' => 'all']);
+            $langlink = "<a rel=\"nofollow\" href=\"compare.php?".$url_param."\">show all</a>";
         }
     }
+    if ($benchmark != 'all'){
+        if (sizeof($testsets) > 1){
+            $url_param = make_query(['test' => 'all']);
+            $testlink = "<a rel=\"nofollow\" href=\"compare.php?".$url_param."\">show all</a>";
+        }
+    }
+    echo("<tr><th></th><th>$langlink</th><th>$testlink</th><th>average</th><th>$avg1</th><th>$avg2</th><th>$diff</th></tr>");
 
     echo('</table></div></div>');
     return $common_langs;

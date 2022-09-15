@@ -43,7 +43,7 @@ if ($model != 'all'){
         $trans = get_selected_translations($benchmark, $langpair, $model, $package, $start, $end);
 
         $query = make_query(array('model' => $model, 'pkg' => $package, 'test' => 'all'));
-        echo '<ul><li>Model (diff = green): <a rel="nofollow" href="index.php?'.$query.'">'.$model.'</a></li>';
+        echo '<ul><li>Model: <a rel="nofollow" href="index.php?'.$query.'">'.$model.'</a></li>';
         echo '<li>Test Set: '.$benchmark.'</li>';
         echo '<li>Language Pair: '.$langpair.'</li>';
         echo '<li>Diff Style: ';
@@ -51,7 +51,7 @@ if ($model != 'all'){
         // echo ' (Reference = red, Model = green)</li>';
         // echo '<li>Background: ';
         print_diffbg_options($diffbg);
-        echo '</li>';
+        echo '  (reference = red, model = green)</li>';
         $query = make_query(['test' => $benchmark]);
         echo '<li><a rel="nofollow" href="translations.php?'.$query.'">Show translation without highlighting difference</a></li>';
         $query = make_query(['test' => 'all']);

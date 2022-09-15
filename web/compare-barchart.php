@@ -18,12 +18,12 @@ $showlang  = get_param('scoreslang', $langpair);
 
 if ($model1 != 'unknown'){
     list($pkg1, $lang1, $name1) = explode('/',$model1);
-    $lines1 = read_scores($langpair, 'all', 'all', implode('/',[$lang1,$name1]), $pkg1);
+    $lines1 = read_scores($langpair, 'all', $metric, implode('/',[$lang1,$name1]), $pkg1);
 }
 
 if ($model2 != 'unknown'){
     list($pkg2, $lang2, $name2) = explode('/',$model2);
-    $lines2 = read_scores($langpair, 'all', 'all', implode('/',[$lang2,$name2]), $pkg2);
+    $lines2 = read_scores($langpair, 'all', $metric, implode('/',[$lang2,$name2]), $pkg2);
 }
 
 
@@ -39,7 +39,8 @@ foreach($lines1 as $line1) {
     $array = explode("\t", $line1);
     if ($showlang == 'all' || $showlang == $array[0]){
         if ($benchmark == 'all' || $benchmark == $array[1]){
-            $score = $metric == 'bleu' ? $array[3] : $array[2];
+            // $score = $metric == 'bleu' ? $array[3] : $array[2];
+            $score = $array[2];
             $key = $array[0].'/'.$array[1];
             $scores1[$key] = $score;
             if ( $maxscore < $score ){
@@ -53,7 +54,8 @@ foreach($lines2 as $line2) {
     $array = explode("\t", $line2);
     if ($showlang == 'all' || $showlang == $array[0]){
         if ($benchmark == 'all' || $benchmark == $array[1]){
-            $score = $metric == 'bleu' ? $array[3] : $array[2];
+            // $score = $metric == 'bleu' ? $array[3] : $array[2];
+            $score = $array[2];
             $key = $array[0].'/'.$array[1];
             $scores2[$key] = $score;
             if ( $maxscore < $score ){

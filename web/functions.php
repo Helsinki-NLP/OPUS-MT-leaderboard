@@ -43,6 +43,15 @@ function get_langpair(){
     return [$srclang, $trglang, $langpair];
 }
 
+function set_langpair($langpair){
+    list($srclang,$trglang) = explode('-',$langpair);
+    $_SESSION['params']['src'] = $srclang;
+    $_SESSION['params']['trg'] = $trglang;
+    $_GET['src'] = $srclang;
+    $_GET['trg'] = $trglang;
+    $_GET['langpair'] = $langpair;
+}
+
 function make_query($data){
     if ( isset( $_COOKIE['PHPSESSID'] ) ) {
         return http_build_query($data);
@@ -71,7 +80,12 @@ function read_scores($langpair, $benchmark, $metric='bleu', $model='all', $pkg='
     $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
 
     if ($model != 'all'){
-        $file = implode('/',[$modelhome,$model]).'.scores.txt';
+        if ($metric != 'all'){
+            $file = implode('/',[$modelhome,$model]).'.'.$metric.'-scores.txt';
+        }
+        else{
+            $file = implode('/',[$modelhome,$model]).'.scores.txt';
+        }
     }
     elseif ($benchmark == 'avg'){
         $file  = implode('/',[$leaderboard_url,$langpair,'avg-'.$metric.'-scores.txt']);

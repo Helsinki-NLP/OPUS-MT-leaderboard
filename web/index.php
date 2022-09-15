@@ -28,6 +28,13 @@ $model     = get_param('model', 'all');
 
 list($srclang, $trglang, $langpair) = get_langpair();
 
+if ($showlang != 'all'){
+    if ($showlang != $langpair){
+        set_langpair($showlang);
+        list($srclang, $trglang, $langpair) = get_langpair();
+    }
+}
+
 
 
 // DEBUGGING: show parameters in session variable
@@ -44,7 +51,8 @@ include 'header.php';
 echo("<h1>OPUS-MT leaderboard</h1>");
 echo('<div id="chart">');
 
-$metrics = array('bleu', 'chrf');
+$metrics = array('bleu', 'chrf', 'comet');
+/*
 $metriclinks = array();
 foreach ($metrics as $m){
     if ($m != $metric){
@@ -52,6 +60,7 @@ foreach ($metrics as $m){
         $metriclinks[$m] = $_SERVER['PHP_SELF'].'?'.$query;
     }
 }
+*/
 
 // links to the test sets
 $testset_url = 'https://github.com/Helsinki-NLP/OPUS-MT-testsets/tree/master/testsets';
@@ -72,60 +81,85 @@ else{
 
 
 echo("<ul>");
+
+$url_param = make_query(['test' => 'all', 'model' => 'all']);
+$best_link = "<a rel=\"nofollow\" href=\"index.php?$url_param\">top models</a>";
+
 if ($model != 'all'){
     $parts = explode('/',$model);
     $modelfile = array_pop($parts);
     $modellang = array_pop($parts);
 
     $model1 = implode('/',[$package, $model]);
-    
-    $url_param = make_query(['model1' => $model1, 'model2' => 'unknown']);
-    $comparelink = "[<a rel=\"nofollow\" href=\"compare.php?". SID . '&'.$url_param."\">compare</a>]";
-    echo("<li><b>Model:</b> $modellang/$modelfile $comparelink</li>");
+
     if ($modellang == $langpair){
-        echo("<li><b>Language pair:</b> $langpair</li>");
+        echo("<li><b>Language pair:</b> $langpair [$best_link]</li>");
     }
     else{
         if ($showlang != 'all'){
             $url_param = make_query(['scoreslang' => 'all']);
-            $lang_link = "<a rel=\"nofollow\" href=\"index.php?$url_param\">all languages</a>";
-            echo("<li><b>Language pair:</b> $langpair [$lang_link]</li>");
+            $all_link = "<a rel=\"nofollow\" href=\"index.php?$url_param\">all languages</a>";
+            echo("<li><b>Language pair:</b> $langpair [$all_link][$best_link]</li>");
         }
         else{
             $url_param = make_query(['scoreslang' => $langpair]);
             $lang_link = "<a rel=\"nofollow\" href=\"index.php?$url_param\">$langpair</a>";
-            echo("<li><b>Language pair:</b> [$lang_link] all languages</li>");
+            echo("<li><b>Language pair:</b> [$lang_link] all languages [$best_link]</li>");
         }
     }
+
+    $url_param = make_query(['model1' => $model1, 'model2' => 'unknown']);
+    $comparelink = "[<a rel=\"nofollow\" href=\"compare.php?". SID . '&'.$url_param."\">compare</a>]";
+    echo("<li><b>Model:</b> $modellang/$modelfile $comparelink</li>");
+    
     if ($benchmark != 'all'){
         $url_param = make_query(['test' => 'all']);
         $test_link = "<a rel=\"nofollow\" href=\"index.php?$url_param\">all benchmarks</a>";
         echo("<li><b>Benchmark:</b> $benchmark [$test_link]</li>");
     }
+    else{
+        echo("<li><b>Benchmark:</b> all benchmarks</li>");
+    }
 }
 elseif ($benchmark != 'all'){
-    if ($benchmark == 'avg'){
-        echo("<li><b>Language pair:</b> $langpair</li>");
-    }
-    else{
+    echo("<li><b>Language pair:</b> $langpair [$best_link]</li>");
+    echo("<li><b>Model:</b> all models</li>");
+    echo("<li><b>Benchmark:</b> ");
+    if ($benchmark != 'avg'){
         $testset_srclink = "<a rel=\"nofollow\" href=\"$testset_src\">$srclang</a>";
         $testset_trglink = "<a rel=\"nofollow\" href=\"$testset_trg\">$trglang</a>";
-        echo("<li><b>Language pair:</b> $testset_srclink - $testset_trglink</li>");
+        echo($benchmark." [".$testset_srclink.'-'.$testset_trglink."]");
     }
-    echo("<li><b>Benchmark:</b> $benchmark");
+    else{
+        echo('average ');
+    }
     $url_param = make_query(['test' => 'all']);
     echo(" [<a rel=\"nofollow\" href=\"index.php?$url_param\">all benchmarks</a>]</li>");
 }
 else{
     echo("<li><b>Language pair:</b> $langpair</li>");
+    echo("<li><b>Model:</b> top models</li>");
     echo("<li><b>Benchmark:</b> $benchmark");
     $url_param = make_query(['test' => 'avg']);
     echo(" [<a rel=\"nofollow\" href=\"index.php?$url_param\">average</a>]</li>");
 }
-echo("<li><b>Metrics:</b> $metric");
+// echo("<li><b>Metrics:</b> $metric");
+echo("<li><b>Metrics:</b> ");
+foreach ($metrics as $m){
+    if ($m != $metric){
+        $query = make_query(array('metric' => $m));
+        $link = $_SERVER['PHP_SELF'].'?'.$query;
+        echo("[<a rel=\"nofollow\" href=\"$link\">$m</a>]");
+    }
+    else{
+        echo(" $metric ");
+    }
+}
+/*
 foreach ($metriclinks as $m => $l){
     echo(" | <a rel=\"nofollow\" href=\"$l\">$m</a>");
 }
+*/
 echo("</li></ul>");
 
 if ( isset( $_COOKIE['PHPSESSID'] ) ) {
@@ -160,22 +194,31 @@ echo('</div>');
 
 
 
-function print_model_scores($model,$langpair='all',$benchmark='all', $pkg='Tatoeba-MT-models',$metric='all'){
+function print_model_scores_old($model,$langpair='all',$benchmark='all', $pkg='Tatoeba-MT-models',$metric='all'){
 
     $lines = read_scores($langpair, 'all', 'all', $model, $pkg);
+
+    echo("<h3>Model Scores ($model)</h3>");
     echo('<table>');
     echo("<tr><th>ID</th><th>Language</th><th>Benchmark</th><th>Output</th><th>ChrF</th><th>BLEU</th></tr>");
     $id = 0;
     $langlinks = array();
+    $additional_languages = 0;
+    $additional_benchmarks = 0;
+    $avg1 = 0;
+    $avg2 = 0;
+    
     foreach ($lines as $line){
-        $parts = explode("\t",$line);
+        $parts = explode("\t",rtrim($line));
         if ($langpair != 'all'){
             if ($parts[0] != $langpair){
+                $additional_languages++;
                 continue;
             }
         }
         if ($benchmark != 'all'){
             if ($parts[1] != $benchmark){
+                $additional_benchmarks++;
                 continue;
             }
         }
@@ -183,8 +226,10 @@ function print_model_scores($model,$langpair='all',$benchmark='all', $pkg='Tatoe
             $langlink = $langlinks[$parts[0]];
         }
         else{            
-            $langs = explode('-',$parts[0]);
-            $query = make_query(['src' => $langs[0], 'trg' => $langs[1],'model' => 'all', 'test' => 'all']);
+            $query = make_query(['scoreslang' => $parts[0]]);
+            $langlink = "<a rel=\"nofollow\" href=\"index.php?".$url_param."\">show all</a>";
+            // $langs = explode('-',$parts[0]);
+            // $query = make_query(['src' => $langs[0], 'trg' => $langs[1],'model' => 'all', 'test' => 'all']);
             $langlink = "<a rel=\"nofollow\" href=\"index.php?$query\">$parts[0]</a>";
             $langlinks[$parts[0]] = $langlink;
         }
@@ -199,8 +244,103 @@ function print_model_scores($model,$langpair='all',$benchmark='all', $pkg='Tatoe
         $testlink = "<a rel=\"nofollow\" href=\"index.php?$url_param\">$parts[1]</a>";
 
         echo("<tr><td>$id</td><td>$langlink</td><td>$testlink</td><td>$translink, $evallink</td><td>$parts[2]</td><td>$parts[3]</td></tr>");
+        $avg1 += $parts[2];
+        $avg2 += $parts[3];
         $id++;
     }
+
+    if ($id > 0){
+        $avg1 /= $id;
+        $avg2 /= $id;
+        $avg1 = sprintf('%5.3f',$avg1);
+        $avg2 = sprintf('%4.1f',$avg2);
+    }
+        
+    $langlink = '';
+    $testlink = '';
+    if ($additional_languages > 0){
+        $url_param = make_query(['scoreslang' => 'all']);
+        $langlink = "<a rel=\"nofollow\" href=\"index.php?".$url_param."\">show all</a>";
+    }
+    if ($additional_benchmarks > 0){
+        $url_param = make_query(['test' => 'all']);
+        $testlink = "<a rel=\"nofollow\" href=\"index.php?".$url_param."\">show all</a>";
+    }
+    echo("<tr><th></th><th>$langlink</th><th>$testlink</th><th>average</th><th>$avg1</th><th>$avg2</th></tr>");    
+    echo('</table>');
+}
+
+
+function print_model_scores($model,$langpair='all',$benchmark='all', $pkg='Tatoeba-MT-models',$metric='all'){
+
+    $lines = read_scores($langpair, 'all', $metric, $model, $pkg);
+
+    echo("<h3>Model Scores ($model)</h3>");
+    echo('<table>');
+    echo("<tr><th>ID</th><th>Language</th><th>Benchmark</th><th>Output</th><th>$metric</th></tr>");
+    $id = 0;
+    $langlinks = array();
+    $additional_languages = 0;
+    $additional_benchmarks = 0;
+    $avg1 = 0;
+    $avg2 = 0;
+    
+    foreach ($lines as $line){
+        $parts = explode("\t",rtrim($line));
+        if ($langpair != 'all'){
+            if ($parts[0] != $langpair){
+                $additional_languages++;
+                continue;
+            }
+        }
+        if ($benchmark != 'all'){
+            if ($parts[1] != $benchmark){
+                $additional_benchmarks++;
+                continue;
+            }
+        }
+        if (array_key_exists($parts[0],$langlinks)){
+            $langlink = $langlinks[$parts[0]];
+        }
+        else{            
+            $query = make_query(['scoreslang' => $parts[0]]);
+            $langlink = "<a rel=\"nofollow\" href=\"index.php?".$url_param."\">show all</a>";
+            // $langs = explode('-',$parts[0]);
+            // $query = make_query(['src' => $langs[0], 'trg' => $langs[1],'model' => 'all', 'test' => 'all']);
+            $langlink = "<a rel=\"nofollow\" href=\"index.php?$query\">$parts[0]</a>";
+            $langlinks[$parts[0]] = $langlink;
+        }
+
+        $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
+        $evallink = "<a rel=\"nofollow\" href=\"$modelhome/$model.eval.zip\">download</a>";
+        
+        $url_param = make_query(['test' => $parts[1],'langpair' => $parts[0], 'start' => 0, 'end' => 9]);
+        $translink = "<a rel=\"nofollow\" href=\"translations.php?".SID.'&'.$url_param."\">show</a>";
+
+        $url_param = make_query(['test' => $parts[1]]);
+        $testlink = "<a rel=\"nofollow\" href=\"index.php?$url_param\">$parts[1]</a>";
+
+        echo("<tr><td>$id</td><td>$langlink</td><td>$testlink</td><td>$translink, $evallink</td><td>$parts[2]</td></td></tr>");
+        $avg1 += $parts[2];
+        $id++;
+    }
+
+    if ($id > 0){
+        $avg1 /= $id;
+        $avg1 = sprintf('%5.3f',$avg1);
+    }
+        
+    $langlink = '';
+    $testlink = '';
+    if ($additional_languages > 0){
+        $url_param = make_query(['scoreslang' => 'all']);
+        $langlink = "<a rel=\"nofollow\" href=\"index.php?".$url_param."\">show all</a>";
+    }
+    if ($additional_benchmarks > 0){
+        $url_param = make_query(['test' => 'all']);
+        $testlink = "<a rel=\"nofollow\" href=\"index.php?".$url_param."\">show all</a>";
+    }
+    echo("<tr><th></th><th>$langlink</th><th>$testlink</th><th>average</th><th>$avg1</th></th></tr>");    
     echo('</table>');
 }
 
@@ -212,9 +352,18 @@ function print_scores($langpair='all', $benchmark='all', $pkg='Tatoeba-MT-models
         $lines = array();
     }
     if ($benchmark == 'avg'){
-        $averaged_benchmarks = array_shift($lines);
+        $averaged_benchmarks = implode(', ',explode(' ',rtrim(array_shift($lines))));
+        echo("<h3>Model Scores (averaged over $averaged_benchmarks testsets)</h3>");
+    }
+    elseif ($benchmark == 'all'){
+        echo("<h3>Model Scores (top scores on all available benchmarks)</h3>");
+    }
+    else{
+        echo("<h3>Model Scores ($metric scores on the \"$benchmark\" testset)</h3>");
     }
     $id    = sizeof($lines);
+
+
 
     echo('<table><tr><th>ID</th>');
     if ( $benchmark == 'all'){
