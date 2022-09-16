@@ -184,26 +184,28 @@ echo("</ul></div>");
 function print_score_table($model1,$model2,$langpair='all',$benchmark='all', $metric='bleu'){
 
     list($pkg1, $lang1, $name1) = explode('/',$model1);
-    $lines1 = read_scores($langpair, 'all', 'all', implode('/',[$lang1,$name1]), $pkg1);
+    $lines1 = read_scores($langpair, 'all', $metric, implode('/',[$lang1,$name1]), $pkg1);
 
     $testsets = array();
     $langpairs = array();
     $scores1 = array();
     foreach($lines1 as $line1) {
+        // echo $line1;
         $array = explode("\t", $line1);
         $langpairs[$array[0]]++;
         $testsets[$array[1]]++;
         if ($langpair == 'all' || $langpair == $array[0]){
             if ($benchmark == 'all' || $benchmark == $array[1]){
                 $key = $array[0].'/'.$array[1];
-                $score = $metric == 'bleu' ? $array[3] : $array[2];
+                // $score = $metric == 'bleu' ? $array[3] : $array[2];
+                $score = $array[2];
                 $scores1[$key] = $score;
             }
         }
     }
 
     list($pkg2, $lang2, $name2) = explode('/',$model2);
-    $lines2 = read_scores($langpair, 'all', 'all', implode('/',[$lang2,$name2]), $pkg2);
+    $lines2 = read_scores($langpair, 'all', $metric, implode('/',[$lang2,$name2]), $pkg2);
 
     $common_langs = array();
     $common_tests = array();
@@ -219,7 +221,8 @@ function print_score_table($model1,$model2,$langpair='all',$benchmark='all', $me
         if ($langpair == 'all' || $langpair == $array[0]){
             if ($benchmark == 'all' || $benchmark == $array[1]){
                 $key = $array[0].'/'.$array[1];
-                $score = $metric == 'bleu' ? $array[3] : $array[2];
+                // $score = $metric == 'bleu' ? $array[3] : $array[2];
+                $score = $array[2];
                 $scores2[$key] = $score;
             }
         }

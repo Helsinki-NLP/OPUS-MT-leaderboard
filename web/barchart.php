@@ -16,6 +16,8 @@ list($srclang, $trglang, $langpair) = get_langpair();
 
 
 $lines = read_scores($langpair, $benchmark, $metric, $model, $package);
+$filename = get_score_filename($langpair, $benchmark, $metric, $model, $package);
+
 if ($benchmark == 'avg'){
     $averaged_benchmarks = array_shift($lines);
 }
@@ -38,7 +40,7 @@ if ($model != 'all'){
             }
         }
         // $score = $metric == 'bleu' ? $array[3] : $array[2];
-        $score = $array[2];
+        $score = (float) $array[2];
         array_push($data,$score);
         array_push($pkg,$package);
         if ( $maxscore < $score ){
@@ -51,7 +53,6 @@ elseif ($benchmark != 'all'){
     foreach($lines as $line) {
         $array = explode("\t", $line);
         array_unshift($data,$array[0]);
-        $modelparts = explode('/',$array[1]);
         /*
         if (strpos($array[1],'transformer-big') !== false){
             array_unshift($pkg,'transformer-big');
@@ -64,6 +65,7 @@ elseif ($benchmark != 'all'){
             array_unshift($pkg,'transformer-tiny');
         }
         else{
+            $modelparts = explode('/',$array[1]);
             array_unshift($pkg,$modelparts[count($modelparts)-3]);
         }
     }
@@ -75,14 +77,14 @@ else{
     foreach($lines as $line) {
         $array = explode("\t", $line);
         array_push($data,$array[1]);
-        $modelparts = explode('/',$array[2]);
-        if (strpos($array[1],'transformer-small') !== false){
+        if (strpos($array[2],'transformer-small') !== false){
             array_unshift($pkg,'transformer-small');
         }
-        elseif (strpos($array[1],'transformer-tiny') !== false){
+        elseif (strpos($array[2],'transformer-tiny') !== false){
             array_unshift($pkg,'transformer-tiny');
         }
         else{
+            $modelparts = explode('/',$array[2]);
             array_push($pkg,$modelparts[count($modelparts)-3]);
         }
         if ( $maxscore < $array[1] ){
@@ -182,6 +184,13 @@ if ($yMaxValue > 0 && $yLabelSpan > 0){
         imagettftext($chart, $fontSize, 0, $labelX, $labelY, $labelColor, $font, strval($i));
     }
 }
+
+// imagettftext($chart, $fontSize, 0, 10, 10, $labelColor, $font, $maxscore);
+$metricLabelX = ceil($gridLeft - $labelMargin);
+imagettftext($chart, $fontSize, 90, $metricLabelX, $gridTop+20, $labelColor, $font, $metric);
+imagettftext($chart, $fontSize, 0, 200, $imageHeight-20, $labelColor, $font, 'model index (see ID in table of scores)');
+
+
 
 /*
  * Draw x- and y-axis

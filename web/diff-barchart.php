@@ -47,7 +47,7 @@ foreach($lines1 as $line1) {
     if ($showlang == 'all' || $showlang == $array[0]){
         if ($benchmark == 'all' || $benchmark == $array[1]){
             // $score = $metric == 'bleu' ? $array[3] : $array[2];
-            $score = $array[2];
+            $score = (float) $array[2];
             $key = $array[0].'/'.$array[1];
             $scores1[$key] = $score;
         }
@@ -60,7 +60,7 @@ foreach($lines2 as $line2) {
     if ($showlang == 'all' || $showlang == $array[0]){
         if ($benchmark == 'all' || $benchmark == $array[1]){
             // $score = $metric == 'bleu' ? $array[3] : $array[2];
-            $score = $array[2];
+            $score = (float) $array[2];
             $key = $array[0].'/'.$array[1];
             $scores2[$key] = $score;
         }
@@ -209,6 +209,11 @@ if ($yMaxValue > 0 && $yLabelSpan > 0){
         imagettftext($chart, $fontSize, 0, $labelX, $labelY, $labelColor, $font, strval($i));
     }
 }
+
+$metricLabelX = ceil($gridLeft - $labelMargin);
+imagettftext($chart, $fontSize, 90, $metricLabelX, $gridTop, $labelColor, $font, $metric);
+imagettftext($chart, $fontSize, 0, 200, $imageHeight-20, $labelColor, $font, 'model index (see ID in table of scores)');
+
 
 /*
  * Draw x- and y-axis

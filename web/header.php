@@ -10,6 +10,7 @@ $leaderboard_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leade
 
 echo '<div class="header">';
 echo '<form action="'.$_SERVER['PHP_SELF'].'" method="get">';
+echo '<input type="hidden" id="session" name="session" value="clear">';
 echo '<input type="hidden" id="model" name="model" value="all">';
 
 /*

@@ -72,6 +72,33 @@ function make_query($data){
 
 
 
+function get_score_filename($langpair, $benchmark, $metric='bleu', $model='all', $pkg='Tatoeba-MT-models'){
+    
+    $leaderboard_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores';
+    $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
+
+    if ($model != 'all'){
+        if ($metric != 'all'){
+            $file = implode('/',[$modelhome,$model]).'.'.$metric.'-scores.txt';
+        }
+        else{
+            $file = implode('/',[$modelhome,$model]).'.scores.txt';
+        }
+    }
+    elseif ($benchmark == 'avg'){
+        $file  = implode('/',[$leaderboard_url,$langpair,'avg-'.$metric.'-scores.txt']);
+    }
+    elseif ($benchmark != 'all'){
+        $file  = implode('/',[$leaderboard_url,$langpair,$benchmark,$metric.'-scores.txt']);
+    }
+    else{
+        $file  = implode('/',[$leaderboard_url,$langpair,'top-'.$metric.'-scores.txt']);
+    }
+
+    return $file;
+    // echo $file;
+}
+
 // read scores from session cache or from file
 
 function read_scores($langpair, $benchmark, $metric='bleu', $model='all', $pkg='Tatoeba-MT-models', $cache_size=10){
