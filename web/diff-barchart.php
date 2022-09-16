@@ -232,7 +232,7 @@ $itemX = $gridLeft + $barSpacing / 2;
 foreach($data as $key => $value) {
     // Draw the bar
     $x1 = floor($itemX - $barWidth / 2);
-    $y1 = floor($gridZero - $value / $yMaxValue * $gridHeight);
+    $y1 = $yMaxValue > 0 ? floor($gridZero - $value / $yMaxValue * $gridHeight) : $gridZero;
     $x2 = floor($itemX + $barWidth / 2);
     $y2 = floor($gridZero - 1);
 
@@ -242,7 +242,7 @@ foreach($data as $key => $value) {
     $labelBox = imagettfbbox($fontSize, 0, $font, $key);
     $labelWidth = $labelBox[4] - $labelBox[0];
 
-    $labelX = $itemX - $labelWidth / 2;
+    $labelX = floor($itemX - $labelWidth / 2);
     $labelY = $gridZero + $labelMargin + $fontSize;
 
     imagettftext($chart, $fontSize, 0, $labelX, $labelY, $labelColor, $font, $key);

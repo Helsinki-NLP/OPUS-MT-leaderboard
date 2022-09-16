@@ -136,7 +136,9 @@ function read_scores($langpair, $benchmark, $metric='bleu', $model='all', $pkg='
         if (array_key_exists('scores', $_SESSION)){
             if (array_key_exists($key, $_SESSION['scores'])){
                 // echo "read scores from cached file with key $key";
-                return $_SESSION['scores'][$key];
+                if (is_array($_SESSION['scores'][$key])){
+                    return $_SESSION['scores'][$key];
+                }
             }
         }
     }
@@ -150,8 +152,10 @@ function read_scores($langpair, $benchmark, $metric='bleu', $model='all', $pkg='
     $_SESSION['cached-scores'][$key] = $file;
     $_SESSION['scores'][$key] = file($file);
     $_SESSION['next-cache-key']++;
-    return $_SESSION['scores'][$key];
-    
+    if (is_array($_SESSION['scores'][$key])){
+        return $_SESSION['scores'][$key];
+    }
+    return array();
 }
 
 
@@ -208,6 +212,17 @@ function get_translation_file_with_cache($model, $pkg='Tatoeba-MT-models', $cach
     }
 }
 
+function clear_session(){
+    if (isset($_SESSION['files'])){
+        foreach ($_SESSION['files'] as $key => $file){
+            if (file_exists($file)) {
+                // echo(".... $file ...");
+                unlink($file);
+            }
+        }
+    }
+    $_SESSION = array();
+}
 
 function get_translations ($benchmark, $langpair, $model, $pkg='Tatoeba-MT-models'){
     

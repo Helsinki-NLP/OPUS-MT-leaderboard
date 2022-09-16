@@ -11,13 +11,13 @@
 
 <?php
 
+include 'functions.php';
+
 if (isset($_GET['session'])){
     if ($_GET['session'] == 'clear'){
-        $_SESSION = array();
+        clear_session();
     }
 }
-
-include 'functions.php';
 
 // get query parameters
 $package   = get_param('pkg', 'Tatoeba-MT-models');
@@ -273,6 +273,7 @@ function print_model_scores_old($model,$langpair='all',$benchmark='all', $pkg='T
 
 function print_model_scores($model,$langpair='all',$benchmark='all', $pkg='Tatoeba-MT-models',$metric='all'){
 
+    // echo(get_score_filename($langpair, 'all', $metric, $model, $pkg));
     $lines = read_scores($langpair, 'all', $metric, $model, $pkg);
 
     echo("<h3>Model Scores ($model)</h3>");

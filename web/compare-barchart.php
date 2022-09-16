@@ -185,9 +185,10 @@ $itemX = $gridLeft + $barSpacing / 2;
 $count = 0;
 foreach($data as $key => $value) {
     // Draw the bar
-    $x1 = $itemX - $barWidth / 2;
-    $y1 = $gridBottom - $value / $yMaxValue * $gridHeight;
-    $x2 = $itemX + $barWidth / 2;
+    $x1 = floor($itemX - $barWidth / 2);
+    $y1 = $yMaxValue > 0 ? floor($gridBottom - $value / $yMaxValue * $gridHeight) : $gridBottom;
+    // $y1 = $gridBottom - $value / $yMaxValue * $gridHeight;
+    $x2 = floor($itemX + $barWidth / 2);
     $y2 = $gridBottom - 1;
 
     imagefilledrectangle($chart, $x1, $y1, $x2, $y2, $barColors[$model[$key]]);
@@ -200,7 +201,7 @@ foreach($data as $key => $value) {
         $labelBox = imagettfbbox($fontSize, 0, $font, $key);
         $labelWidth = $labelBox[4] - $labelBox[0];
 
-        $labelX = $itemX - $labelWidth / 2;
+        $labelX = floor($itemX - $labelWidth / 2);
         $labelX = $itemX;
         $labelY = $gridBottom + $labelMargin + $fontSize;
 
