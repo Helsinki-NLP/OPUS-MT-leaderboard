@@ -236,7 +236,9 @@ foreach($data as $key => $value) {
     $x2 = floor($itemX + $barWidth / 2);
     $y2 = floor($gridZero - 1);
 
-    imagefilledrectangle($chart, $x1, $y1, $x2, $y2, $barColors[$model[$key]]);
+    if ($x2 != $x1 and $y2 != $y1){
+        imagefilledrectangle($chart, $x1, $y1, $x2, $y2, $barColors[$model[$key]]);
+    }
 
     // Draw the label
     $labelBox = imagettfbbox($fontSize, 0, $font, $key);

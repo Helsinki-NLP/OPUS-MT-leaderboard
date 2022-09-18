@@ -213,8 +213,12 @@ foreach($data as $key => $value) {
     $x2 = floor($itemX + $barWidth / 2);
     $y2 = floor($gridBottom - 1);
 
-    imagefilledrectangle($chart, $x1, $y1, $x2, $y2, $barColors[$pkg[$key]]);
-
+    if ($x2 != $x1 and $y2 != $y1){
+        $modelPkg = array_key_exists($key, $pkg) ? $pkg[$key] : 'Tatoeba-MT-models';
+        $modelColor = array_key_exists($modelPkg, $barColors) ? $barColors[$modelPkg] : $barColors['Tatoeba-MT-models'];
+        imagefilledrectangle($chart, $x1, $y1, $x2, $y2, $modelColor);
+    }
+    
     // Draw the label
     $labelBox = imagettfbbox($fontSize, 0, $font, $key);
     $labelWidth = $labelBox[4] - $labelBox[0];

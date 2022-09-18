@@ -10,12 +10,6 @@
 <body>
 
 <?php
-
-if (isset($_GET['session'])){
-    if ($_GET['session'] == 'clear'){
-        $_SESSION = array();
-    }
-}
           
 include 'functions.php';
 

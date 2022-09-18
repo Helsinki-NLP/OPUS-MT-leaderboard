@@ -10,8 +10,13 @@ $leaderboard_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leade
 
 echo '<div class="header">';
 echo '<form action="'.$_SERVER['PHP_SELF'].'" method="get">';
-echo '<input type="hidden" id="session" name="session" value="clear">';
+// echo '<input type="hidden" id="session" name="session" value="clear">';
 echo '<input type="hidden" id="model" name="model" value="all">';
+echo '<input type="hidden" id="model1" name="model1" value="unknown">';
+echo '<input type="hidden" id="model2" name="model2" value="unknown">';
+echo '<input type="hidden" id="test" name="test" value="all">';
+echo '<input type="hidden" id="scoreslang" name="scoreslang" value="all">';
+
 
 /*
 echo 'select benchmark: <select name="test" id="langpair" onchange="this.form.submit()">';
@@ -56,12 +61,13 @@ foreach ($langpairs as $l){
     }
 }
 echo '</select>';
-echo '  [<a href="index.php?session=clear">compare scores<a/>]';
-echo '  [<a href="compare.php?session=clear">compare models<a/>]';
-echo '  [<a href="releases.php">show release history<a/>]';
+echo '  [<a href="index.php?session=clear">restart</a>]';
+$query = make_query(['model' => 'all', 'test' => 'all', 'scoreslang' => 'all']);
+echo '  [<a href="index.php?'.SID.'&'.$query.'">compare scores</a>]';
+$query = make_query(['model1' => 'unknown', 'model2' => 'unknown', 'test' => 'all', 'scoreslang' => 'all']);
+echo '  [<a href="compare.php?'.SID.'&'.$query.'">compare models</a>]';
+echo '  [<a href="releases.php">show release history</a>]';
 echo '</form>';
-
-
 
 echo '<hr/>';
 

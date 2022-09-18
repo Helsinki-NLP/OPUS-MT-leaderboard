@@ -1,5 +1,11 @@
 <?php
 
+if (isset($_GET['session'])){
+    if ($_GET['session'] == 'clear'){
+        clear_session();
+    }
+}
+
 function test_input($data) {
   $data = trim($data);
   $data = stripslashes($data);
@@ -150,7 +156,7 @@ function read_scores($langpair, $benchmark, $metric='bleu', $model='all', $pkg='
     $key = $_SESSION['next-cache-key'];
     // echo "save scores for $file in cache with key $key";
     $_SESSION['cached-scores'][$key] = $file;
-    $_SESSION['scores'][$key] = file($file);
+    $_SESSION['scores'][$key] = @file($file);
     $_SESSION['next-cache-key']++;
     if (is_array($_SESSION['scores'][$key])){
         return $_SESSION['scores'][$key];
@@ -335,15 +341,15 @@ function print_diffstyle_options($diffstyle='wdiff'){
     }
 }
 
-function print_diffbg_options($diffbg='light'){
-    $diffbgs    = array('light','dark');    
-    foreach ($diffbgs as $bg){
-        if ($bg == $diffbg){
-            echo '['.$bg.']';
+function print_style_options($style='light'){
+    $styles    = array('light','dark');    
+    foreach ($styles as $s){
+        if ($s == $style){
+            echo '['.$s.']';
         }
         else{
-            $query = make_query(['diffbg' => $bg]);
-            echo '[<a rel="nofollow" href="'.$_SERVER['PHP_SELF'].'?'.$query.'">'.$bg.'</a>]';
+            $query = make_query(['style' => $s]);
+            echo '[<a rel="nofollow" href="'.$_SERVER['PHP_SELF'].'?'.SID.'&'.$query.'">'.$s.'</a>]';
         }
     }
 }
