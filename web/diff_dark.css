@@ -1,3 +1,16 @@
+.b9 a:link { color: #cc0000; text-decoration: none;}
+.b9 a:visited { color: #cc0000; text-decoration: none;}
+.b9 a:active {color: #cc0000; text-decoration: none;}
+.b9 a:hover {background-color: #000000 ;color: #e8e8e8; text-decoration: none;}
+/* .b9 a:hover {background-color: #d8d8d8 ;color: #000000; text-decoration: none;} */
+
+/*
+.b9 a:link { color: #a0b0ff; text-decoration: none;}
+.b9 a:visited { color: #a0b0ff; text-decoration: none;}
+.b9 a:active {color: #a0b0ff; text-decoration: none;}
+.b9 a:hover {background-color: #d8d8ff ;color: #000000; text-decoration: none;}
+*/
+
 .ef0,.f0 { color: #000000; } .eb0,.b0 { background-color: #000000; }
 .ef1,.f1 { color: #AA0000; } .eb1,.b1 { background-color: #AA0000; }
 .ef2,.f2 { color: #00AA00; } .eb2,.b2 { background-color: #00AA00; }
@@ -274,7 +287,7 @@
 .reverse {
   /* CSS does not support swapping fg and bg colours unfortunately,
      so just hardcode something that will look OK on all backgrounds. */
-  color: #000000; background-color: #AAAAAA;
+    color: #000000; background-color: #AAAAAA;
 }
 .underline { text-decoration: underline; }
 .line-through { text-decoration: line-through; }

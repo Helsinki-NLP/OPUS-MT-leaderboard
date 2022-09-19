@@ -1,7 +1,7 @@
 <?php
 session_start();
 include 'functions.php';
-$diffbg = get_param('diffbg', 'light');
+$style = get_param('style', 'light');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -10,11 +10,11 @@ $diffbg = get_param('diffbg', 'light');
   <meta name="viewport" content="width=device-width, initial-scale=1"> 
   <link rel="stylesheet" href="index.css" type="text/css">
 <?php
-if ($diffbg == 'dark'){
-    echo '  <link rel="stylesheet" type="text/css" href="diffdark.css">'."\n";
+if ($style == 'dark'){
+    echo '  <link rel="stylesheet" type="text/css" href="diff_dark.css">'."\n";
 }
 else{
-    echo '  <link rel="stylesheet" type="text/css" href="diff.css">'."\n";
+    echo '  <link rel="stylesheet" type="text/css" href="diff_light.css">'."\n";
 }
 ?>
 </head>
@@ -22,6 +22,7 @@ else{
 <?php     
 
 
+// echo('<div class="diffheader">');
 echo("<h1>OPUS-MT Example Translations</h1>");
 
 // get query parameters
@@ -42,25 +43,20 @@ if ($model != 'all'){
 
         $trans = get_selected_translations($benchmark, $langpair, $model, $package, $start, $end);
 
-        $query = make_query(array('model' => $model, 'pkg' => $package, 'test' => 'all'));
-        echo '<ul><li>Model: <a rel="nofollow" href="index.php?'.$query.'">'.$model.'</a></li>';
-        echo '<li>Test Set: '.$benchmark.'</li>';
-        echo '<li>Language Pair: '.$langpair.'</li>';
-        echo '<li>Diff Style: ';
-        print_diffstyle_options($diffstyle);
-        // echo ' (Reference = red, Model = green)</li>';
-        // echo '<li>Background: ';
-        print_diffbg_options($diffbg);
-        echo '  (reference = red, model = green)</li>';
-        $query = make_query(['test' => $benchmark]);
-        echo '<li><a rel="nofollow" href="translations.php?'.$query.'">Show translation without highlighting difference</a></li>';
         $query = make_query(['test' => 'all']);
-        echo '<li><a rel="nofollow" href="index.php?'.$query.'">Return to score comparison</a></li>';
-        echo '</li>';
+        echo '<ul><li>Model: <a rel="nofollow" href="index.php?'.$query.'">'.$model.'</a> (model translations in green)</li>';
+        echo '<li>Test Set: '.$benchmark.' (reference translations in red)</li>';
+        echo '<li>Language Pair: '.$langpair.'</li>';
+        $query = make_query(['test' => $benchmark]);
+        echo '<li><a rel="nofollow" href="translations.php?'.SID.'&'.$query.'">Show translation without highlighting difference</a></li>';
         echo '</ul>';
-        // echo 'The following shows the <b>input sentence</b> and the differences between <b>reference translations</b> (in red) and <b>system translations</b> (green)<br/><br/>';
+        echo '<div style="float: left;">';
         show_page_links($start, $end, count($trans));
-        echo '<hr/>';
+        echo '</div><div style="float: right;">';
+        print_diffstyle_options($diffstyle);
+        print_style_options($style);
+        echo '</div><br/><hr/>';
+
         
         $reffile = tempnam(sys_get_temp_dir(),'opusmtevalentry');
         $sysfile = tempnam(sys_get_temp_dir(),'opusmtevalentry');

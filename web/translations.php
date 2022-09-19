@@ -1,4 +1,8 @@
-<?php session_start(); ?>
+<?php
+session_start();
+include 'functions.php';
+$style = get_param('style', 'light');
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
 <html>
@@ -6,12 +10,18 @@
   <title>OPUS-MT - Example Translations</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"> 
   <link rel="stylesheet" href="index.css" type="text/css">
+<?php
+if ($style == 'dark'){
+    echo '  <link rel="stylesheet" type="text/css" href="diff_dark.css">'."\n";
+}
+else{
+    echo '  <link rel="stylesheet" type="text/css" href="diff_light.css">'."\n";
+}
+?>
 </head>
-<body>
+<body class="f9 b9">
 
 <?php     
-
-include 'functions.php';
 
 echo("<h1>OPUS-MT Example Translations</h1>");
 
@@ -30,18 +40,19 @@ if ($model != 'all'){
 
         $trans = get_selected_translations($benchmark, $langpair, $model, $package, $start, $end);
 
-        $query = make_query(array('model' => $model, 'test' => 'all'));
+        $query = make_query(['test' => 'all']);
         echo '<ul><li>Model: <a rel="nofollow" href="index.php?'.$query.'">'.$model.'</a></li>';
         echo '<li>Test Set: '.$benchmark.'</li>';
         echo '<li>Language Pair: '.$langpair.'</li>';
         $query = make_query(['diff' => 'wdiff']);
         echo '<li><a rel="nofollow" href="diff-references.php?'.$query.'">Highlight difference between reference and model translation</a></li>';
-        $query = make_query(['test' => 'all']);
-        echo '<li><a rel="nofollow" href="index.php?'.$query.'">Return to score comparison</a></li>';
         echo '</ul>';
-        // echo 'The following shows blocks of three lines with <ol><li>INPUT</li><li>REFERENCE TRANSLATION</li><li>SYSTEM OUTPUT</li></ol>';
+        echo '<div style="float: left;">';
         show_page_links($start, $end, count($trans));
-        echo '<hr/>';
+        echo '</div><div style="float: right;">';
+        print_style_options($style);
+        echo '</div><br/><hr/>';
+
 
         echo '<pre>';
         $nr_examples = floor(count($trans)/4);

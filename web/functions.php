@@ -1,5 +1,11 @@
 <?php
 
+if (isset($_GET['session'])){
+    if ($_GET['session'] == 'clear'){
+        clear_session();
+    }
+}
+
 function test_input($data) {
   $data = trim($data);
   $data = stripslashes($data);
@@ -72,6 +78,33 @@ function make_query($data){
 
 
 
+function get_score_filename($langpair, $benchmark, $metric='bleu', $model='all', $pkg='Tatoeba-MT-models'){
+    
+    $leaderboard_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores';
+    $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
+
+    if ($model != 'all'){
+        if ($metric != 'all'){
+            $file = implode('/',[$modelhome,$model]).'.'.$metric.'-scores.txt';
+        }
+        else{
+            $file = implode('/',[$modelhome,$model]).'.scores.txt';
+        }
+    }
+    elseif ($benchmark == 'avg'){
+        $file  = implode('/',[$leaderboard_url,$langpair,'avg-'.$metric.'-scores.txt']);
+    }
+    elseif ($benchmark != 'all'){
+        $file  = implode('/',[$leaderboard_url,$langpair,$benchmark,$metric.'-scores.txt']);
+    }
+    else{
+        $file  = implode('/',[$leaderboard_url,$langpair,'top-'.$metric.'-scores.txt']);
+    }
+
+    return $file;
+    // echo $file;
+}
+
 // read scores from session cache or from file
 
 function read_scores($langpair, $benchmark, $metric='bleu', $model='all', $pkg='Tatoeba-MT-models', $cache_size=10){
@@ -109,7 +142,9 @@ function read_scores($langpair, $benchmark, $metric='bleu', $model='all', $pkg='
         if (array_key_exists('scores', $_SESSION)){
             if (array_key_exists($key, $_SESSION['scores'])){
                 // echo "read scores from cached file with key $key";
-                return $_SESSION['scores'][$key];
+                if (is_array($_SESSION['scores'][$key])){
+                    return $_SESSION['scores'][$key];
+                }
             }
         }
     }
@@ -121,10 +156,12 @@ function read_scores($langpair, $benchmark, $metric='bleu', $model='all', $pkg='
     $key = $_SESSION['next-cache-key'];
     // echo "save scores for $file in cache with key $key";
     $_SESSION['cached-scores'][$key] = $file;
-    $_SESSION['scores'][$key] = file($file);
+    $_SESSION['scores'][$key] = @file($file);
     $_SESSION['next-cache-key']++;
-    return $_SESSION['scores'][$key];
-    
+    if (is_array($_SESSION['scores'][$key])){
+        return $_SESSION['scores'][$key];
+    }
+    return array();
 }
 
 
@@ -181,6 +218,17 @@ function get_translation_file_with_cache($model, $pkg='Tatoeba-MT-models', $cach
     }
 }
 
+function clear_session(){
+    if (isset($_SESSION['files'])){
+        foreach ($_SESSION['files'] as $key => $file){
+            if (file_exists($file)) {
+                // echo(".... $file ...");
+                unlink($file);
+            }
+        }
+    }
+    $_SESSION = array();
+}
 
 function get_translations ($benchmark, $langpair, $model, $pkg='Tatoeba-MT-models'){
     
@@ -293,15 +341,15 @@ function print_diffstyle_options($diffstyle='wdiff'){
     }
 }
 
-function print_diffbg_options($diffbg='light'){
-    $diffbgs    = array('light','dark');    
-    foreach ($diffbgs as $bg){
-        if ($bg == $diffbg){
-            echo '['.$bg.']';
+function print_style_options($style='light'){
+    $styles    = array('light','dark');    
+    foreach ($styles as $s){
+        if ($s == $style){
+            echo '['.$s.']';
         }
         else{
-            $query = make_query(['diffbg' => $bg]);
-            echo '[<a rel="nofollow" href="'.$_SERVER['PHP_SELF'].'?'.$query.'">'.$bg.'</a>]';
+            $query = make_query(['style' => $s]);
+            echo '[<a rel="nofollow" href="'.$_SERVER['PHP_SELF'].'?'.SID.'&'.$query.'">'.$s.'</a>]';
         }
     }
 }

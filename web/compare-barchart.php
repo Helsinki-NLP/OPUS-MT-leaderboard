@@ -40,7 +40,7 @@ foreach($lines1 as $line1) {
     if ($showlang == 'all' || $showlang == $array[0]){
         if ($benchmark == 'all' || $benchmark == $array[1]){
             // $score = $metric == 'bleu' ? $array[3] : $array[2];
-            $score = $array[2];
+            $score = (float) $array[2];
             $key = $array[0].'/'.$array[1];
             $scores1[$key] = $score;
             if ( $maxscore < $score ){
@@ -55,7 +55,7 @@ foreach($lines2 as $line2) {
     if ($showlang == 'all' || $showlang == $array[0]){
         if ($benchmark == 'all' || $benchmark == $array[1]){
             // $score = $metric == 'bleu' ? $array[3] : $array[2];
-            $score = $array[2];
+            $score = (float) $array[2];
             $key = $array[0].'/'.$array[1];
             $scores2[$key] = $score;
             if ( $maxscore < $score ){
@@ -163,6 +163,11 @@ if ($yMaxValue > 0 && $yLabelSpan > 0){
     }
 }
 
+$metricLabelX = ceil($gridLeft - $labelMargin);
+imagettftext($chart, $fontSize, 90, $metricLabelX, $gridTop+20, $labelColor, $font, $metric);
+imagettftext($chart, $fontSize, 0, 200, $imageHeight-20, $labelColor, $font, 'model index (see ID in table of scores)');
+
+
 /*
  * Draw x- and y-axis
  */
@@ -180,12 +185,15 @@ $itemX = $gridLeft + $barSpacing / 2;
 $count = 0;
 foreach($data as $key => $value) {
     // Draw the bar
-    $x1 = $itemX - $barWidth / 2;
-    $y1 = $gridBottom - $value / $yMaxValue * $gridHeight;
-    $x2 = $itemX + $barWidth / 2;
+    $x1 = floor($itemX - $barWidth / 2);
+    $y1 = $yMaxValue > 0 ? floor($gridBottom - $value / $yMaxValue * $gridHeight) : $gridBottom;
+    // $y1 = $gridBottom - $value / $yMaxValue * $gridHeight;
+    $x2 = floor($itemX + $barWidth / 2);
     $y2 = $gridBottom - 1;
 
-    imagefilledrectangle($chart, $x1, $y1, $x2, $y2, $barColors[$model[$key]]);
+    if ($x2 != $x1 and $y2 != $y1){
+        imagefilledrectangle($chart, $x1, $y1, $x2, $y2, $barColors[$model[$key]]);
+    }
 
     // special for this comparison: only label every second bar
     // and adjust the ID to increment every second bar
@@ -195,7 +203,7 @@ foreach($data as $key => $value) {
         $labelBox = imagettfbbox($fontSize, 0, $font, $key);
         $labelWidth = $labelBox[4] - $labelBox[0];
 
-        $labelX = $itemX - $labelWidth / 2;
+        $labelX = floor($itemX - $labelWidth / 2);
         $labelX = $itemX;
         $labelY = $gridBottom + $labelMargin + $fontSize;
 
