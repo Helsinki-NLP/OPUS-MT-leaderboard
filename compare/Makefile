@@ -62,6 +62,8 @@ MODEL_CONTAINER = OPUS-MT-translations
 
 upload:
 	swift upload ${MODEL_CONTAINER} --changed --skip-identical *.translations.gz
+	swift post ${MODEL_CONTAINER} --read-acl ".r:*"
+
 
 link-list:
 	ls *.translations.gz | sort |\
