@@ -3,7 +3,7 @@
 # for a given metric (comet as default)
 #
 
-METRIC     ?= comet
+METRIC     ?= bleu
 
 RELEASE_PACKAGE = Tatoeba-MT-models
 STORAGE_HOME    = https://object.pouta.csc.fi/${RELEASE_PACKAGE}
@@ -15,9 +15,11 @@ LANGPAIR   ?= eng-deu
 SCOREFILES := $(wildcard ../scores/${LANGPAIR}/*/${METRIC}-scores.txt)
 BENCHMARKS := $(patsubst ../scores/${LANGPAIR}/%/${METRIC}-scores.txt,%,${SCOREFILES})
 
+ifneq (${SCOREFILES},)
+  MODELS_ZIP     := $(sort $(shell cut -f2 ${SCOREFILES}))
+  MODELS_EVALDIR := $(patsubst %.zip,${LANGPAIR}/%.eval.d,$(notdir ${MODELS_ZIP}))
+endif
 
-MODELS_ZIP     := $(sort $(shell cut -f2 ${SCOREFILES}))
-MODELS_EVALDIR := $(patsubst %.zip,${LANGPAIR}/%.eval.d,$(notdir ${MODELS_ZIP}))
 
 
 .PHONY: all
@@ -54,3 +56,14 @@ cleanup:
 	${MAKE} LANGPAIR=$(@:.translations.gz=) fetch
 	./merge-translations.pl $(@:.translations.gz=)/*/*.compare | gzip -c > $@
 	${MAKE} LANGPAIR=$(@:.translations.gz=) cleanup
+
+
+MODEL_CONTAINER = OPUS-MT-translations
+
+upload:
+	swift upload ${MODEL_CONTAINER} --changed --skip-identical *.translations.gz
+
+link-list:
+	ls *.translations.gz | sort |\
+	sed 's#^\(.*\)$$#* [\1](https://object.pouta.csc.fi/${MODEL_CONTAINER}/\1)/#'
+
