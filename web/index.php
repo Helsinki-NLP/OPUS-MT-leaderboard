@@ -45,7 +45,6 @@ include 'header.php';
 echo("<h1>OPUS-MT leaderboard</h1>");
 echo('<div id="chart">');
 
-$metrics = array('bleu', 'chrf', 'comet');
 
 // links to the test sets
 $testset_url = 'https://github.com/Helsinki-NLP/OPUS-MT-testsets/tree/master/testsets';
@@ -95,7 +94,7 @@ if ($model != 'all'){
 
     $url_param = make_query(['model1' => $model1, 'model2' => 'unknown']);
     $comparelink = "[<a rel=\"nofollow\" href=\"compare.php?". SID . '&'.$url_param."\">compare</a>]";
-    $modelhome = 'https://object.pouta.csc.fi/'.$package;
+    $modelhome = $storage_url.$package;
     $downloadlink = "<a rel=\"nofollow\" href=\"$modelhome/$model.zip\">$modellang/$modelfile</a>";
     echo("<li><b>Model:</b> $downloadlink $comparelink</li>");
     
@@ -131,16 +130,7 @@ else{
     echo(" [<a rel=\"nofollow\" href=\"index.php?$url_param\">average</a>]</li>");
 }
 echo("<li><b>Metrics:</b> ");
-foreach ($metrics as $m){
-    if ($m != $metric){
-        $query = make_query(array('metric' => $m));
-        $link = $_SERVER['PHP_SELF'].'?'.$query;
-        echo("[<a rel=\"nofollow\" href=\"$link\">$m</a>]");
-    }
-    else{
-        echo(" $metric ");
-    }
-}
+print_metric_options($metric);
 echo("</li></ul>");
 
 if ( isset( $_COOKIE['PHPSESSID'] ) ) {
@@ -174,6 +164,7 @@ echo('</div>');
 
 
 function print_model_scores($model,$langpair='all',$benchmark='all', $pkg='Tatoeba-MT-models',$metric='all'){
+    global $storage_url;
 
     // echo(get_score_filename($langpair, 'all', $metric, $model, $pkg));
     $lines = read_scores($langpair, 'all', $metric, $model, $pkg);
@@ -211,7 +202,7 @@ function print_model_scores($model,$langpair='all',$benchmark='all', $pkg='Tatoe
             $langlinks[$parts[0]] = $langlink;
         }
 
-        $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
+        $modelhome = $storage_url.$pkg;
         $evallink = "<a rel=\"nofollow\" href=\"$modelhome/$model.eval.zip\">download</a>";
         
         $url_param = make_query(['test' => $parts[1],'langpair' => $parts[0], 'start' => 0, 'end' => 9]);

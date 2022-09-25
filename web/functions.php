@@ -6,6 +6,16 @@ if (isset($_GET['session'])){
     }
 }
 
+
+
+$scores_url  = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores';
+$storage_url = 'https://object.pouta.csc.fi/';
+
+// $evaluation_metrics = array('bleu', 'chrf');
+$evaluation_metrics = array('bleu', 'chrf', 'comet');
+
+
+
 function test_input($data) {
   $data = trim($data);
   $data = stripslashes($data);
@@ -79,9 +89,8 @@ function make_query($data){
 
 
 function get_score_filename($langpair, $benchmark, $metric='bleu', $model='all', $pkg='Tatoeba-MT-models'){
-    
-    $leaderboard_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores';
-    $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
+    global $scores_url, $storage_url;
+    $modelhome = $storage_url.$pkg;
 
     if ($model != 'all'){
         if ($metric != 'all'){
@@ -92,25 +101,23 @@ function get_score_filename($langpair, $benchmark, $metric='bleu', $model='all',
         }
     }
     elseif ($benchmark == 'avg'){
-        $file  = implode('/',[$leaderboard_url,$langpair,'avg-'.$metric.'-scores.txt']);
+        $file  = implode('/',[$scores_url,$langpair,'avg-'.$metric.'-scores.txt']);
     }
     elseif ($benchmark != 'all'){
-        $file  = implode('/',[$leaderboard_url,$langpair,$benchmark,$metric.'-scores.txt']);
+        $file  = implode('/',[$scores_url,$langpair,$benchmark,$metric.'-scores.txt']);
     }
     else{
-        $file  = implode('/',[$leaderboard_url,$langpair,'top-'.$metric.'-scores.txt']);
+        $file  = implode('/',[$scores_url,$langpair,'top-'.$metric.'-scores.txt']);
     }
 
     return $file;
-    // echo $file;
 }
 
 // read scores from session cache or from file
 
 function read_scores($langpair, $benchmark, $metric='bleu', $model='all', $pkg='Tatoeba-MT-models', $cache_size=10){
-    
-    $leaderboard_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores';
-    $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
+    global $scores_url, $storage_url;
+    $modelhome = $storage_url.$pkg;
 
     if ($model != 'all'){
         if ($metric != 'all'){
@@ -121,13 +128,13 @@ function read_scores($langpair, $benchmark, $metric='bleu', $model='all', $pkg='
         }
     }
     elseif ($benchmark == 'avg'){
-        $file  = implode('/',[$leaderboard_url,$langpair,'avg-'.$metric.'-scores.txt']);
+        $file  = implode('/',[$scores_url,$langpair,'avg-'.$metric.'-scores.txt']);
     }
     elseif ($benchmark != 'all'){
-        $file  = implode('/',[$leaderboard_url,$langpair,$benchmark,$metric.'-scores.txt']);
+        $file  = implode('/',[$scores_url,$langpair,$benchmark,$metric.'-scores.txt']);
     }
     else{
-        $file  = implode('/',[$leaderboard_url,$langpair,'top-'.$metric.'-scores.txt']);
+        $file  = implode('/',[$scores_url,$langpair,'top-'.$metric.'-scores.txt']);
     }
 
     // echo $file;
@@ -168,7 +175,8 @@ function read_scores($langpair, $benchmark, $metric='bleu', $model='all', $pkg='
 // fetch the file with all benchmark translations for a specific model
 
 function get_translation_file($model, $pkg='Tatoeba-MT-models'){
-    $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
+    global $storage_url;
+    $modelhome = $storage_url.$pkg;
     $file = implode('/',[$modelhome,$model]).'.eval.zip';
 
     $tmpfile = tempnam(sys_get_temp_dir(),'opusmteval');
@@ -182,8 +190,8 @@ function get_translation_file($model, $pkg='Tatoeba-MT-models'){
 // of them without reloading them
 
 function get_translation_file_with_cache($model, $pkg='Tatoeba-MT-models', $cache_size=10){
-
-    $modelhome = 'https://object.pouta.csc.fi/'.$pkg;
+    global $storage_url;
+    $modelhome = $storage_url.$pkg;
     $file = implode('/',[$modelhome,$model]).'.eval.zip';
     
     if (! array_key_exists('cached-files', $_SESSION)){
@@ -326,6 +334,20 @@ function print_file_diff($file1, $file2, $diffstyle = 'wdiff'){
         system("wdiff $file1 $file2 | colordiff | perl /usr/share/doc/git/contrib/diff-highlight/diff-highlight | ./ansi2html.sh --body-only");
     }
     echo '</pre></div>';
+}
+
+function print_metric_options($selected_metric='bleu'){
+    global $evaluation_metrics;
+    foreach ($evaluation_metrics as $m){
+        if ($m == $selected_metric){
+            echo(" $m ");
+        }
+        else{
+            $query = make_query(array('metric' => $m));
+            $link = $_SERVER['PHP_SELF'].'?'.$query;
+            echo("[<a rel=\"nofollow\" href=\"$link\">$m</a>]");
+        }
+    }
 }
 
 function print_diffstyle_options($diffstyle='wdiff'){

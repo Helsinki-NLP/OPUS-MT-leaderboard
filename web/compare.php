@@ -79,17 +79,8 @@ if (($model1 != 'unknown') && ($model2 != 'unknown')){
     }
     echo('</li>');
     
-    $metrics = array('bleu', 'chrf', 'comet');
     echo('<li>Evaluation Metric: ');
-    foreach ($metrics as $m){
-        if ($m == $metric){
-            echo("[$m]");
-        }
-        else{
-            $url_param = make_query(['metric' => $m]);
-            echo("[<a rel=\"nofollow\" href=\"compare.php?".$url_param."\">$m</a>]");
-        }
-    }
+    print_metric_options($metric);
     echo('</li></ul></div><div id="scores">');    
     $langpairs = print_score_table($model1,$model2,$showlang,$benchmark, $metric);
     echo('</div>');
@@ -98,8 +89,7 @@ if (($model1 != 'unknown') && ($model2 != 'unknown')){
 
 
 // TODO: do we also want to cache model lists in the SESSION variable?
-$leaderboard_url = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master/scores';
-$models = file(implode('/',[$leaderboard_url,$langpair,'model-list.txt']));
+$models = file(implode('/',[$scores_url,$langpair,'model-list.txt']));
 
 
 if ($model1 != 'unknown'){

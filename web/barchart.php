@@ -78,10 +78,10 @@ else{
         $array = explode("\t", $line);
         array_push($data,$array[1]);
         if (strpos($array[2],'transformer-small') !== false){
-            array_unshift($pkg,'transformer-small');
+            array_push($pkg,'transformer-small');
         }
         elseif (strpos($array[2],'transformer-tiny') !== false){
-            array_unshift($pkg,'transformer-tiny');
+            array_push($pkg,'transformer-tiny');
         }
         else{
             $modelparts = explode('/',$array[2]);
