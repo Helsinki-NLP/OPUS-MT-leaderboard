@@ -1,12 +1,38 @@
 
 
-LANGPAIRS = ${notdir $(wildcard scores/*-*)}
-LANGPAIR  = deu-eng
-BLEUFILES = ${sort ${wildcard scores/${LANGPAIR}/*/bleu-scores.txt}}
-CHRFFILES = ${sort ${wildcard scores/${LANGPAIR}/*/chrf-scores.txt}}
-COMETFILES = ${sort ${wildcard scores/${LANGPAIR}/*/comet-scores.txt}}
+## all language pairs and all evaluation metrics
 
+LANGPAIRS  := ${notdir $(wildcard scores/*-*)}
+METRICS    := bleu spbleu chrf chrf++ comet
+
+
+## default language pair and metric
+
+LANGPAIR   ?= deu-eng
+METRIC     ?= $(firstword ${METRICS})
+
+
+## all score files for the selected metric
+
+METRICFILES = ${sort ${wildcard scores/${LANGPAIR}/*/${METRIC}-scores.txt}}
+
+
+## UPDATE_SCORE_DIRS   = directory that contains new scores
+## UPDATE_LEADERBOARDS = list of leader boards that need to be updated
+##    (for all language pairs if UPDATE_ALL_LEADERBOARDS is set)
+##    (for the selected LANGPAIR otherwise)
+
+ifdef UPDATE_ALL_LEADERBOARDS
+  UPDATE_SCORE_DIRS := $(sort $(dir ${wildcard scores/*/*/*.unsorted.txt}))
+else
+  UPDATE_SCORE_DIRS := $(sort $(dir ${wildcard scores/${LANGPAIR}/*/*.unsorted.txt}))
+endif
+UPDATE_LEADERBOARDS := $(foreach m,${METRICS},$(patsubst %,%$(m)-scores.txt,${UPDATE_SCORE_DIRS}))
+
+
+.PHONY: all
 all: released-models.txt release-history.txt
+	${MAKE} sort-updated-leaderboards
 	${MAKE} all-langpair-scores
 	find scores/ -name '*.txt' | xargs git add
 
@@ -40,6 +66,23 @@ all-model-lists:
 	  ${MAKE} -s LANGPAIR=$$l model-list; \
 	done
 
+
+
+.PHONY: update-leaderboards
+update-leaderboards:  ${UPDATE_LEADERBOARDS}
+
+.PHONY: update-all-leaderboards
+update-all-leaderboards:
+	@for l in ${LANGPAIRS}; do \
+	  ${MAKE} -s LANGPAIR=$$l update-leaderboards; \
+	done
+
+.PHONY: sort-updated-leaderboards
+sort-updated-leaderboards:
+	${MAKE} UPDATE_ALL_LEADERBOARDS=1 update-leaderboards
+
+
+
 released-models.txt: scores
 	find scores/ -name 'bleu-scores.txt' | xargs cat | cut -f2 | sort -u > $@
 
@@ -54,17 +97,24 @@ release-history.txt: released-models.txt
 .PHONY: model-list
 model-list: scores/${LANGPAIR}/model-list.txt
 
-scores/${LANGPAIR}/model-list.txt: ${BLEUFILES}
+scores/${LANGPAIR}/model-list.txt: ${METRICFILES}
 	find ${dir $@} -name 'bleu-scores.txt' | xargs cut -f2 | sort -u > $@
 
-.PHONY: top-scores
-top-scores: scores/${LANGPAIR}/top-bleu-scores.txt scores/${LANGPAIR}/top-chrf-scores.txt scores/${LANGPAIR}/top-comet-scores.txt
+.PHONY: top-score-file top-scores
+top-score-file: scores/${LANGPAIR}/top-${METRIC}-scores.txt
+top-scores:
+	@for m in ${METRICS}; do \
+	  ${MAKE} -s METRIC=$$m top-score-file; \
+	done
 
-.PHONY: avg-scores
-avg-scores: scores/${LANGPAIR}/avg-bleu-scores.txt scores/${LANGPAIR}/avg-chrf-scores.txt scores/${LANGPAIR}/avg-comet-scores.txt
+.PHONY: avg-score-file avg-scores
+avg-score-file: scores/${LANGPAIR}/avg-${METRIC}-scores.txt
+avg-scores:
+	@for m in ${METRICS}; do \
+	  ${MAKE} -s METRIC=$$m avg-score-file; \
+	done
 
-
-scores/${LANGPAIR}/top-bleu-scores.txt: ${BLEUFILES}
+scores/${LANGPAIR}/top-${METRIC}-scores.txt: ${METRICFILES}
 	@rm -f $@
 	@for f in $^; do \
 	  if [ -s $$f ]; then \
@@ -74,31 +124,29 @@ scores/${LANGPAIR}/top-bleu-scores.txt: ${BLEUFILES}
 	  fi \
 	done
 
-scores/${LANGPAIR}/top-chrf-scores.txt: ${CHRFFILES}
-	@rm -f $@
-	@for f in $^; do \
-	  if [ -s $$f ]; then \
-	    t=`echo $$f | cut -f3 -d/`; \
-	    echo -n "$$t	" >> $@; \
-	    head -1 $$f     >> $@; \
-	  fi \
-	done
-
-scores/${LANGPAIR}/top-comet-scores.txt: ${COMETFILES}
-	@rm -f $@
-	@for f in $^; do \
-	  if [ -s $$f ]; then \
-	    t=`echo $$f | cut -f3 -d/`; \
-	    echo -n "$$t	" >> $@; \
-	    head -1 $$f     >> $@; \
-	  fi \
-	done
-
-scores/${LANGPAIR}/avg-bleu-scores.txt: ${BLEUFILES}
+scores/${LANGPAIR}/avg-${METRIC}-scores.txt: ${METRICFILES}
 	scripts/average-scores.pl $^ > $@
 
-scores/${LANGPAIR}/avg-chrf-scores.txt: ${CHRFFILES}
-	scripts/average-scores.pl $^ > $@
+${UPDATE_LEADERBOARDS}: ${UPDATE_SCORE_DIRS}
+	@if [ -e $@ ]; then \
+	  if [ $(words $(wildcard ${@:.txt=}*.unsorted.txt)) -gt 0 ]; then \
+	    echo "merge and sort ${patsubst scores/%,%,$@}"; \
+	    sort -k2,2 -k1,1nr $@                           > $@.old.txt; \
+	    cat $(wildcard ${@:.txt=}*.unsorted.txt) | \
+	    grep '^[0-9\-]' | sort -k2,2 -k1,1nr            > $@.new.txt; \
+	    sort -m $@.new.txt $@.old.txt |\
+	    uniq -f1 | sort -k1,1nr -u                      > $@.sorted; \
+	    rm -f $@.old.txt $@.new.txt; \
+	    rm -f $(wildcard ${@:.txt=}*.unsorted.txt); \
+	    mv $@.sorted $@; \
+	  fi; \
+	else \
+	  if [ $(words $(wildcard ${@:.txt=}*.txt)) -gt 0 ]; then \
+	    echo "merge and sort ${patsubst scores/%,%,$@}"; \
+	    cat $(wildcard ${@:.txt=}*.txt) | grep '^[0-9\-]' |\
+	    sort -k2,2 -k1,1nr | uniq -f1 | sort -k1,1nr -u > $@.sorted; \
+	    rm -f $(wildcard ${@:.txt=}*.txt); \
+	    mv $@.sorted $@; \
+	  fi; \
+	fi
 
-scores/${LANGPAIR}/avg-comet-scores.txt: ${COMETFILES}
-	scripts/average-scores.pl $^ > $@
