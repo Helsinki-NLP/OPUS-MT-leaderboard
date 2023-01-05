@@ -12,7 +12,8 @@ $scores_url  = 'https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboa
 $storage_url = 'https://object.pouta.csc.fi/';
 
 // $evaluation_metrics = array('bleu', 'chrf');
-$evaluation_metrics = array('bleu', 'chrf', 'comet');
+// $evaluation_metrics = array('bleu', 'chrf', 'comet');
+$evaluation_metrics = array('bleu', 'spbleu', 'chrf', 'chrf++', 'comet');
 
 
 

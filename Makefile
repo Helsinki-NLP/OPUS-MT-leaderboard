@@ -2,7 +2,7 @@
 
 ## all language pairs and all evaluation metrics
 
-LANGPAIRS  := ${notdir $(wildcard scores/*-*)}
+LANGPAIRS  := $(sort $(notdir $(wildcard scores/*-*)))
 METRICS    := bleu spbleu chrf chrf++ comet
 
 
