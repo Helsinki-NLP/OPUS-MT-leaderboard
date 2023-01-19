@@ -3,16 +3,19 @@
 
 A repository of scores and leaderboard for MT models and benchmarks.
 
+* model scores and evaluation recipes in sub-directory `models`
+* leaderboards per benchmark in sub-directory `scores`
+* [recipes for model evaluation](models/)
+
+
 ![example barchart](img/barchart_medium.png)
 
 The [live leaderboard](https://opus.nlpl.eu/leaderboard/) is available at https://opus.nlpl.eu/leaderboard/
 
-* model scores in sub directory `models`
-* leaderboards per benchmark in sub-directory `scores`
 
 
 
-## Benchmark Leaderboards
+## Leaderboards
 
 The `scores` directory includes leaderboards for each evaluated benchmark in [OPUS-MT-testsets](https://github.com/Helsinki-NLP/OPUS-MT-testsets/). The benchmark-specific leaderboards are stored as plain text files with TAB-separated values using the following file structure:
 
@@ -34,7 +37,7 @@ scores/deu-ukr/top-chrf-scores.txt
 scores/deu-ukr/top-comet-scores.txt
 ```
 
-### Leaderboard File Formats
+### File Formats
 
 All leaderboard files follow a very simple format with two TAB-separated values and rows sorted by score. The columns are:
 
@@ -83,7 +86,7 @@ flores tatoeba
 
 
 
-## MT Model Scores
+## Model Scores
 
 
 The repository includes recipes for evaluating MT models and scores coming from systematically running MT benchmarks. 
@@ -120,7 +123,7 @@ Note that chrF scores should for historical reasons be with decimals and not in 
 
 
 
-### Model Score File Format
+### File Formats
 
 Each model score file for each specific evaluation metric follows a very simple format: The file is a plain text file with TAB-separated values in three columns specifying
 
