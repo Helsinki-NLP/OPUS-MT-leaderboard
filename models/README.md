@@ -5,6 +5,34 @@ The repository comes with recipes for evaluating MT models. For example, the `mo
 
 TODO: add documentation for the opusTC evaluation recipes
 
+## opus
+
+## opusTC
+
+
+Recipes for opusTC model evaluation. Make sure to change to the `opusTC` directory (`cd models/opusTC`).
+Run all necessary evaluations for all released opusTC models (or run in reverse order):
+
+```
+make all
+make all-reverse
+```
+
+Submit SLURM jobs for the same targets:
+
+```
+make all.submit
+make all-reverse.submit
+```
+
+
+Find models for which some evaluation is missing and then run the evaluation for those.
+
+```
+make find-missing
+make all.submit
+```
+
 
 ## Adding model evaluation recipes
 

@@ -21,7 +21,7 @@ endif
 ## (most of them relate to CPU resources like MEM, CORES, ...)
 ## typically we model single node jobs, which can still have multiple GPUs!
 GPUJOB_HPC_QUEUE   ?= ${HPC_GPUQUEUE}
-GPUJOB_HPC_MEM     ?= 8g
+GPUJOB_HPC_MEM     ?= 32g
 GPUJOB_HPC_NODES   ?= 1
 GPUJOB_HPC_CORES   ?= 1
 GPUJOB_HPC_THREADS ?= ${GPUJOB_HPC_CORES}

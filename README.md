@@ -25,7 +25,7 @@ scores/src-trg/benchmark/metric-scores.txt
 
 `src` and `trg` correspond to the language pair, `benchmark` is the name of the benchmark and `metric` is the name of evaluation metric such as bleu, chrf or comet. The file names and structure corresponds to the benchmark files in [OPUS-MT-testsets](https://github.com/Helsinki-NLP/OPUS-MT-testsets). 
 
-Furthermore, we also keep lists of the top-scoring models per benchmark for each language pair and a list of model score averages aggregated over selected benchmarks for each language pair. There are separate lists for each evaluation metric. For example, for German - Ukrainian, there are score files like
+Furthermore, we also keep lists of the top-scoring models per benchmark for each language pair and a list of model score averages aggregated over selected benchmarks for each language pair. There are separate lists for each evaluation metric. For example, for [German - Ukrainian](scores/deu-ukr), there are score files like
 
 ```
 scores/deu-ukr/avg-bleu-scores.txt
@@ -44,7 +44,7 @@ All leaderboard files follow a very simple format with two TAB-separated values 
 * the actual score
 * the download link of the model
 
-For example, the BLEU-score leaderboard for the Flores200 devtest benchmark in German-Ukrainian is stored in `scores/deu-ukr/flores200-devtest/bleu-scores.txt` and includes lines like:
+For example, the BLEU-score leaderboard for the Flores200 devtest benchmark in German-Ukrainian is stored in [scores/deu-ukr/flores200-devtest/bleu-scores.txt](scores/deu-ukr/flores200-devtest/bleu-scores.txt) and includes lines like:
 
 ```
 24.2	https://object.pouta.csc.fi/Tatoeba-MT-models/deu-zle/opusTCv20210807_transformer-big_2022-03-23.zip
@@ -61,7 +61,7 @@ The best performaning models for each benchmark for a given language pair are li
 * the top score among all models
 * the download link for the top-scoring model
 
-To give an example, the top BLEU score for German-Ukrainian benchmarks is stored in `deu-ukr/top-bleu-scores.txt` with lines like:
+To give an example, the top BLEU score for German-Ukrainian benchmarks is stored in [scores/deu-ukr/top-bleu-scores.txt](scores/deu-ukr/top-bleu-scores.txt) with lines like:
 
 
 ```
@@ -71,7 +71,7 @@ tatoeba-test-v2021-08-07	40.8	https://object.pouta.csc.fi/Tatoeba-MT-models/deu-
 ```
 
 
-To make it easier to compare model performance, we also keep model lists sorted by scores averaged over a selected number of benchmarks. Those files start with a line that list the selected benchmarks used for computing the score and the following lines follow the standard leaderboard file format with TAB-separated values for the (averaged score and the download link of the model. For example, `deu-ukr/avg-bleu-scores.txt` starts like this:
+To make it easier to compare model performance, we also keep model lists sorted by scores averaged over a selected number of benchmarks. Those files start with a line that list the selected benchmarks used for computing the score and the following lines follow the standard leaderboard file format with TAB-separated values for the (averaged score and the download link of the model. For example, [scores/deu-ukr/avg-bleu-scores.txt](scores/deu-ukr/avg-bleu-scores.txt) starts like this:
 
 
 ```
@@ -102,11 +102,11 @@ opusTC
 The structure corresponds to the repository of OPUS-MT models with separate tables for different evaluation metrics (like BLEU, chrF and COMET):
 
 ```
-src-trg/model-release-name.bleu-scores.txt
-src-trg/model-release-name.spbleu-scores.txt
-src-trg/model-release-name.chrf-scores.txt
-src-trg/model-release-name.chrf++-scores.txt
-src-trg/model-release-name.comet-scores.txt
+opusTC/src-trg/model-release-name.bleu-scores.txt
+opusTC/src-trg/model-release-name.spbleu-scores.txt
+opusTC/src-trg/model-release-name.chrf-scores.txt
+opusTC/src-trg/model-release-name.chrf++-scores.txt
+opusTC/src-trg/model-release-name.comet-scores.txt
 ```
 
 `src` and `trg` typically correspond to source and target language identifiers but may also refer to sets of languages or other characteristics of the model (for example, `gmw` for Western Germanic languages or `de+en+sv` for specific language combinations). The `model-release-name` corresponds to the release name of the model.
@@ -114,7 +114,7 @@ src-trg/model-release-name.comet-scores.txt
 There is also another file that combines BLEU and chrF scores together with some other information about the test set and the model (see further down below).
 
 ```
-src-trg/model-release-name.scores.txt
+opusTC/src-trg/model-release-name.scores.txt
 ```
 
 Additional metrics can be added using the same format replacing `metric` in `src-trg/model-release-name.metric-scores.txt` with a descriptive unique name of the metric.
@@ -127,11 +127,11 @@ Note that chrF scores should for historical reasons be with decimals and not in 
 
 Each model score file for each specific evaluation metric follows a very simple format: The file is a plain text file with TAB-separated values in three columns specifying
 
-* the language pair of the benchmark (e.g. 'deu-ukr')
+* the language pair of the benchmark (e.g. `deu-ukr`)
 * the name of the benchmark (e.g. `flores200-devtest`)
 * the score
 
-As an example, the German - Eastern Slavic languages model `opusTC/deu-zle/opusTCv20210807_transformer-big_2022-03-19.bleu-scores.txt` includes the following lines:
+As an example, the German - Eastern Slavic languages model [models/opusTC/deu-zle/opusTCv20210807_transformer-big_2022-03-19.bleu-scores.txt](models/opusTC/deu-zle/opusTCv20210807_transformer-big_2022-03-19.bleu-scores.txt) includes the following lines:
 
 ```
 deu-bel	flores200-devtest	9.6
@@ -147,7 +147,7 @@ The only file that differs from this general format is the `src-trg/model-releas
 * the size of the benchmark in terms of the number of sentences
 * the size of the benchmark in terms of the number of tokens
 
-Here is an example from `opusTC/deu-zle/opusTCv20210807_transformer-big_2022-03-19.scores.txt`:
+Here is an example from [models/opusTC/deu-zle/opusTCv20210807_transformer-big_2022-03-19.scores.txt](models/opusTC/deu-zle/opusTCv20210807_transformer-big_2022-03-19.scores.txt):
 
 ```
 deu-bel	flores101-devtest	0.38804	9.6	https://object.pouta.csc.fi/Tatoeba-MT-models/deu-zle/opusTCv20210807_transformer-big_2022-03-19.zip	1012	24829
@@ -155,36 +155,3 @@ deu-ukr	flores200-devtest	0.53137	24.0	https://object.pouta.csc.fi/Tatoeba-MT-mo
 deu-ukr	tatoeba-test-v2021-08-07	0.62852	40.8	https://object.pouta.csc.fi/Tatoeba-MT-models/deu-zle/opusTCv20210807_transformer-big_2022-03-19.zip	10319	56287
 ```
 
-
-### Model Evaluation
-
-The repository also comes with recipes for evaluating MT models. For example, the `models/opusTC` sub directory includes makefile recipes for systematically testing released OPUS-MT models that use the Tatoeba translation challenge data. You can add new recipes for additional model types by creating a new sub directory in this folder and implementing the scripts that are necessary to create all necessary files for registering the benchmark results.
-
-When evaluating a model you need to create or update all relevant model score files in the same format as specified above. Additionally, you should place the new results in the language score directory to be registered in the leaderboards of individual benchmarks.
-
-In order to avoid any conflicts the procedure is to first produce temporary files that list new scores to be registered and sorted into the benchmark leaderboards. In order to use the existing recipes for updating and sorting those files you need to place the scores in files that use the following naming conventions:
-
-```
-scores/src-trg/benchmark/metric-scores.modelname.unsorted.txt
-```
-
-The format follows the same TAB-separated plain text format with 2 columns as we use for general benchmark leaderboards. `modelname` can refer to any string that gives the file a unique name to allow several new scores to be registered for the same benchmark and language pair.
-
-The top-level makefile implements recipes that can be used to update and sort leaderboards for wich unsorted new scores are listed in the repository. It is possible to update only the tables for a selected language pair, to run through all language pairs or update all leaderboards for which unsorted files are found (`refresh-leaderboards`).
-
-```
-make LANGPAIR=deu-ukr update-leaderboards   # update leaderboards for deu-ukr
-make update-all-leaderboards                # run through all language pairs and update
-make refresh-leaderboards                   # refresh all leaderboards that require updates
-```
-
-
-Top-score files and average score files can also be updated using the high-level makefile recipes. Similar to above, specific language pairs can be selected or all language pairs can be updated.
-
-```
-make LANGPAIR=deu-ukr top-scores
-make LANGPAIR=deu-ukr avg-scores
-
-make all-top-scores
-make all-avg-scores
-```
