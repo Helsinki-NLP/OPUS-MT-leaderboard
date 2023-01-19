@@ -32,7 +32,7 @@ UPDATE_LEADERBOARDS := $(foreach m,${METRICS},$(patsubst %,%$(m)-scores.txt,${UP
 
 .PHONY: all
 all: released-models.txt release-history.txt
-	${MAKE} sort-updated-leaderboards
+	${MAKE} refresh-leaderboards
 	${MAKE} all-langpair-scores
 	find scores/ -name '*.txt' | xargs git add
 
@@ -77,8 +77,8 @@ update-all-leaderboards:
 	  ${MAKE} -s LANGPAIR=$$l update-leaderboards; \
 	done
 
-.PHONY: sort-updated-leaderboards
-sort-updated-leaderboards:
+.PHONY: sort-updated-leaderboards refresh-leaderboards
+sort-updated-leaderboards refresh-leaderboards:
 	${MAKE} UPDATE_ALL_LEADERBOARDS=1 update-leaderboards
 
 

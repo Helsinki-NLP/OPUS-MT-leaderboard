@@ -1,0 +1,38 @@
+# -*-makefile-*-
+
+include Makefile.def
+
+
+## scores that need to be registered (stored in temporary score files)
+## if REGISTER_ALL_SCORES is set: check all model directories
+## if REGISTER_ALL_SCORES is not set: take only the current model dir
+
+ifdef REGISTER_ALL_SCORES
+  SCOREFILES      := ${wildcard ${MODEL_HOME}/*/*-scores.txt}
+  SCOREFILES_DONE := ${SCOREFILES:.txt=.registered}
+else
+  SCOREFILES      := ${wildcard ${MODEL_DIR}.*-scores.txt}
+  SCOREFILES_DONE := ${SCOREFILES:.txt=.registered}
+endif
+
+
+## update all leader boards with all scores
+update-leaderboards: ${SCOREFILES_DONE}
+	${MAKE} REGISTER_ALL_SCORES=1 register-scores
+	${MAKE} sort-leaderboards
+
+## register scores
+register-scores: ${SCOREFILES_DONE}
+
+
+## register the scores for the current model
+## (scores will be added to some temporary files sorted by language pair and benchmark)
+## NOTE: this removes langIDs from newstest sets to avoid confusion and duplicates
+
+
+${SCOREFILES_DONE}: ${MODEL_DIR}.%-scores.registered: ${MODEL_DIR}.%-scores.txt
+	@echo "register scores from ${patsubst ${MODEL_HOME}/%,%,$<}"
+	@cat $< | perl -e 'while (<>){ chomp; @a=split(/\t/); $$a[1]=~s/^(news.*)\-[a-z]{4}/$$1/; system "mkdir -p ${LEADERBOARD_DIR}/$$a[0]/$$a[1]"; open C,">>${LEADERBOARD_DIR}/$$a[0]/$$a[1]/$(patsubst ${MODEL_DIR}.%-scores.txt,%-scores,$<).$(subst /,.,${patsubst ${MODEL_HOME}/%,%,$<}).unsorted.txt"; print C "$$a[2]\t${MODEL_URL}\n"; close C; }'
+	@touch $@
+
+
