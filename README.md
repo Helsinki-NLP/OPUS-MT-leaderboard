@@ -3,16 +3,11 @@
 
 A repository of scores and leaderboard for MT models and benchmarks.
 
-* model scores and evaluation recipes in sub-directory `models`
-* leaderboards per benchmark in sub-directory `scores`
-* [recipes for model evaluation](models/)
-
-
-![example barchart](img/barchart_medium.png)
-
-The [live leaderboard](https://opus.nlpl.eu/leaderboard/) is available at https://opus.nlpl.eu/leaderboard/
-
-
+* [model scores for various benchmarks](models) in sub-directory [models](models)
+* [leaderboards per benchmark](scores)
+* [recipes for automatic model evaluation](models)
+* [merged benchmark translations for better comparison](compare)
+* [web-based dashboard](https://github.com/Helsinki-NLP/OPUS-MT-dashboard)
 
 
 ## Leaderboards

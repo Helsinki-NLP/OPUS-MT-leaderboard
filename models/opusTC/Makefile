@@ -13,24 +13,12 @@ include Makefile.def
 all: ${MODEL_EVALZIPS}
 
 
-## test: make the first evaluation zip-file
-.PHONY: first
-first: $(firstword ${MODEL_EVALZIPS})
-
 ## do things in reverse order
 ## (just to start another job)
-
-## convenient function to reverse a list
-reverse = $(if $(wordlist 2,2,$(1)),$(call reverse,$(wordlist 2,$(words $(1)),$(1))) $(firstword $(1)),$(1))
-
-MODEL_EVALZIPS_REVERSE = $(call reverse,${MODEL_EVALZIPS})
-
 all-reverse: ${MODEL_EVALZIPS_REVERSE}
 
 
-
-## only do COMET scores
-
+## only compute COMET scores
 all-comet:
 	make METRICS="comet" all
 
@@ -38,8 +26,14 @@ all-comet-reverse:
 	make METRICS="comet" all-reverse
 
 
+## test: make the first evaluation zip-file
+.PHONY: first
+first: $(firstword ${MODEL_EVALZIPS})
+
+
 ##---------------------------------------------------
 ## pack evaluation files if a model directory exists
+## cleanup temporary files (NMT model, ...)
 ##---------------------------------------------------
 
 MODEL_PACK_EVAL := ${patsubst %.zip,%.pack,${MODEL_DISTS}}
@@ -53,10 +47,26 @@ ${MODEL_PACK_EVAL}:
 	  ${MAKE} MODEL_DISTS=$(@:.pack=.zip) pack-model-scores; \
 	fi
 
+.PHONY: pack-model-scores
+pack-model-scores:
+	if [ -d ${MODEL_DIR} ]; then \
+	  cd ${MODEL_DIR} && find . -name '*.*' | xargs zip ${MODEL_EVALZIP}; \
+	  find ${MODEL_DIR} -name '*.*' -delete; \
+	  rmdir ${MODEL_DIR}; \
+	fi
 
-##------------------
+.PHONY: cleanup
+cleanup:
+	rm -f ${WORK_DIR}/*.*
+	rm -f ${WORK_DIR}/model/*
+	rmdir ${WORK_DIR}/model
+	rmdir ${WORK_DIR}
+	-rmdir ${WORK_HOME}/${MODEL_LANGPAIR}
+
+
+##----------------------------------------
 ## register scores
-##------------------
+##----------------------------------------
 
 # phony targets to register model scores
 MODEL_REGISTER := ${patsubst %.zip,%.register,${MODEL_DISTS}}
@@ -83,7 +93,7 @@ ${MODEL_REGISTER}:
 #-------------------------------------------------
 
 ## check models that still need to be evaluated
-## (i.e. *.eval.zip does not exist)
+## (i.e. *.eval.zip does not exist in storage)
 
 .PNONY: print-eval-needed
 print-eval-needed:
@@ -95,14 +105,6 @@ print-eval-needed:
 eval-new eval-new-models:
 	${MAKE} MODEL_DISTS="$(shell ${WGET} -q -O - ${MODEL_STORAGE}/index.txt | grep '.zip$$' | \
 		sed 's/\.eval\.zip/.zip/' | sort | uniq -c | sed 's/^ *//' | grep '^1 ' | cut -f2 -d' ')" all
-
-.PHONY: print-eval-local
-print-eval-local:
-	@echo "$(patsubst ${MODEL_HOME}/%,%,$(filter-out %.eval.zip,$(shell find ${MODEL_HOME}/ -type f -name '*.zip')))" | tr ' ' "\n"
-
-.PHONY: eval-local
-eval-local:
-	${MAKE} MODEL_DISTS="$(patsubst ${MODEL_HOME}/%,%,$(filter-out %.eval.zip,$(shell find ${MODEL_HOME}/ -type f -name '*.zip')))" all
 
 
 ##-------------------------------------------------
@@ -161,40 +163,20 @@ eval-model: ${MODEL_EVAL_SCORES}
 	${MAKE} pack-model-scores
 
 
-# delay this to avoid racing conditions in case several
-# updates run simultaneously
-#
-# 	  ${MAKE} -f Makefile.register sort-leaderboards; \
-
-
-.PHONY: pack-model-scores
-pack-model-scores:
-	if [ -d ${MODEL_DIR} ]; then \
-	  cd ${MODEL_DIR} && find . -name '*.*' | xargs zip ${MODEL_EVALZIP}; \
-	  find ${MODEL_DIR} -name '*.*' -delete; \
-	  rmdir ${MODEL_DIR}; \
-	fi
-
-## cleanup some additional workfiles
-.PHONY: cleanup
-cleanup:
-	rm -f ${WORK_DIR}/*.*
-	rm -f ${WORK_DIR}/model/*
-	rmdir ${WORK_DIR}/model
-	rmdir ${WORK_DIR}
-	-rmdir ${WORK_HOME}/${MODEL_LANGPAIR}
 
 #-------------------------------------------------
 # fetch model and get supported languages
 #-------------------------------------------------
 
-## fetch translation model
+## fetch translation model and existing evaluation files
 .PHONY: fetch
 fetch: ${WORK_DIR}/model/decoder.yml ${MODEL_DIR}
 
+## fetch only the model
 .PHONY: fetch-model
 fetch-model: ${WORK_DIR}/model/decoder.yml
 
+## fetch existing evaluation files
 .PHONY: fetch-model-scores
 fetch-model-scores: ${MODEL_DIR}
 
@@ -214,7 +196,7 @@ ${MODEL_DIR}:
 	  rm -f eval.zip; \
 	fi
 
-
+.PHONY: localmodel
 localmodel:
 	if [ -e ${MODEL_HOME}/${MODEL_DIST} ]; then \
 	  echo "local model found: ${MODEL_HOME}/${MODEL_DIST}"; \
@@ -589,9 +571,10 @@ ${MODEL_SCORES}: ${TESTSET_INDEX}
 	fi
 
 
-
+##-------------------------------------------------
 ## generic recipe for extracting scores for a metric
 ## (works for all sacrebleu results but not for other metrics)
+##-------------------------------------------------
 
 ${MODEL_DIR}.%-scores.txt: ${MODEL_SCORES}
 	if [ -d ${MODEL_DIR} ]; then \

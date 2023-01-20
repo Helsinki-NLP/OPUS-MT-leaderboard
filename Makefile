@@ -125,7 +125,7 @@ scores/${LANGPAIR}/top-${METRIC}-scores.txt: ${METRICFILES}
 	done
 
 scores/${LANGPAIR}/avg-${METRIC}-scores.txt: ${METRICFILES}
-	scripts/average-scores.pl $^ > $@
+	tools/average-scores.pl $^ > $@
 
 ${UPDATE_LEADERBOARDS}: ${UPDATE_SCORE_DIRS}
 	@if [ -e $@ ]; then \
