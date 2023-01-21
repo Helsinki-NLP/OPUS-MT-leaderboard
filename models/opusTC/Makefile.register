@@ -19,7 +19,6 @@ endif
 ## update all leader boards with all scores
 update-leaderboards: ${SCOREFILES_DONE}
 	${MAKE} REGISTER_ALL_SCORES=1 register-scores
-	${MAKE} sort-leaderboards
 
 ## register scores
 register-scores: ${SCOREFILES_DONE}

@@ -35,6 +35,12 @@ SLURM_JOBNAME ?= $(subst -,,${LANGPAIRSTR})
 ## list comma separated nodes to be excluded
 # BROKEN_NODES = g6301
 
+ifdef WORK_DIR
+  WORKDIR ?= ${WORK_DIR}
+else
+  WORKDIR ?= work
+endif
+
 
 %.submit:
 	mkdir -p ${WORKDIR}

@@ -438,7 +438,7 @@ ${MODEL_DIR}/${TESTSET}.${LANGPAIR}.spbleu: ${MODEL_DIR}/${TESTSET}.${LANGPAIR}.
 	sed -n '2~4p' $< > $@.ref
 	sed -n '3~4p' $< > $@.hyp
 	cat $@.hyp | \
-	sacrebleu -f text --metrics=bleu --tokenize  flores200 $@.ref > $@
+	sacrebleu -f text --metrics=bleu --tokenize flores200 $@.ref > $@
 	rm -f $@.src $@.ref $@.hyp
 
 ${MODEL_DIR}/${TESTSET}.${LANGPAIR}.bleu: ${MODEL_DIR}/${TESTSET}.${LANGPAIR}.compare
