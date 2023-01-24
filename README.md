@@ -87,11 +87,12 @@ flores tatoeba
 The repository includes recipes for evaluating MT models and scores coming from systematically running MT benchmarks. 
 Each sub directory in `models` corresponds to a specific model type and includes tables of automatic evaluation results.
 
-Currently, we store results for [OPUS-MT models](https://github.com/Helsinki-NLP/Opus-MT) trained on various subsets of [OPUS](https://github.com/Helsinki-NLP/OPUS) and on the compilation distributed in connection with the [Tatoeba translation challenge](https://github.com/Helsinki-NLP/Tatoeba-Challenge/).
+Currently, we store results for [OPUS-MT models](https://github.com/Helsinki-NLP/Opus-MT) trained on various subsets of [OPUS](https://github.com/Helsinki-NLP/OPUS) and on the compilation distributed in connection with the [Tatoeba translation challenge](https://github.com/Helsinki-NLP/Tatoeba-Challenge/). Recently added are also evaluations of the NLLB model by Meta AI using the integration into the transformers library at huggingface.
 
 ```
 opus
 opusTC
+nllb
 ```
 
 The structure corresponds to the repository of OPUS-MT models with separate tables for different evaluation metrics (like BLEU, chrF and COMET):

@@ -20,6 +20,21 @@ scores/src-trg/benchmark/metric-scores.modelname.unsorted.txt
 
 The format follows the same TAB-separated plain text format with 2 columns as we use for general benchmark leaderboards. `modelname` can refer to any string that gives the file a unique name to allow several new scores to be registered for the same benchmark and language pair.
 
+There is a [Makefile template](Makefile.eval-model-template) that you can use to implement your own model evaluation recipes. Simply create a new sub-directory for the model type you want to support and adapt the recipes to work with your translation tool. The main changes that need to be done are:
+
+* setting model-specific variables (names and supported language pairs etc)
+* implementing a recipe to fetch and setup the model and translation tool
+* implement the recipe for translating a text with your model
+
+Other recipes for running through benchmarks in our collection and registering the scores in our leaderboard files are inmplemented in the shared makefiles in [lib/](lib). Once all model score files have been created you can then run
+
+```
+make MODEL_HOME=my-new-modeldir all
+```
+
+to register scores for the inclusion in leaderboards. Make sure that all score files in `my-new-modeldir/*-scores.txt` look correct and correspond to the formats we need. The temporary files for merging scores into leaderboards as mentioned above will then be created from that recipe. How to merge them with existing leaderboards is explained in the section below.
+
+
 
 ## Updating leaderboards
 
