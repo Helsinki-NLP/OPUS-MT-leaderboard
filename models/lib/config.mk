@@ -53,6 +53,9 @@ endif
 reverse = $(if $(wordlist 2,2,$(1)),$(call reverse,$(wordlist 2,$(words $(1)),$(1))) $(firstword $(1)),$(1))
 
 
+LEADERBOARD_GITURL = https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master
+MODELSCORE_STORAGE = ${LEADERBOARD_GITURL}/models/$(notdir ${MODEL_HOME})
+
 
 ## score files with all evaluation results
 ##   - combination of BLEU and chrF (MODEL_SCORES)

@@ -183,7 +183,7 @@ ${MODEL_DIR}/%.${LANGPAIR}.comet: ${MODEL_DIR}/%.${LANGPAIR}.compare
 ${MODEL_SCORES}: ${TESTSET_INDEX}
 	-if [ ! -e $@ ]; then \
 	  mkdir -p $(dir $@); \
-	  wget -qq -O $@ ${MODEL_STORAGE}/${MODEL}.scores.txt; \
+	  wget -qq -O $@ ${MODELSCORE_STORAGE}/${MODEL}.scores.txt; \
 	fi
 	${MAKE} fetch
 	${MAKE} eval-langpairs
