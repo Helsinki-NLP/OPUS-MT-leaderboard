@@ -1,11 +1,15 @@
 # -*-makefile-*-
 
 
+
+EVAL_MODEL_TARGET = $(patsubst %,%-evalmodel,${LANGPAIRS})
+
 .PHONY: eval-models
-eval-models:
-	for m in ${NLLB_MODELS}; do \
-	  ${MAKE} NLLB_MODEL=$$m eval-model; \
-	done
+eval-models: ${EVAL_MODEL_TARGET}
+
+.PHONY: ${EVAL_MODEL_TARGET}
+${EVAL_MODEL_TARGET}:
+	${MAKE} MODEL=$(@:-evalmodel=) eval-model
 
 ##-------------------------------------------------
 ## evaluate the model with all benchmarks available

@@ -29,8 +29,6 @@ GPUJOB_HPC_JOBS    ?= ${GPUJOB_HPC_THREADS}
 GPUJOB_HPC_TIME    ?= ${HPC_TIME}
 
 
-SLURM_JOBNAME ?= $(subst -,,${LANGPAIRSTR})
-
 ## exclude broken nodes:
 ## list comma separated nodes to be excluded
 # BROKEN_NODES = g6301
@@ -46,9 +44,9 @@ endif
 	mkdir -p ${WORKDIR}
 	mkdir -p ${dir ${TMPWORKDIR}/$@}
 	echo '#!/bin/bash -l' > ${TMPWORKDIR}/$@
-	echo '#SBATCH -J "$(SLURM_JOBNAME)${@:.submit=}"' >>${TMPWORKDIR}/$@
-	echo '#SBATCH -o $(SLURM_JOBNAME)${@:.submit=}.out.%j' >> ${TMPWORKDIR}/$@
-	echo '#SBATCH -e $(SLURM_JOBNAME)${@:.submit=}.err.%j' >> ${TMPWORKDIR}/$@
+	echo '#SBATCH -J "${@:.submit=}"' >>${TMPWORKDIR}/$@
+	echo '#SBATCH -o ${@:.submit=}.out.%j' >> ${TMPWORKDIR}/$@
+	echo '#SBATCH -e ${@:.submit=}.err.%j' >> ${TMPWORKDIR}/$@
 ifdef EMAIL
 	echo '#SBATCH --mail-type=END' >> ${TMPWORKDIR}/$@
 	echo '#SBATCH --mail-user=${EMAIL}' >> ${TMPWORKDIR}/$@
@@ -97,9 +95,9 @@ CPUJOB_HPC_JOBS    ?= ${CPUJOB_HPC_THREADS}
 	mkdir -p ${WORKDIR}
 	mkdir -p ${dir ${TMPWORKDIR}/$@}
 	echo '#!/bin/bash -l' > ${TMPWORKDIR}/$@
-	echo '#SBATCH -J "$(SLURM_JOBNAME)${@:.submitcpu=}"'      >>${TMPWORKDIR}/$@
-	echo '#SBATCH -o $(SLURM_JOBNAME)${@:.submitcpu=}.out.%j' >> ${TMPWORKDIR}/$@
-	echo '#SBATCH -e $(SLURM_JOBNAME)${@:.submitcpu=}.err.%j' >> ${TMPWORKDIR}/$@
+	echo '#SBATCH -J "${@:.submitcpu=}"'      >>${TMPWORKDIR}/$@
+	echo '#SBATCH -o ${@:.submitcpu=}.out.%j' >> ${TMPWORKDIR}/$@
+	echo '#SBATCH -e ${@:.submitcpu=}.err.%j' >> ${TMPWORKDIR}/$@
 ifdef EMAIL
 	echo '#SBATCH --mail-type=END'                            >> ${TMPWORKDIR}/$@
 	echo '#SBATCH --mail-user=${EMAIL}'                       >> ${TMPWORKDIR}/$@
@@ -130,4 +128,3 @@ endif
 	mv ${TMPWORKDIR}/$@ ${WORKDIR}/$@
 
 
-#	echo '${MAKE} -j ${HPC_CORES} DATASET=${DATASET} SRC=${SRC} TRG=${TRG} PRE_SRC=${PRE_SRC} PRE_TRG=${PRE_TRG} ${MAKEARGS} ${@:.submitcpu=}' >> $@

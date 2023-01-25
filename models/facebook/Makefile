@@ -9,11 +9,12 @@ REPOHOME := ${PWD}/../../
 
 ## model variants
 
-NLLB_MODELS := nllb-200-distilled-600M nllb-200-distilled-1.3B nllb-200-1.3B # nllb-200-3.3B
-NLLB_MODEL  := $(firstword ${NLLB_MODELS})
+MODELS := nllb-200-distilled-600M nllb-200-distilled-1.3B nllb-200-1.3B # nllb-200-3.3B
 
-MODELS := $(patsubst %,unspecified/%,${NLLB_MODELS})
-MODEL  ?= $(firstword ${MODELS})
+# NLLB_MODEL  := $(firstword ${NLLB_MODELS})
+
+# MODELS := $(patsubst %,unspecified/%,${NLLB_MODELS})
+# MODEL  ?= $(firstword ${MODELS})
 
 
 ## all languages that the model supports
@@ -47,13 +48,8 @@ MODEL_EVAL_URL  := ${MODEL_STORAGE}/${NLLB_MODEL}.eval.zip
 NLLB_LANGID = ${shell head -5 ${1} | tr "\n" ' ' | langscript -l ${2} -3 || echo ${2}}
 
 
-
-
 .PHONY: all
-all:
-	for m in ${NLLB_MODELS}; do \
-	  ${MAKE} NLLB_MODEL=$$m eval-model; \
-	done
+all: eval-models
 
 all-x2en:
 	${MAKE} TRG_LANGS=eng all
@@ -61,19 +57,21 @@ all-x2en:
 all-en2x:
 	${MAKE} SRC_LANGS=eng all
 
-all-fin:
-	${MAKE} SRC_LANGS=fin NLLB_MODELS=nllb-200-distilled-600M all.submit
-	${MAKE} TRG_LANGS=fin NLLB_MODELS=nllb-200-distilled-600M all.submit
-	${MAKE} SRC_LANGS=fin NLLB_MODELS=nllb-200-distilled-1.3B all.submit
-	${MAKE} TRG_LANGS=fin NLLB_MODELS=nllb-200-distilled-1.3B all.submit
-	${MAKE} SRC_LANGS=fin NLLB_MODELS=nllb-200-1.3B all.submit
-	${MAKE} TRG_LANGS=fin NLLB_MODELS=nllb-200-1.3B all.submit
 
+PIVOTLANG=eng
+
+pivot:
+	${MAKE} SRC_LANGS=${PIVOTLANG} eval-model
+	${MAKE} TRG_LANGS=${PIVOTLANG} eval-model
+
+pivot-jobs:
+	for m in ${MODELS}; do \
+	  ${MAKE} MODEL=$$m pivot.submit; \
+	done
 
 
 include ../lib/config.mk
 include ../lib/eval.mk
-
 
 .PHONY: fetch-model
 fetch-model:
@@ -88,7 +86,7 @@ ${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG
 	module load pytorch && \
 	cat $< | \
 	python3 nllb.py \
-		-m ${NLLB_MODEL} \
+		-m ${MODEL} \
 		-i $(call NLLB_LANGID,$(word 1,$^),${SRC}) \
 		-o $(call NLLB_LANGID,$(word 2,$^),${TRG}) \
 	> $@
