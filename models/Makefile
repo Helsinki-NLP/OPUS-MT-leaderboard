@@ -36,8 +36,10 @@ update-leaderboards:
 	${MAKE} REGISTER_ALL_SCORES=1 register-scores
 
 ## register scores in leaderboards
-.PHONY: register-leaderboards
+.PHONY: register-scores
 register-scores: ${SCOREFILES_DONE}
+	find ${MODEL_HOME}/ -name '*.txt' | xargs git add
+	find ${MODEL_HOME}/ -name '*.registered' | xargs git add
 
 
 ## register the scores for the current model

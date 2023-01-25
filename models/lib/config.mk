@@ -41,9 +41,13 @@ MODEL_HOME      ?= ${PWD}
 MODEL_DIR       = ${MODEL_HOME}/${MODEL}
 MODEL_EVALZIP   = ${MODEL_DIR}.eval.zip
 
-
-LEADERBOARD_DIR = ${REPOHOME}scores
-
+ifeq ($(notdir ${MODEL_HOME}),opus)
+  LEADERBOARD_DIR = ${REPOHOME}scores
+else ifeq ($(notdir ${MODEL_HOME}),opusTC)
+  LEADERBOARD_DIR = ${REPOHOME}scores
+else
+  LEADERBOARD_DIR = ${REPOHOME}external-scores
+endif
 
 ## convenient function to reverse a list
 reverse = $(if $(wordlist 2,2,$(1)),$(call reverse,$(wordlist 2,$(words $(1)),$(1))) $(firstword $(1)),$(1))
