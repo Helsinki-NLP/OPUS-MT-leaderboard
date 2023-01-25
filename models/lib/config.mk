@@ -41,9 +41,9 @@ MODEL_HOME      ?= ${PWD}
 MODEL_DIR       = ${MODEL_HOME}/${MODEL}
 MODEL_EVALZIP   = ${MODEL_DIR}.eval.zip
 
-ifeq ($(notdir ${MODEL_HOME}),opus)
+ifeq ($(notdir ${MODEL_HOME}),OPUS-MT-models)
   LEADERBOARD_DIR = ${REPOHOME}scores
-else ifeq ($(notdir ${MODEL_HOME}),opusTC)
+else ifeq ($(notdir ${MODEL_HOME}),Tatoeba-MT-models)
   LEADERBOARD_DIR = ${REPOHOME}scores
 else
   LEADERBOARD_DIR = ${REPOHOME}external-scores

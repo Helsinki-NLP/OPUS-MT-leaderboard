@@ -1,7 +1,7 @@
 
 # Model Evaluation
 
-The repository comes with recipes for evaluating MT models. For example, the `models/opusTC` sub directory includes makefile recipes for systematically testing released OPUS-MT models that use the Tatoeba translation challenge data (more details further down).
+The repository comes with recipes for evaluating MT models. For example, the `models/Tatoeba-MT-models` sub directory includes makefile recipes for systematically testing released OPUS-MT models that use the Tatoeba translation challenge data (more details further down).
 
 
 
@@ -58,12 +58,12 @@ make all-avg-scores
 ```
 
 
-## Evaluation recipes for OPUS-MT models (opus)
+## Evaluation recipes for OPUS-MT models (OPUS-MT-models)
 
 
-## Evaluation recipes for Tatoeba Translation Challenge models (opusTC)
+## Evaluation recipes for Tatoeba Translation Challenge models (Tatoeba-MT-models)
 
-Recipes for opusTC model evaluation are implemented in makefiles. Make sure to change to the `opusTC` directory (`cd models/opusTC`). Run all necessary evaluations for all released opusTC models (or run in reverse order):
+Recipes for Tatoeba-MT-models model evaluation are implemented in makefiles. Make sure to change to the `Tatoeba-MT-models` directory (`cd models/Tatoeba-MT-models`). Run all necessary evaluations for all released Tatoeba-MT-models models (or run in reverse order):
 
 ```
 make all
