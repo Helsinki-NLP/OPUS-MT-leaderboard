@@ -12,7 +12,7 @@ REPOHOME := ${PWD}/../../
 NLLB_MODELS := nllb-200-distilled-600M nllb-200-distilled-1.3B nllb-200-1.3B # nllb-200-3.3B
 NLLB_MODEL  := $(firstword ${NLLB_MODELS})
 
-MODELS := $(patsubst %,mul-mul/%,${NLLB_MODELS})
+MODELS := $(patsubst %,unspecified/%,${NLLB_MODELS})
 MODEL  ?= $(firstword ${MODELS})
 
 

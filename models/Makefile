@@ -9,7 +9,7 @@
 
 
 MODEL_HOME ?= facebook
-MODEL      ?= mul-mul/nllb-200-distilled-600M
+MODEL      ?= nllb-200-distilled-600M
 
 include lib/config.mk
 
@@ -19,7 +19,7 @@ include lib/config.mk
 ## if REGISTER_ALL_SCORES is not set: take only the current model dir
 
 ifdef REGISTER_ALL_SCORES
-  SCOREFILES      := ${wildcard ${MODEL_HOME}/*/*-scores.txt}
+  SCOREFILES      := ${shell find ${MODEL_HOME}/ -name '*-scores.txt'}
   SCOREFILES_DONE := ${SCOREFILES:.txt=.registered}
 else
   SCOREFILES      := ${wildcard ${MODEL_DIR}.*-scores.txt}
