@@ -231,7 +231,7 @@ ${MODEL_DIR}.%-scores.txt: ${MODEL_SCORES}
 	  cat $@ |\
 	  sed -e 's/\(news.*[0-9][0-9][0-9][0-9]\)-[a-z][a-z][a-z][a-z]	/\1	/' |  \
 	  sed -e 's/\(news.*2021\)\.[a-z][a-z]\-[a-z][a-z]	/\1	/' |\
-	  rev | uniq -f1 | rev                                                > $@.sorted; \
+	  rev | sort | uniq -f1 | rev                                         > $@.sorted; \
 	  mv -f $@.sorted $@; \
 	  rm -f $@.all $@.langs $@.testsets $@.scores; \
 	fi
@@ -250,7 +250,7 @@ ${MODEL_DIR}.comet-scores.txt: ${MODEL_SCORES}
 	  cat $@ |\
 	  sed -e 's/\(news.*[0-9][0-9][0-9][0-9]\)-[a-z][a-z][a-z][a-z]	/\1	/' |  \
 	  sed -e 's/\(news.*2021\)\.[a-z][a-z]\-[a-z][a-z]	/\1	/' |\
-	  rev | uniq -f1 | rev                                           > $@.sorted; \
+	  rev | sort -u | uniq -f1 | rev                                 > $@.sorted; \
 	  mv -f $@.sorted $@; \
 	  rm -f $@.comet $@.langs $@.testsets $@.comet-scores; \
 	fi

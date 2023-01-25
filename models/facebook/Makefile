@@ -49,7 +49,6 @@ NLLB_LANGID = ${shell head -5 ${1} | tr "\n" ' ' | langscript -l ${2} -3 || echo
 
 
 
-
 .PHONY: all
 all:
 	for m in ${NLLB_MODELS}; do \
