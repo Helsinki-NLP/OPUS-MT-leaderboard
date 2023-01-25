@@ -8,7 +8,7 @@
 #
 
 
-MODEL_HOME ?= nllb
+MODEL_HOME ?= facebook
 MODEL      ?= mul-mul/nllb-200-distilled-600M
 
 include lib/config.mk
