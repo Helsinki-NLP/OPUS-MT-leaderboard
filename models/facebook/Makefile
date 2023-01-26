@@ -43,9 +43,24 @@ MODEL_EVAL_URL  := ${MODEL_STORAGE}/${NLLB_MODEL}.eval.zip
 
 
 
-## function to lookup the script (necessary extension to lamg-IDs in the NLLB model
+## function to lookup the script (necessary extension to lang-IDs in the NLLB model
+## + some fixes that OPUS-MT-testsets changed when importing flores200
 
 NLLB_LANGID = ${shell head -5 ${1} | tr "\n" ' ' | langscript -l ${2} -3 || echo ${2}}
+NLLB_LANGID_FIXED = $(shell 	l=$(call NLLB_LANGID,${1},${2}); \
+				if [ $$l == ara_Arab ]; then \
+				  echo arb_Arab; \
+			    	elif [ $$l == ara_Latn ]; then \
+				  echo arb_Latn; \
+			    	elif [ $$l == cmn_Hans ]; then \
+				  echo zho_Hans; \
+			    	elif [ $$l == cmn_Hant ]; then \
+				  echo zho_Hant; \
+			    	elif [ $$l == msa_Latn ]; then \
+				  echo zsm_Latn; \
+				else \
+				  echo $$l; \
+				fi )
 
 
 .PHONY: all
@@ -87,8 +102,8 @@ ${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG
 	cat $< | \
 	python3 nllb.py \
 		-m ${MODEL} \
-		-i $(call NLLB_LANGID,$(word 1,$^),${SRC}) \
-		-o $(call NLLB_LANGID,$(word 2,$^),${TRG}) \
+		-i $(call NLLB_LANGID_FIXED,$(word 1,$^),${SRC}) \
+		-o $(call NLLB_LANGID_FIXED,$(word 2,$^),${TRG}) \
 	> $@
 
 
