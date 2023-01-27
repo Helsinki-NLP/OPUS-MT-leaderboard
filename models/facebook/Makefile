@@ -11,11 +11,6 @@ REPOHOME := ${PWD}/../../
 
 MODELS := nllb-200-distilled-600M nllb-200-distilled-1.3B nllb-200-1.3B # nllb-200-3.3B
 
-# NLLB_MODEL  := $(firstword ${NLLB_MODELS})
-
-# MODELS := $(patsubst %,unspecified/%,${NLLB_MODELS})
-# MODEL  ?= $(firstword ${MODELS})
-
 
 ## all languages that the model supports
 ## TODO: check that this is all correct
@@ -36,9 +31,9 @@ MODEL_LANGPAIRS := ${shell for s in ${SRC_LANGS}; do for t in ${TRG_LANGS}; do e
 ## MODEL_EVAL_URL: location of the storage space for the evaluation output files
 ## 	TODO: make sure that this is correct and also saved somewhere!
 
-MODEL_URL       := https://huggingface.co/facebook/${NLLB_MODEL}
+MODEL_URL       := https://huggingface.co/facebook/${MODEL}
 MODEL_STORAGE   := https://object.pouta.csc.fi/External-MT-models
-MODEL_EVAL_URL  := ${MODEL_STORAGE}/${NLLB_MODEL}.eval.zip
+MODEL_EVAL_URL  := ${MODEL_STORAGE}/facebook/${MODEL}.eval.zip
 
 
 
