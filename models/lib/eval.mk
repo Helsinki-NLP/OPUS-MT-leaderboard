@@ -35,6 +35,9 @@ eval-model: ${MODEL_EVAL_SCORES}
 #	  ${MAKE} -f Makefile.register register-scores; \
 #	fi
 
+.PHONY: eval-model-files
+eval-model-files: ${MODEL_EVAL_SCORES}
+
 
 .PHONY: eval
 eval: 	${MODEL_DIR}/${TESTSET}.${LANGPAIR}.compare \
@@ -181,25 +184,30 @@ ${MODEL_DIR}/%.${LANGPAIR}.comet: ${MODEL_DIR}/%.${LANGPAIR}.compare
 #
 
 ${MODEL_SCORES}: ${TESTSET_INDEX}
+ifndef SKIP_OLD_EVALUATION
 	-if [ ! -e $@ ]; then \
 	  mkdir -p $(dir $@); \
 	  wget -qq -O $@ ${MODELSCORE_STORAGE}/${MODEL}.scores.txt; \
 	fi
+endif
+ifndef SKIP_NEW_EVALUATION
 	${MAKE} fetch
 	${MAKE} eval-langpairs
 	${MAKE} cleanup
+endif
 	if [ -d ${MODEL_DIR} ]; then \
-	  grep -H BLEU ${MODEL_DIR}/*.bleu | sort                  > $@.bleu; \
-	  grep -H chrF ${MODEL_DIR}/*.chrf | sort                  > $@.chrf; \
-	  cut -f1 -d: $@.bleu | rev | cut -f2 -d. | rev            > $@.langs; \
-	  cut -f1 -d: $@.bleu | rev | cut -f1 -d/ | cut -f3- -d. | rev  > $@.testsets; \
-	  cat $@.chrf | rev | cut -f1 -d' ' | rev                  > $@.chrf-scores; \
-	  cut -f2 -d= $@.bleu | cut -f2 -d' '                      > $@.bleu-scores; \
-	  cut -f1 -d: $@.bleu | sed 's#^.*$$#${MODEL_URL}#'        > $@.urls; \
-	  cut -f1 -d: $@.bleu | sed 's/.bleu$$/.compare/' | \
+	  grep -H BLEU ${MODEL_DIR}/*.bleu | sed 's/.bleu//' | sort          > $@.bleu; \
+	  grep -H chrF ${MODEL_DIR}/*.chrf | sed 's/.chrf//' | sort          > $@.chrf; \
+	  join -t: -j1 $@.bleu $@.chrf                                       > $@.bleu-chrf; \
+	  cut -f1 -d: $@.bleu-chrf | rev | cut -f1 -d. | rev                 > $@.langs; \
+	  cut -f1 -d: $@.bleu-chrf | rev | cut -f1 -d/ | cut -f2- -d. | rev  > $@.testsets; \
+	  cat $@.bleu-chrf | rev | cut -f1 -d' ' | rev                       > $@.chrf-scores; \
+	  cut -f2 -d= $@.bleu-chrf | cut -f2 -d' '                           > $@.bleu-scores; \
+	  cut -f1 -d: $@.bleu-chrf | sed 's#^.*$$#${MODEL_URL}#'             > $@.urls; \
+	  cut -f1 -d: $@.bleu-chrf | sed 's/$$/.compare/' | \
 	  xargs wc -l |  grep -v '[0-9] total' | \
-	  perl -pe '$$_/=4;print "\n"' | tail -n +2                > $@.nrlines; \
-	  cat $@.bleu | rev | cut -f1 -d' ' | rev | cut -f1 -d')'  > $@.nrwords; \
+	  perl -pe '$$_/=4;print "\n"' | tail -n +2                          > $@.nrlines; \
+	  cut -f1 -d')' $@.bleu-chrf | rev | cut -f1 -d' ' | rev             > $@.nrwords; \
 	  if [ -e $@ ]; then mv $@ $@.old; fi; \
 	  paste $@.langs $@.testsets \
 		$@.chrf-scores $@.bleu-scores \
@@ -213,10 +221,12 @@ ${MODEL_SCORES}: ${TESTSET_INDEX}
 	    sort -k1,1 -k2,2 -m $@.new $@.old | \
 	    rev | uniq -f5 | rev | sort -u                         > $@; \
 	  fi; \
-	  rm -f $@.bleu $@.chrf $@.langs $@.testsets \
+	  rm -f $@.bleu $@.chrf $@.bleu-chrf $@.langs $@.testsets \
 		$@.chrf-scores $@.bleu-scores \
 		$@.urls $@.nrlines $@.nrwords $@.old $@.new; \
 	fi
+
+
 
 
 ##-------------------------------------------------
@@ -235,7 +245,7 @@ ${MODEL_DIR}.%-scores.txt: ${MODEL_SCORES}
 	  cat $@ |\
 	  sed -e 's/\(news.*[0-9][0-9][0-9][0-9]\)-[a-z][a-z][a-z][a-z]	/\1	/' |  \
 	  sed -e 's/\(news.*2021\)\.[a-z][a-z]\-[a-z][a-z]	/\1	/' |\
-	  rev | sort | uniq -f1 | rev                                         > $@.sorted; \
+	  rev | sort | uniq -f1 | rev | sort                                  > $@.sorted; \
 	  mv -f $@.sorted $@; \
 	  rm -f $@.all $@.langs $@.testsets $@.scores; \
 	fi
@@ -254,7 +264,7 @@ ${MODEL_DIR}.comet-scores.txt: ${MODEL_SCORES}
 	  cat $@ |\
 	  sed -e 's/\(news.*[0-9][0-9][0-9][0-9]\)-[a-z][a-z][a-z][a-z]	/\1	/' |  \
 	  sed -e 's/\(news.*2021\)\.[a-z][a-z]\-[a-z][a-z]	/\1	/' |\
-	  rev | sort -u | uniq -f1 | rev                                 > $@.sorted; \
+	  rev | sort -u | uniq -f1 | rev | sort                           > $@.sorted; \
 	  mv -f $@.sorted $@; \
 	  rm -f $@.comet $@.langs $@.testsets $@.comet-scores; \
 	fi

@@ -90,19 +90,19 @@ Each sub directory in `models` corresponds to a specific model type and includes
 Currently, we store results for [OPUS-MT models](https://github.com/Helsinki-NLP/Opus-MT) trained on various subsets of [OPUS](https://github.com/Helsinki-NLP/OPUS) and on the compilation distributed in connection with the [Tatoeba translation challenge](https://github.com/Helsinki-NLP/Tatoeba-Challenge/). Recently added are also evaluations of the NLLB model by Meta AI using the integration into the transformers library at huggingface.
 
 ```
-opus
-opusTC
-nllb
+OPUS-MT-models
+Tatoeba-MT-models
+facebook
 ```
 
 The structure corresponds to the repository of OPUS-MT models with separate tables for different evaluation metrics (like BLEU, chrF and COMET):
 
 ```
-opusTC/src-trg/model-release-name.bleu-scores.txt
-opusTC/src-trg/model-release-name.spbleu-scores.txt
-opusTC/src-trg/model-release-name.chrf-scores.txt
-opusTC/src-trg/model-release-name.chrf++-scores.txt
-opusTC/src-trg/model-release-name.comet-scores.txt
+Tatoeba-MT-models/src-trg/model-release-name.bleu-scores.txt
+Tatoeba-MT-models/src-trg/model-release-name.spbleu-scores.txt
+Tatoeba-MT-models/src-trg/model-release-name.chrf-scores.txt
+Tatoeba-MT-models/src-trg/model-release-name.chrf++-scores.txt
+Tatoeba-MT-models/src-trg/model-release-name.comet-scores.txt
 ```
 
 `src` and `trg` typically correspond to source and target language identifiers but may also refer to sets of languages or other characteristics of the model (for example, `gmw` for Western Germanic languages or `de+en+sv` for specific language combinations). The `model-release-name` corresponds to the release name of the model.
@@ -110,7 +110,7 @@ opusTC/src-trg/model-release-name.comet-scores.txt
 There is also another file that combines BLEU and chrF scores together with some other information about the test set and the model (see further down below).
 
 ```
-opusTC/src-trg/model-release-name.scores.txt
+Tatoeba-MT-models/src-trg/model-release-name.scores.txt
 ```
 
 Additional metrics can be added using the same format replacing `metric` in `src-trg/model-release-name.metric-scores.txt` with a descriptive unique name of the metric.
@@ -127,7 +127,7 @@ Each model score file for each specific evaluation metric follows a very simple 
 * the name of the benchmark (e.g. `flores200-devtest`)
 * the score
 
-As an example, the German - Eastern Slavic languages model [models/opusTC/deu-zle/opusTCv20210807_transformer-big_2022-03-19.bleu-scores.txt](models/opusTC/deu-zle/opusTCv20210807_transformer-big_2022-03-19.bleu-scores.txt) includes the following lines:
+As an example, the German - Eastern Slavic languages model [models/Tatoeba-MT-models/deu-zle/opusTCv20210807_transformer-big_2022-03-19.bleu-scores.txt](models/Tatoeba-MT-models/deu-zle/opusTCv20210807_transformer-big_2022-03-19.bleu-scores.txt) includes the following lines:
 
 ```
 deu-bel	flores200-devtest	9.6
@@ -143,7 +143,7 @@ The only file that differs from this general format is the `src-trg/model-releas
 * the size of the benchmark in terms of the number of sentences
 * the size of the benchmark in terms of the number of tokens
 
-Here is an example from [models/opusTC/deu-zle/opusTCv20210807_transformer-big_2022-03-19.scores.txt](models/opusTC/deu-zle/opusTCv20210807_transformer-big_2022-03-19.scores.txt):
+Here is an example from [models/Tatoeba-MT-models/deu-zle/opusTCv20210807_transformer-big_2022-03-19.scores.txt](models/Tatoeba-MT-models/deu-zle/opusTCv20210807_transformer-big_2022-03-19.scores.txt):
 
 ```
 deu-bel	flores101-devtest	0.38804	9.6	https://object.pouta.csc.fi/Tatoeba-MT-models/deu-zle/opusTCv20210807_transformer-big_2022-03-19.zip	1012	24829
