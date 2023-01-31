@@ -2,14 +2,14 @@
 
 
 
-EVAL_MODEL_TARGET = $(patsubst %,%-evalmodel,${LANGPAIRS})
+EVAL_MODEL_TARGET = $(patsubst %,%-evalmodel,${MODELS})
 
 .PHONY: eval-models
 eval-models: ${EVAL_MODEL_TARGET}
 
 .PHONY: ${EVAL_MODEL_TARGET}
 ${EVAL_MODEL_TARGET}:
-	${MAKE} MODEL=$(@:-evalmodel=) eval-model
+	-${MAKE} MODEL=$(@:-evalmodel=) eval-model
 
 ##-------------------------------------------------
 ## evaluate the model with all benchmarks available
@@ -44,8 +44,6 @@ eval: 	${MODEL_DIR}/${TESTSET}.${LANGPAIR}.compare \
 	${MODEL_DIR}/${TESTSET}.${LANGPAIR}.eval
 
 
-
-
 EVAL_LANGPAIR_TARGET = $(patsubst %,%-eval,${LANGPAIRS})
 
 .PHONY: eval-langpairs
@@ -69,6 +67,7 @@ eval-testsets: ${TRANSLATED_BENCHMARKS} ${EVALUATED_BENCHMARKS}
 
 
 
+.INTERMEDIATE: ${WORK_DIR}/%.${LANGPAIR}.output
 
 ${MODEL_DIR}/%.${LANGPAIR}.compare: 	${TESTSET_DIR}/%.${SRC} \
 					${TESTSET_DIR}/%.${TRG} \

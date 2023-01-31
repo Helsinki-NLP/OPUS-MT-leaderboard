@@ -7,8 +7,8 @@
 #  - a flag will be created to mark that scores are registered
 #
 
-
-MODEL_HOME ?= facebook
+SOURCE     ?= facebook
+MODEL_HOME ?= ${SOURCE}
 MODEL      ?= nllb-200-distilled-600M
 
 include lib/config.mk
@@ -28,16 +28,17 @@ endif
 
 
 .PHONY: all
-all: update-leaderboards
+all: register-scores
+	${MAKE} upload-eval-files
 
 ## update all leader boards with all scores
-.PHONY: update-leaderboards
-update-leaderboards:
-	${MAKE} REGISTER_ALL_SCORES=1 register-scores
+.PHONY: register-scores
+register-scores:
+	${MAKE} REGISTER_ALL_SCORES=1 register
 
 ## register scores in leaderboards
-.PHONY: register-scores
-register-scores: ${SCOREFILES_DONE}
+.PHONY: register
+register: ${SCOREFILES_DONE}
 	find ${MODEL_HOME}/ -name '*.txt' | xargs git add
 	find ${MODEL_HOME}/ -name '*.registered' | xargs git add
 
@@ -52,12 +53,16 @@ ${MODEL_HOME}/%-scores.registered: ${MODEL_HOME}/%-scores.txt
 	@touch $@
 
 
-upload-eval-files:
+STORAGE_BUCKET = OPUS-MT-leaderboard
+
+.PHONY: upload upload-eval-files
+upload upload-eval-files:
 	which a-get
-	cd ${MODEL_HOME} && find . -name '*.eval.zip' | xargs swift upload ${MODEL_HOME}
-	swift post ${MODEL_HOME} --read-acl ".r:*"
+	cd .. && find models/${MODEL_HOME} -name '*.eval.zip' | xargs swift upload ${STORAGE_BUCKET}
+	swift post ${STORAGE_BUCKET} --read-acl ".r:*"
 
 
-upload-eval-files-dryrun:
+.PHONY: upload-dryrun upload-eval-files-dryrun
+upload-dryrun upload-eval-files-dryrun:
 	@echo 'which a-get'
-	@echo "cd ${MODEL_HOME} && find . -name '*.eval.zip' | xargs swift upload ${MODEL_HOME}"
+	@echo "cd .. && find models/${MODEL_HOME} -name '*.eval.zip' | xargs swift upload ${STORAGE_BUCKET}"

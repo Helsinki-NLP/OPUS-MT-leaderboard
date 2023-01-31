@@ -1,4 +1,3 @@
-
 # Model Evaluation
 
 The repository comes with recipes for evaluating MT models. For example, the `models/Tatoeba-MT-models` sub directory includes makefile recipes for systematically testing released OPUS-MT models that use the Tatoeba translation challenge data (more details further down).
@@ -29,11 +28,18 @@ There is a [Makefile template](Makefile.eval-model-template) that you can use to
 Other recipes for running through benchmarks in our collection and registering the scores in our leaderboard files are inmplemented in the shared makefiles in [lib/](lib). Once all model score files have been created you can then run
 
 ```
-make MODEL_HOME=my-new-modeldir all
+make SOURCE=modeldir all
 ```
 
-to register scores for the inclusion in leaderboards. Make sure that all score files in `my-new-modeldir/*-scores.txt` look correct and correspond to the formats we need. The temporary files for merging scores into leaderboards as mentioned above will then be created from that recipe. How to merge them with existing leaderboards is explained in the section below.
+to register scores for the inclusion in leaderboards. Make sure that all score files in `modeldir/*-scores.txt` look correct and correspond to the formats we need. The temporary files for merging scores into leaderboards as mentioned above will then be created from that recipe. How to merge them with existing leaderboards is explained in the section below.
 
+You can also register scores for a specific model by setting the MODEL variable, e.g.
+
+```
+make SOURCE=modeldir MODEL=modelname all
+```
+
+where `modelname` includes the path relative to `modeldir`.
 
 
 ## Updating leaderboards

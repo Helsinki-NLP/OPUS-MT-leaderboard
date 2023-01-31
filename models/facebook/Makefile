@@ -71,8 +71,8 @@ all-en2x:
 PIVOTLANG=eng
 
 pivot:
-	${MAKE} SRC_LANGS=${PIVOTLANG} eval-model
 	${MAKE} TRG_LANGS=${PIVOTLANG} eval-model
+	${MAKE} SRC_LANGS=${PIVOTLANG} eval-model
 
 pivot-jobs:
 	for m in ${MODELS}; do \
@@ -88,7 +88,7 @@ fetch-model:
 	@echo "nothing to be done"
 
 .PHONY: translate
-translate: ${WORK_DIR}/%.${LANGPAIR}.output
+translate: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
 
 ${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
 	echo "create $@"
