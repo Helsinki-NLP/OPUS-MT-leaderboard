@@ -151,3 +151,9 @@ deu-ukr	flores200-devtest	0.53137	24.0	https://object.pouta.csc.fi/Tatoeba-MT-mo
 deu-ukr	tatoeba-test-v2021-08-07	0.62852	40.8	https://object.pouta.csc.fi/Tatoeba-MT-models/deu-zle/opusTCv20210807_transformer-big_2022-03-19.zip	10319	56287
 ```
 
+
+# Related work and links
+
+* [MT-ComparEval](https://github.com/ondrejklejch/MT-ComparEval) with live instances for [WMT submissions](http://wmt.ufal.cz/) and [other experiments](http://mt-compareval.ufal.cz/)
+* [compare-mt](https://github.com/neulab/compare-mt) - command-line tool for MT output comparison [pip package](https://pypi.org/project/compare-mt/)
+* [intento report on the state of MT](https://inten.to/machine-translation-report-2022/)

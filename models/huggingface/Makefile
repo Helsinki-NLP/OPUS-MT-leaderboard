@@ -7,11 +7,11 @@ PWD      := ${shell pwd}
 REPOHOME := ${PWD}/../../
 
 MODEL_HOME       := ${PWD}/..
-MODELS_FILE      := pipeline_models.csv
-MODELS           := $(shell tail -n +2 < ${MODELS_FILE} | cut -f1 | sort -u)
+MODELS_FILE      := output/pipeline_models_rev.csv
+MODELS           := $(shell tail -n +2 < ${MODELS_FILE} | cut -f1 -d, | sort -u)
 MODEL            ?= $(firstword ${MODELS})
 MODEL_LANGPAIRS  := $(shell grep '${MODEL}' ${MODELS_FILE} | \
-			cut -f2,3 | sort -u | tr "\t" '-' | xargs iso639 -3 -k -p)
+			cut -f2,3 -d, | sort -u | tr "," '-' | xargs iso639 -3 -k -p)
 
 
 
@@ -22,6 +22,7 @@ MODEL_LANGPAIRS  := $(shell grep '${MODEL}' ${MODELS_FILE} | \
 MODEL_URL       := https://huggingface.co/${MODEL}
 MODEL_STORAGE   := https://object.pouta.csc.fi/External-MT-models
 MODEL_EVAL_URL  := ${MODEL_STORAGE}/${MODEL}.eval.zip
+
 
 
 .PHONY: all

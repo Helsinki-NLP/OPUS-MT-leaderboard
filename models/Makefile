@@ -7,6 +7,10 @@
 #  - a flag will be created to mark that scores are registered
 #
 
+ALL_SOURCES      := $(filter-out lib,$(notdir ${shell find . -maxdepth 1 -mindepth 1 -type d}))
+OPUSMT_SOURCES   := OPUS-MT-models Tatoeba-MT-models
+EXTERNAL_SOURCES := $(filter-out ${OPUSMT_SOURCES},${ALL_SOURCES})
+
 SOURCE     ?= facebook
 MODEL_HOME ?= ${SOURCE}
 MODEL      ?= nllb-200-distilled-600M
@@ -18,7 +22,11 @@ include lib/config.mk
 ## if REGISTER_ALL_SCORES is set: check all model directories
 ## if REGISTER_ALL_SCORES is not set: take only the current model dir
 
-ifdef REGISTER_ALL_SCORES
+ifdef REGISTER_ALL_EXTERNAL
+  MODEL_HOME      := .
+  SCOREFILES      := ${wildcard ./*/*-scores.txt}
+  SCOREFILES_DONE := ${SCOREFILES:.txt=.registered}
+else ifdef REGISTER_ALL_SCORES
   SCOREFILES      := ${shell find ${MODEL_HOME}/ -name '*-scores.txt'}
   SCOREFILES_DONE := ${SCOREFILES:.txt=.registered}
 else
@@ -36,6 +44,13 @@ all: register-scores
 register-scores:
 	${MAKE} REGISTER_ALL_SCORES=1 register
 
+.PHONY: register-external
+register-external:
+	for s in ${EXTERNAL_SOURCES}; do \
+	  ${MAKE} SOURCE=$$s register-scores; \
+	done
+
+
 ## register scores in leaderboards
 .PHONY: register
 register: ${SCOREFILES_DONE}
@@ -49,7 +64,7 @@ register: ${SCOREFILES_DONE}
 
 ${MODEL_HOME}/%-scores.registered: ${MODEL_HOME}/%-scores.txt
 	@echo "register scores from ${patsubst ${MODEL_HOME}/%,%,$<}"
-	@cat $< | perl -e 'while (<>){ chomp; @a=split(/\t/); $$a[1]=~s/^(news.*)\-[a-z]{4}/$$1/; system "mkdir -p ${LEADERBOARD_DIR}/$$a[0]/$$a[1]"; open C,">>${LEADERBOARD_DIR}/$$a[0]/$$a[1]/$(patsubst .%,%,$(suffix $(basename $<))).$(subst /,.,${patsubst ${MODEL_HOME}/%,%,$<}).unsorted.txt"; print C "$$a[2]\t$(shell cut -f5 $(basename $(basename $<)).scores.txt | head -1)\n"; close C; }'
+	@cat $< | perl -e 'while (<>){ chomp; @a=split(/\t/); $$a[1]=~s/^(news.*)\-[a-z]{4}/$$1/; system "mkdir -p ${LEADERBOARD_DIR}/$$a[0]/$$a[1]"; open C,">>${LEADERBOARD_DIR}/$$a[0]/$$a[1]/$(patsubst .%,%,$(suffix $(basename $<))).$(subst /,.,${patsubst ${MODEL_HOME}/%,%,$<}).unsorted.txt"; $$m="$(shell cut -f5 $(basename $(basename $<)).scores.txt | head -1)";if ($$a[2] && $$m){print C "$$a[2]\t$$m\n";} close C; }'
 	@touch $@
 
 
@@ -61,6 +76,11 @@ upload upload-eval-files:
 	cd .. && find models/${MODEL_HOME} -name '*.eval.zip' | xargs swift upload ${STORAGE_BUCKET}
 	swift post ${STORAGE_BUCKET} --read-acl ".r:*"
 
+.PHONY: upload-all
+upload-all:
+	which a-get
+	cd .. && find models/ -name '*.eval.zip' | xargs swift upload ${STORAGE_BUCKET}
+	swift post ${STORAGE_BUCKET} --read-acl ".r:*"
 
 .PHONY: upload-dryrun upload-eval-files-dryrun
 upload-dryrun upload-eval-files-dryrun:
