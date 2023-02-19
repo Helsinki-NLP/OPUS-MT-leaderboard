@@ -2,10 +2,13 @@
 ## directory with leaderboard files depending on the source of the models
 ##   - default = OPUS-MT models (stored in scores/)
 ##   - external models (stored in external-scores/)
+##   - contributed tanslations (stored in user-scores/)
 ##   - all scores merged (stored in merged-scores/)
 
 ifeq (${MODELSOURCE},external)
   LEADERBOARD_DIR = external-scores
+else ifeq (${MODELSOURCE},contributed)
+  LEADERBOARD_DIR = user-scores
 else ifeq (${MODELSOURCE},all)
   LEADERBOARD_DIR = merged-scores
 else
@@ -55,6 +58,12 @@ all-external:
 	${MAKE} MODELSOURCE=external update-all-leaderboards
 	${MAKE} MODELSOURCE=external all-langpair-scores
 	find external-scores/ -name '*.txt' | xargs git add
+
+.PHONY: all-contributed
+all-contributed:
+	${MAKE} MODELSOURCE=contributed update-all-leaderboards
+	${MAKE} MODELSOURCE=contributed all-langpair-scores
+	find user-scores/ -name '*.txt' | xargs git add
 
 
 .PHONY: all-langpair-scores

@@ -11,7 +11,6 @@ REPOHOME := ${PWD}/../../
 
 MODELS := nllb-200-distilled-600M nllb-200-distilled-1.3B nllb-200-1.3B # nllb-200-3.3B
 
-
 ## all languages that the model supports
 ## TODO: check that this is all correct
 
@@ -27,11 +26,10 @@ TRG_LANGS := ${FLORES200_LANGS}
 MODEL_LANGPAIRS := ${shell for s in ${SRC_LANGS}; do for t in ${TRG_LANGS}; do echo "$$s-$$t"; done done}
 
 
-## MODEL_URL: location of the public model (to be stored in the score files)
+
 ## MODEL_EVAL_URL: location of the storage space for the evaluation output files
 ## 	TODO: make sure that this is correct and also saved somewhere!
 
-MODEL_URL       := https://huggingface.co/facebook/${MODEL}
 MODEL_STORAGE   := https://object.pouta.csc.fi/External-MT-models
 MODEL_EVAL_URL  := ${MODEL_STORAGE}/facebook/${MODEL}.eval.zip
 
@@ -61,13 +59,8 @@ NLLB_LANGID_FIXED = $(shell 	l=$(call NLLB_LANGID,${1},${2}); \
 .PHONY: all
 all: eval-models
 
-all-x2en:
-	${MAKE} TRG_LANGS=eng all
 
-all-en2x:
-	${MAKE} SRC_LANGS=eng all
-
-
+## only translate from and to PIVOT (default = English)
 PIVOTLANG=eng
 
 pivot:
@@ -79,23 +72,82 @@ pivot-jobs:
 	  ${MAKE} MODEL=$$m pivot.submit; \
 	done
 
+pivot-big:
+	${MAKE} SRC_LANGS=${PIVOTLANG} MODEL=nllb-200-3.3B eval-model
+	${MAKE} TRG_LANGS=${PIVOTLANG} MODEL=nllb-200-3.3B eval-model
+
+
+
+## M2M100 model for en2x and x2en
+
+M2M100_MODELS := m2m100_418M m2m100_1.2B m2m100-12B-last-ckpt
+M2M100_MODEL  ?= ${firstword ${M2M100_MODELS}}
+BATCH_SIZE    ?= 16
+
+m2m100-pivot:
+	${MAKE} -f Makefile.m2m100 MODELS=${M2M100_MODEL} BATCH_SIZE=${BATCH_SIZE} pivot
+
+m2m100-pivot-jobs:
+	${MAKE} M2M100_MODEL=m2m100_418M BATCH_SIZE=16 m2m100-pivot.submit
+	${MAKE} M2M100_MODEL=m2m100_1.2B BATCH_SIZE=8 m2m100-pivot.submit
+	${MAKE} M2M100_MODEL=m2m100-12B-last-ckpt BATCH_SIZE=4 m2m100-pivot.submit
+#	for m in ${M2M100_MODELS}; do \
+#	  ${MAKE} M2M100_MODEL=$$m m2m100-pivot.submit; \
+#	done
+
+
+
+
+
 
 include ../lib/config.mk
 include ../lib/eval.mk
 
+
+## MODEL_URL: location of the public model (to be stored in the score files)
+MODEL_URL       := https://huggingface.co/facebook/${MODEL}
+
+
+##------------------------------------------------------
+## fetching model checkpoint if necessary
+## (only for the big model)
+##------------------------------------------------------
+
 .PHONY: fetch-model
 fetch-model:
+ifeq (${MODEL},nllb-200-3.3B)
+	( module load git git-lfs; \
+	  mkdir -p facebook; \
+	  cd facebook; \
+	  git clone ${MODEL_URL}; \
+	  cd ${MODEL}; \
+	  git-lfs install; \
+	  git pull )
+else
 	@echo "nothing to be done"
+endif
+
+
+
+##------------------------------------------------------
+## translating a test set
+##------------------------------------------------------
 
 .PHONY: translate
 translate: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
+
+ifeq (${MODEL},nllb-200-3.3B)
+  RUNSCRIPT = nllb-accelerate.py -b 16
+else
+  RUNSCRIPT = nllb.py
+endif
 
 ${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
 	echo "create $@"
 	mkdir -p $(dir $@)
 	module load pytorch && \
 	cat $< | \
-	python3 nllb.py \
+	python3 ${RUNSCRIPT} \
 		-m ${MODEL} \
 		-i $(call NLLB_LANGID_FIXED,$(word 1,$^),${SRC}) \
 		-o $(call NLLB_LANGID_FIXED,$(word 2,$^),${TRG}) \

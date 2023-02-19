@@ -1,7 +1,7 @@
 # -*-makefile-*-
 
 
-METRICS := bleu spbleu chrf chrf++ comet
+METRICS ?= bleu spbleu chrf chrf++ comet
 
 ## set the home directory of the repository
 ## this is to find the included makefiles
@@ -45,6 +45,8 @@ ifeq ($(notdir ${MODEL_HOME}),OPUS-MT-models)
   LEADERBOARD_DIR = ${REPOHOME}scores
 else ifeq ($(notdir ${MODEL_HOME}),Tatoeba-MT-models)
   LEADERBOARD_DIR = ${REPOHOME}scores
+else ifeq ($(notdir ${MODEL_HOME}),unverified)
+  LEADERBOARD_DIR = ${REPOHOME}user-scores
 else
   LEADERBOARD_DIR = ${REPOHOME}external-scores
 endif
@@ -80,6 +82,6 @@ LANGPAIRSTR   := ${LANGPAIR}
 SRC           := ${firstword ${subst -, ,${LANGPAIR}}}
 TRG           := ${lastword ${subst -, ,${LANGPAIR}}}
 TESTSET_DIR   := ${TESTSET_HOME}/${LANGPAIR}
-TESTSETS      := ${notdir ${basename ${wildcard ${TESTSET_DIR}/*.${SRC}}}}
-TESTSET       := ${firstword ${TESTSETS}}
+TESTSETS      ?= ${notdir ${basename ${wildcard ${TESTSET_DIR}/*.${SRC}}}}
+TESTSET       ?= ${firstword ${TESTSETS}}
 

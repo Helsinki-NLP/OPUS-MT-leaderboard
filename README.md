@@ -32,6 +32,9 @@ scores/deu-ukr/top-chrf-scores.txt
 scores/deu-ukr/top-comet-scores.txt
 ```
 
+Scores for other models than OPUS-MT will be stored in the same way in the sub-directory `external-scores`.
+
+
 ### File Formats
 
 All leaderboard files follow a very simple format with two TAB-separated values and rows sorted by score. The columns are:

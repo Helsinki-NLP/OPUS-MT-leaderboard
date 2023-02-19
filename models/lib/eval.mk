@@ -69,12 +69,24 @@ eval-testsets: ${TRANSLATED_BENCHMARKS} ${EVALUATED_BENCHMARKS}
 
 .INTERMEDIATE: ${WORK_DIR}/%.${LANGPAIR}.output
 
-${MODEL_DIR}/%.${LANGPAIR}.compare: 	${TESTSET_DIR}/%.${SRC} \
-					${TESTSET_DIR}/%.${TRG} \
-					${WORK_DIR}/%.${LANGPAIR}.output
+## don't make the temporary output a pre-requisite
+## (somehow it does not always work to skip creating it if the target already exists)
+#
+# ${MODEL_DIR}/%.${LANGPAIR}.compare:	${TESTSET_DIR}/%.${SRC} \
+#					${TESTSET_DIR}/%.${TRG} \
+#					${WORK_DIR}/%.${LANGPAIR}.output
+#	@mkdir -p ${dir $@}
+#	if [ -s $(word 3,$^) ]; then \
+#	  paste -d "\n" $^ | sed 'n;n;G;' > $@; \
+#	fi
+
+
+${MODEL_DIR}/%.${LANGPAIR}.compare: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
 	@mkdir -p ${dir $@}
-	if [ -s $(word 3,$^) ]; then \
-	  paste -d "\n" $^ | sed 'n;n;G;' > $@; \
+	${MAKE} $(patsubst ${MODEL_DIR}/%.${LANGPAIR}.compare,${WORK_DIR}/%.${LANGPAIR}.output,$@)
+	if [ -s $(patsubst ${MODEL_DIR}/%.${LANGPAIR}.compare,${WORK_DIR}/%.${LANGPAIR}.output,$@) ]; then \
+	  paste -d "\n" $^ $(patsubst ${MODEL_DIR}/%.${LANGPAIR}.compare,${WORK_DIR}/%.${LANGPAIR}.output,$@) |\
+	  sed 'n;n;G;' > $@; \
 	fi
 
 

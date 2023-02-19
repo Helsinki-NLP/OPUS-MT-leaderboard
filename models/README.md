@@ -1,92 +1,87 @@
-# Model Evaluation
 
-The repository comes with recipes for evaluating MT models. For example, the `models/Tatoeba-MT-models` sub directory includes makefile recipes for systematically testing released OPUS-MT models that use the Tatoeba translation challenge data (more details further down).
+# MT Model Benchmark Scores
 
+Here are recipes for evaluating MT models and scores coming from systematically running MT benchmarks.
+Each sub directory corresponds to a specific model type and includes tables of automatic evaluation results.
 
-
-
-## Adding model evaluation recipes
-
-You can add new recipes for additional model types by creating a new sub directory in this folder and implementing the scripts that are necessary to create all necessary files for registering the benchmark results.
-
-When evaluating a model you need to create or update all relevant model score files in the same format as specified above. Additionally, you should place the new results in the language score directory to be registered in the leaderboards of individual benchmarks.
-
-In order to avoid any conflicts the procedure is to first produce temporary files that list new scores to be registered and sorted into the benchmark leaderboards. In order to use the existing recipes for updating and sorting those files you need to place the scores in files that use the following naming conventions:
+Currently, we store results for [OPUS-MT models](https://github.com/Helsinki-NLP/Opus-MT) trained on various subsets of [OPUS](https://github.com/Helsinki-NLP/OPUS) and on the compilation distributed in connection with the [Tatoeba translation challenge](https://github.com/Helsinki-NLP/Tatoeba-Challenge/).
 
 ```
-scores/src-trg/benchmark/metric-scores.modelname.unsorted.txt
+OPUS-MT-models
+Tatoeba-MT-model
 ```
 
-The format follows the same TAB-separated plain text format with 2 columns as we use for general benchmark leaderboards. `modelname` can refer to any string that gives the file a unique name to allow several new scores to be registered for the same benchmark and language pair.
-
-There is a [Makefile template](Makefile.eval-model-template) that you can use to implement your own model evaluation recipes. Simply create a new sub-directory for the model type you want to support and adapt the recipes to work with your translation tool. The main changes that need to be done are:
-
-* setting model-specific variables (names and supported language pairs etc)
-* implementing a recipe to fetch and setup the model and translation tool
-* implement the recipe for translating a text with your model
-
-Other recipes for running through benchmarks in our collection and registering the scores in our leaderboard files are inmplemented in the shared makefiles in [lib/](lib). Once all model score files have been created you can then run
+The structure corresponds to the repository of OPUS-MT models with separate tables for different evaluation metrics.
 
 ```
-make SOURCE=modeldir all
+src-trg/model-release-name.bleu-scores.txt
+src-trg/model-release-name.spbleu-scores.txt
+src-trg/model-release-name.chrf-scores.txt
+src-trg/model-release-name.chrf++-scores.txt
+src-trg/model-release-name.comet-scores.txt
 ```
 
-to register scores for the inclusion in leaderboards. Make sure that all score files in `modeldir/*-scores.txt` look correct and correspond to the formats we need. The temporary files for merging scores into leaderboards as mentioned above will then be created from that recipe. How to merge them with existing leaderboards is explained in the section below.
+`src` and `trg` typically correspond to source and target language identifiers but may also refer to sets of languages or other characteristics of the model (for example, `gmw` for Western Germanic languages or `de+en+sv` for specific language combinations). The `model-release-name` corresponds to the release name of the model.
 
-You can also register scores for a specific model by setting the MODEL variable, e.g.
-
-```
-make SOURCE=modeldir MODEL=modelname all
-```
-
-where `modelname` includes the path relative to `modeldir`.
-
-
-## Updating leaderboards
-
-The top-level makefile implements recipes that can be used to update and sort leaderboards for wich unsorted new scores are listed in the repository. It is possible to update only the tables for a selected language pair, to run through all language pairs or update all leaderboards for which unsorted files are found (`refresh-leaderboards`).
+There is also another file that combines BLEU and chrF scores together with some other information about the test set and the model (see further down below).
 
 ```
-make LANGPAIR=deu-ukr update-leaderboards   # update leaderboards for deu-ukr
-make update-all-leaderboards                # run through all language pairs and update
-make refresh-leaderboards                   # refresh all leaderboards that require updates
+src-trg/model-release-name.scores.txt
 ```
 
+Additional metrics can be added using the same format replacing `metric` in `src-trg/model-release-name.metric-scores.txt` with a descriptive unique name of the metric.
 
-Top-score files and average score files can also be updated using the high-level makefile recipes. Similar to above, specific language pairs can be selected or all language pairs can be updated.
+Note that chrF scores should for historical reasons be with decimals and not in percentages as they are given by current versions of sacrebleu. This is to match the implementation of the web interface of the OPUS-MT leaderboard.
+
+
+
+## Model Score File Format
+
+Each model score file for each specific evaluation metric follows a very simple format: The file is a plain text file with TAB-separated values in three columns specifying
+
+* the language pair of the benchmark (e.g. 'deu-ukr')
+* the name of the benchmark (e.g. `flores200-devtest`)
+* the score
+
+As an example, the German - Eastern Slavic languages model `Tatoeba-MT-models/deu-zle/opusTCv20210807_transformer-big_2022-03-19.bleu-scores.txt` includes the following lines:
 
 ```
-make LANGPAIR=deu-ukr top-scores
-make LANGPAIR=deu-ukr avg-scores
-
-make all-top-scores
-make all-avg-scores
+deu-bel	flores200-devtest	9.6
+deu-rus	flores200-devtest	25.9
+deu-ukr	flores200-devtest	24.0
+deu-ukr	tatoeba-test-v2021-08-07	40.8
 ```
 
 
-## Evaluation recipes for OPUS-MT models (OPUS-MT-models)
+The only file that differs from this general format is the `src-trg/model-release-name.scores.txt` that combines BLEU and chrF scores. In addition to the scores, this file also includes
 
+* the link to the actual model for downloading
+* the size of the benchmark in terms of the number of sentences
+* the size of the benchmark in terms of the number of tokens
 
-## Evaluation recipes for Tatoeba Translation Challenge models (Tatoeba-MT-models)
-
-Recipes for Tatoeba-MT-models model evaluation are implemented in makefiles. Make sure to change to the `Tatoeba-MT-models` directory (`cd models/Tatoeba-MT-models`). Run all necessary evaluations for all released Tatoeba-MT-models models (or run in reverse order):
-
-```
-make all
-make all-reverse
-```
-
-Submit SLURM jobs for the same targets:
+Here is an example from `Tatoeba-MT-models/deu-zle/opusTCv20210807_transformer-big_2022-03-19.scores.txt`:
 
 ```
-make all.submit
-make all-reverse.submit
+deu-bel	flores101-devtest	0.38804	9.6	https://object.pouta.csc.fi/Tatoeba-MT-models/deu-zle/opusTCv20210807_transformer-big_2022-03-19.zip	1012	24829
+deu-ukr	flores200-devtest	0.53137	24.0	https://object.pouta.csc.fi/Tatoeba-MT-models/deu-zle/opusTCv20210807_transformer-big_2022-03-19.zip	1012	22810
+deu-ukr	tatoeba-test-v2021-08-07	0.62852	40.8	https://object.pouta.csc.fi/Tatoeba-MT-models/deu-zle/opusTCv20210807_transformer-big_2022-03-19.zip	10319	56287
 ```
 
 
-Find models for which some evaluation is missing and then run the evaluation for those.
+## Model Evaluation
 
-```
-make find-missing
-make all.submit
-```
+The repository also comes with recipes for evaluating MT models. For example, the `Tatoeba-MT-models` sub directory includes makefile recipes for systematically testing released OPUS-MT models that use the Tatoeba translation challenge data. You can add new recipes for additional model types by creating a new sub directory in this folder and implementing the scripts that are necessary to create all necessary files for registering the benchmark results.
+
+When evaluating a model you need to create or update all relevant model score files in the same format as specified before. Additionally, you should place the new results in the language score directory to be registered in the leaderboards of individual benchmarks.
+
+
+
+
+## Model-Specific Notes
+
+
+Settings language IDs in models from the Huggingface model hub is a bit tricky as metadata is not always consistent and documentation is lacking. Here some notes about selected models:
+
+* Models based on fine-tuning mbart need to use language IDs with regional extensions like `it_IT` or generic ones like `en_XX`. Check https://huggingface.co/facebook/mbart-large-50 for a list of supported languages and their language IDs.
+* NLLB requires 3-letter ISO codes for language IDs plus extension for the script the language is written in. See flores200 for more details.
+* bert2bert does not seem to work with pipelines, does it?
