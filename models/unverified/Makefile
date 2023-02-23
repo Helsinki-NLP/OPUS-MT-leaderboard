@@ -13,13 +13,24 @@
 # Example: evaluate a user contributed translation of flores101-dev from English to Danish
 #          for a user <username> and model <modelname>
 #
-#  mkdir -p work/username/modelname
-#  cp translation-file.txt work/username/modelname/flores101-dev.eng-dan.output
-#  make MODELS=username/modelname \
-#       MODEL_LANGPAIRS=eng-dan \
-#       MODEL_URL=http://path/to/my/wonderful-model \
-#       TESTSETS=flores101-dev \
-#       eval-model
+#   mkdir -p work/unverified/username/modelname
+#   cp translation-file.txt work/unverified/username/modelname/flores101-dev.eng-dan.output
+#
+#   make USER_NAME=username USER_MODEL=modelname \
+#        TESTSETS=flores101-dev LANGPAIR=eng-dan \
+#   eval
+#
+#
+# After evaluating all benchmarks, create model score files with:
+#
+#   make USER_NAME=username USER_MODEL=modelname \
+#        MODEL_URL=http://path/to/my/wonderful-model \
+#   eval-model-files
+#
+#
+# and finally pack everything together:
+#
+#   make USER_NAME=username USER_MODEL=modelname pack-model-scores
 #
 #-----------------------------------------------------------------------------
 
@@ -29,22 +40,20 @@ METRICS := bleu spbleu chrf chrf++
 
 ## specify all models
 
-MODELS := user/modelname1 user/modelname2
-MODEL  ?= $(firstword ${MODELS})
+MODEL_HOME  := ${PWD}/..
+USER_NAME   ?= testuser
+USER_MODEL  ?= testmodel
+MODELS      := $(patsubst %,unverified/${USER_NAME}/%,${USER_MODEL})
+MODEL       ?= $(firstword ${MODELS})
 
-
-## all language pairs that the model supports
-## use language IDs that match test sets in the OPUS-MT-testsets repository
-
-MODEL_LANGPAIRS := deu-eng eng-deu fin-swe
 
 
 ## MODEL_URL: location of the public model (to be stored in the score files)
 ## MODEL_EVAL_URL: location of the storage space for the evaluation output files
 
-MODEL_URL       := https://location-of-my-model-storage/${MODEL}
-MODEL_EVAL_URL  := https://location-of-my-model-storage/${MODEL}.eval.zip
-
+MODEL_URL       := https://location.of.my.model/storage/${MODEL}
+MODEL_STORAGE   := https://object.pouta.csc.fi/External-MT-models
+MODEL_EVAL_URL  := ${MODEL_STORAGE}/${MODEL}.eval.zip
 
 ## typically 'make all' means eval all models
 ## add whatever is necessary here

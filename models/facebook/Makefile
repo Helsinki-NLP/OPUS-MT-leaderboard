@@ -60,21 +60,13 @@ NLLB_LANGID_FIXED = $(shell 	l=$(call NLLB_LANGID,${1},${2}); \
 all: eval-models
 
 
-## only translate from and to PIVOT (default = English)
-PIVOTLANG=eng
-
-pivot:
-	${MAKE} TRG_LANGS=${PIVOTLANG} eval-model
-	${MAKE} SRC_LANGS=${PIVOTLANG} eval-model
-
 pivot-jobs:
 	for m in ${MODELS}; do \
-	  ${MAKE} MODEL=$$m pivot.submit; \
+	  ${MAKE} MODEL=$$m eval-pivot.submit; \
 	done
 
 pivot-big:
-	${MAKE} SRC_LANGS=${PIVOTLANG} MODEL=nllb-200-3.3B eval-model
-	${MAKE} TRG_LANGS=${PIVOTLANG} MODEL=nllb-200-3.3B eval-model
+	${MAKE} MODEL=nllb-200-3.3B eval-pivot
 
 
 
@@ -85,7 +77,7 @@ M2M100_MODEL  ?= ${firstword ${M2M100_MODELS}}
 BATCH_SIZE    ?= 16
 
 m2m100-pivot:
-	${MAKE} -f Makefile.m2m100 MODELS=${M2M100_MODEL} BATCH_SIZE=${BATCH_SIZE} pivot
+	${MAKE} -f Makefile.m2m100 MODELS=${M2M100_MODEL} BATCH_SIZE=${BATCH_SIZE} eval-pivot
 
 m2m100-pivot-jobs:
 	${MAKE} M2M100_MODEL=m2m100_418M BATCH_SIZE=16 m2m100-pivot.submit

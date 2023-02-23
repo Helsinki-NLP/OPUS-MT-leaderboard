@@ -1,7 +1,11 @@
 # -*-makefile-*-
 
 
-METRICS ?= bleu spbleu chrf chrf++ comet
+METRICS   ?= bleu spbleu chrf chrf++ comet
+
+## only translate from and to PIVOT (default = English)
+PIVOTLANG ?= eng
+
 
 ## set the home directory of the repository
 ## this is to find the included makefiles
@@ -77,7 +81,7 @@ MODEL_EVAL_SCORES   = ${MODEL_SCORES} ${MODEL_METRIC_SCORES}
 
 ALL_LANGPAIRS := $(notdir ${wildcard ${TESTSET_HOME}/*})
 LANGPAIRS     := ${sort $(filter ${ALL_LANGPAIRS},${MODEL_LANGPAIRS})}
-LANGPAIR      := ${firstword ${LANGPAIRS}}
+LANGPAIR      ?= ${firstword ${LANGPAIRS}}
 LANGPAIRSTR   := ${LANGPAIR}
 SRC           := ${firstword ${subst -, ,${LANGPAIR}}}
 TRG           := ${lastword ${subst -, ,${LANGPAIR}}}

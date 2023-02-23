@@ -2,6 +2,16 @@
 
 
 
+.PHONY: eval-pivot
+eval-pivot:
+	${MAKE} fetch
+	${MAKE} SRC_LANGS=${PIVOTLANG} eval-langpairs
+	${MAKE} TRG_LANGS=${PIVOTLANG} eval-langpairs
+	${MAKE} SRC_LANGS=${PIVOTLANG} cleanup
+	${MAKE} SRC_LANGS=${PIVOTLANG} eval-model-files
+	${MAKE} SRC_LANGS=${PIVOTLANG} pack-model-scores
+
+
 EVAL_MODEL_TARGET = $(patsubst %,%-evalmodel,${MODELS})
 
 .PHONY: eval-models

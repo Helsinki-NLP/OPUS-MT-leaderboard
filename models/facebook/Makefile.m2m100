@@ -43,14 +43,6 @@ MODEL_EVAL_URL  := ${MODEL_STORAGE}/facebook/${MODEL}.eval.zip
 .PHONY: all
 all: eval-models
 
-PIVOTLANG=eng
-
-pivot:
-	${MAKE} SRC_LANGS=${PIVOTLANG} eval-model
-	${MAKE} TRG_LANGS=${PIVOTLANG} eval-model
-
-
-
 
 include ../lib/config.mk
 include ../lib/eval.mk
