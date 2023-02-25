@@ -79,6 +79,12 @@ MODEL_EVAL_SCORES   = ${MODEL_SCORES} ${MODEL_METRIC_SCORES}
 # find all test sets that we need to consider
 #-------------------------------------------------
 
+## if MODEL_LANGPAIRS is not set then simply combine all SRCLANGS with all TRG_LANGS
+
+MODEL_LANGPAIRS ?= ${shell for s in ${SRC_LANGS}; do \
+				for t in ${TRG_LANGS}; do echo "$$s-$$t"; done done}
+
+
 ALL_LANGPAIRS := $(notdir ${wildcard ${TESTSET_HOME}/*})
 LANGPAIRS     := ${sort $(filter ${ALL_LANGPAIRS},${MODEL_LANGPAIRS})}
 LANGPAIR      ?= ${firstword ${LANGPAIRS}}

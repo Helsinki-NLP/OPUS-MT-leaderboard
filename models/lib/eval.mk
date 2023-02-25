@@ -21,6 +21,11 @@ eval-models: ${EVAL_MODEL_TARGET}
 ${EVAL_MODEL_TARGET}:
 	-${MAKE} MODEL=$(@:-evalmodel=) eval-model
 
+
+EVAL_MODEL_REVERSE_TARGET = $(call reverse,${EVAL_MODEL_TARGET})
+
+eval-models-reverse-order: ${EVAL_MODEL_REVERSE_TARGET}
+
 ##-------------------------------------------------
 ## evaluate the model with all benchmarks available
 ## - if a model score file is missing:
@@ -41,9 +46,6 @@ eval-model: ${MODEL_EVAL_SCORES}
 	  ${MAKE} ${MODEL_EVAL_SCORES}; \
 	fi
 	${MAKE} pack-model-scores
-#	if [ -e $< ]; then \
-#	  ${MAKE} -f Makefile.register register-scores; \
-#	fi
 
 .PHONY: eval-model-files
 eval-model-files: ${MODEL_EVAL_SCORES}
@@ -327,6 +329,18 @@ pack-model-scores:
 	    rmdir ${MODEL_DIR}; \
 	  fi \
 	fi
+
+MODEL_PACK_EVAL := ${patsubst %,%.pack,${MODELS}}
+
+.PHONY: pack-all-model-scores
+pack-all-model-scores: ${MODEL_PACK_EVAL}
+
+.PHONY: ${MODEL_PACK_EVAL}
+${MODEL_PACK_EVAL}:
+	if [ -d ${MODEL_HOME}/$(@:.pack=) ]; then \
+	  ${MAKE} MODEL=$(@:.pack=) pack-model-scores; \
+	fi
+
 
 .PHONY: cleanup
 cleanup:

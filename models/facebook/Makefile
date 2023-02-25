@@ -69,6 +69,12 @@ pivot-big:
 	${MAKE} MODEL=nllb-200-3.3B eval-pivot
 
 
+jobs:
+	for m in ${MODELS}; do \
+	  ${MAKE} MODEL=$$m METRICS="bleu spbleu chrf chrf++" eval-model.submit; \
+	done
+
+
 
 ## M2M100 model for en2x and x2en
 
