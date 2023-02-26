@@ -7,6 +7,9 @@
 #  - a flag will be created to mark that scores are registered
 #
 
+PWD      := ${shell pwd}
+REPOHOME := ${PWD}/../
+
 ALL_SOURCES      := $(filter-out lib,$(notdir ${shell find . -maxdepth 1 -mindepth 1 -type d}))
 OPUSMT_SOURCES   := OPUS-MT-models Tatoeba-MT-models
 EXTERNAL_SOURCES := $(filter-out ${OPUSMT_SOURCES} unverified,${ALL_SOURCES})
@@ -122,4 +125,4 @@ download-all:
 	${MAKE} ALL_MODELSOURCES=1 download
 
 %.eval.zip: %.scores.txt
-	wget -qq -O $@ ${STORAGE_URL}/models/$@
+	-wget -qq -O $@ ${STORAGE_URL}/models/$@

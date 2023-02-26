@@ -67,14 +67,14 @@ fetch-zipfiles:
 
 .PHONY: all-external
 all-external:
-	${MAKE} MODELSOURCE=external update-all-leaderboards
-	${MAKE} MODELSOURCE=external all-langpair-scores
+	${MAKE} -s MODELSOURCE=external update-all-leaderboards
+	${MAKE} -s MODELSOURCE=external all-langpair-scores
 	find external-scores/ -name '*.txt' | xargs git add
 
 .PHONY: all-contributed
 all-contributed:
-	${MAKE} MODELSOURCE=contributed update-all-leaderboards
-	${MAKE} MODELSOURCE=contributed all-langpair-scores
+	${MAKE} -s MODELSOURCE=contributed update-all-leaderboards
+	${MAKE} -s MODELSOURCE=contributed all-langpair-scores
 	find user-scores/ -name '*.txt' | xargs git add
 
 
