@@ -52,11 +52,56 @@ all: released-models.txt release-history.txt
 	${MAKE} all-langpair-scores
 	find ${LEADERBOARD_DIR}/ -name '*.txt' | xargs git add
 
-USER_CONTRIBUTED_FILES := $(shell find models/unverified -type f -name '*.output')
-USER_CONTRIBUTED_FILE  ?= $(firstword ${USER_CONTRIBUTED_FILES})
+USER_CONTRIBUTED_FILES  := $(shell find models/unverified/work -type f -name '*.output')
+USER_CONTRIBUTED_FILE   ?= $(firstword ${USER_CONTRIBUTED_FILES})
+CONTRIBUTED_USERNAME    := $(word 5,$(subst /, ,${USER_CONTRIBUTED_FILE}))
+CONTRIBUTED_MODEL       := $(patsubst models/unverified/work/unverified/${CONTRIBUTED_USERNAME}/%/,%,\
+				$(dir ${USER_CONTRIBUTED_FILE}))
+CONTRIBUTED_MODEL_YAML  := models/unverified/${CONTRIBUTED_USERNAME}/${CONTRIBUTED_MODEL}.yml
+CONTRIBUTED_TRANSLATION := $(notdir ${USER_CONTRIBUTED_FILE})
+CONTRIBUTED_TRANSLATION_TESTSET  := $(basename $(basename ${CONTRIBUTED_TRANSLATION}))
+CONTRIBUTED_TRANSLATION_LANGPAIR := $(patsubst .%,%,$(suffix $(basename ${CONTRIBUTED_TRANSLATION})))
+
+ifneq ($(wildcard ${CONTRIBUTED_MODEL_YAML}),)
+  CONTRIBUTED_MODEL_WEBSITE := $(shell grep 'website:' ${CONTRIBUTED_MODEL_YAML} | cut -f2- -d: | sed 's/^ *//')
+endif
+
+
+## evaluate a new user-contributed file
+## register the scores
+## update user-score leaderboards
+##
+## NOTE: don't allow concurrent jobs because of racing conditions!
 
 eval-userfile:
+ifneq ($(wildcard ${USER_CONTRIBUTED_FILE}),)
+	@echo ${CONTRIBUTED_MODEL_YAML}
+	@echo ${USER_CONTRIBUTED_FILE}
+	@echo ${CONTRIBUTED_USERNAME}
+	@echo ${CONTRIBUTED_MODEL}
+	@echo ${CONTRIBUTED_TRANSLATION_TESTSET}
+	@echo ${CONTRIBUTED_TRANSLATION_LANGPAIR}
+	@echo ${CONTRIBUTED_MODEL_WEBSITE}
+	${MAKE} -C models/unverified \
+		USER_NAME='${CONTRIBUTED_USERNAME}' \
+		USER_MODEL='${CONTRIBUTED_MODEL}' \
+		TESTSETS='${CONTRIBUTED_TRANSLATION_TESTSET}' \
+		LANGPAIR='${CONTRIBUTED_TRANSLATION_LANGPAIR}' \
+		MODEL_URL='${CONTRIBUTED_MODEL_WEBSITE}' \
+	all
+	rm -f ${USER_CONTRIBUTED_FILE}
+	${MAKE} -C models \
+		SOURCE=unverified \
+		MODEL='${CONTRIBUTED_USERNAME}/${CONTRIBUTED_MODEL}' \
+	register
+	${MAKE} -s all-contributed
+else
+	@echo "No file to be evaluated!"
+endif
 
+
+
+## fetch all evaluation zip file
 
 .PHONY: fetch-zipfiles
 fetch-zipfiles:

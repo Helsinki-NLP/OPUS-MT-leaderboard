@@ -50,6 +50,10 @@ eval-model: ${MODEL_EVAL_SCORES}
 .PHONY: eval-model-files
 eval-model-files: ${MODEL_EVAL_SCORES}
 
+.PHONY: update-eval-files
+update-eval-files:
+	mv -f ${MODEL_SCORES} ${MODEL_SCORES}.${TODAY}
+	${MAKE} eval-model-files
 
 .PHONY: eval
 eval: 	${MODEL_DIR}/${TESTSET}.${LANGPAIR}.compare \
@@ -80,6 +84,7 @@ eval-testsets: ${TRANSLATED_BENCHMARKS} ${EVALUATED_BENCHMARKS}
 
 
 .INTERMEDIATE: ${WORK_DIR}/%.${LANGPAIR}.output
+
 
 ## don't make the temporary output a pre-requisite
 ## (somehow it does not always work to skip creating it if the target already exists)
@@ -219,6 +224,7 @@ ifndef SKIP_NEW_EVALUATION
 	${MAKE} cleanup
 endif
 	if [ -d ${MODEL_DIR} ]; then \
+	  echo "... create ${MODEL_SCORES}"; \
 	  grep -H BLEU ${MODEL_DIR}/*.bleu | sed 's/.bleu//' | sort          > $@.bleu; \
 	  grep -H chrF ${MODEL_DIR}/*.chrf | sed 's/.chrf//' | sort          > $@.chrf; \
 	  join -t: -j1 $@.bleu $@.chrf                                       > $@.bleu-chrf; \

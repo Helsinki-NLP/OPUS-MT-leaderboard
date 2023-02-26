@@ -34,9 +34,10 @@
 #
 #-----------------------------------------------------------------------------
 
+PWD      := ${shell pwd}
+REPOHOME := ${PWD}/../../
 
 METRICS := bleu spbleu chrf chrf++
-
 
 ## specify all models
 
@@ -55,18 +56,20 @@ MODEL_URL       := https://location.of.my.model/storage/${MODEL}
 MODEL_STORAGE   := https://object.pouta.csc.fi/External-MT-models
 MODEL_EVAL_URL  := ${MODEL_STORAGE}/${MODEL}.eval.zip
 
-## typically 'make all' means eval all models
-## add whatever is necessary here
+SKIP_NEW_EVALUATION := 1
 
 .PHONY: all
-all: eval-models
+all:
+	${MAKE} -s fetch-model-scores
+	${MAKE} -s eval
+	${MAKE} -s update-eval-files
+	${MAKE} -s pack-model-scores
+
 
 
 ## all kinds of common evaluation recipes and variables
 ## no changes needed (hopefully)
 
-PWD      := ${shell pwd}
-REPOHOME := ${PWD}/../../
 
 include ../lib/config.mk
 include ../lib/eval.mk
