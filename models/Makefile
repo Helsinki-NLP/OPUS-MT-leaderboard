@@ -9,7 +9,7 @@
 
 ALL_SOURCES      := $(filter-out lib,$(notdir ${shell find . -maxdepth 1 -mindepth 1 -type d}))
 OPUSMT_SOURCES   := OPUS-MT-models Tatoeba-MT-models
-EXTERNAL_SOURCES := $(filter-out ${OPUSMT_SOURCES},${ALL_SOURCES})
+EXTERNAL_SOURCES := $(filter-out ${OPUSMT_SOURCES} unverified,${ALL_SOURCES})
 
 SOURCE     ?= facebook
 MODEL_HOME ?= ${SOURCE}
@@ -19,39 +19,60 @@ include lib/config.mk
 
 
 ## scores that need to be registered (stored in temporary score files)
-## if REGISTER_ALL_SCORES is set: check all model directories
-## if REGISTER_ALL_SCORES is not set: take only the current model dir
+## if ALL_MODELS is set: check all model directories
+## if ALL_MODELS is not set: take only the current model dir
 
-ifdef REGISTER_ALL_EXTERNAL
-  MODEL_HOME      := .
-  SCOREFILES      := ${wildcard ./*/*-scores.txt}
-  SCOREFILES_DONE := ${SCOREFILES:.txt=.registered}
-else ifdef REGISTER_ALL_SCORES
-  SCOREFILES      := ${shell find ${MODEL_HOME}/ -name '*-scores.txt'}
-  SCOREFILES_DONE := ${SCOREFILES:.txt=.registered}
+ifdef ALL_MODELS
+  SCOREFILES := ${shell find ${MODEL_HOME}/ -name '*-scores.txt'}
 else
-  SCOREFILES      := ${wildcard ${MODEL_DIR}.*-scores.txt}
-  SCOREFILES_DONE := ${SCOREFILES:.txt=.registered}
+  SCOREFILES := ${wildcard ${MODEL_DIR}.*-scores.txt}
 endif
 
 
-.PHONY: all
-all: register-scores
-	${MAKE} upload-eval-files
+## if ALL_MODELSOURCE is set: find all *.scores.txt files
+## to get a list of all *.eval.zip files (a very long list)
 
-## update all leader boards with all scores
-.PHONY: register-scores
-register-scores:
-	${MAKE} REGISTER_ALL_SCORES=1 register
+ifdef ALL_MODELSOURCES
+  MODEL_EVALZIPS := $(patsubst %.scores.txt,%.eval.zip,${shell find . -name '*.scores.txt' -printf "%P\n"})
+endif
+
+MODEL_EVALZIPS  ?= $(patsubst %,%.eval.zip,$(sort $(basename ${SCOREFILES:.txt=})))
+SCOREFILES_DONE := ${SCOREFILES:.txt=.registered}
+
+
+.PHONY: all
+all: register-all
+	${MAKE} upload-all
+
+
+.PHONY: register-all
+register-all:
+	for s in ${ALL_SOURCES}; do \
+	  ${MAKE} SOURCE=$$s ALL_MODELS=1 register; \
+	done
+
+.PHONY: register-opusmt
+register-opusmt:
+	${MAKE} SOURCE=OPUS-MT-models ALL_MODELS=1 register
+	${MAKE} SOURCE=Tatoeba-MT-models ALL_MODELS=1 register
 
 .PHONY: register-external
 register-external:
 	for s in ${EXTERNAL_SOURCES}; do \
-	  ${MAKE} SOURCE=$$s register-scores; \
+	  ${MAKE} SOURCE=$$s ALL_MODELS=1 register; \
 	done
 
+.PHONY: register-contributed
+register-contributed:
+	${MAKE} SOURCE=unverified ALL_MODELS=1 register
 
-## register scores in leaderboards
+
+## register scores from all models in current source in leaderboards
+.PHONY: register-scores
+register-scores:
+	${MAKE} ALL_MODELS=1 register
+
+## register scores from current model in leaderboards
 .PHONY: register
 register: ${SCOREFILES_DONE}
 	find ${MODEL_HOME}/ -name '*.txt' | xargs git add
@@ -68,21 +89,37 @@ ${MODEL_HOME}/%-scores.registered: ${MODEL_HOME}/%-scores.txt
 	@touch $@
 
 
+
+
 STORAGE_BUCKET = OPUS-MT-leaderboard
+STORAGE_URL   := https://object.pouta.csc.fi/${STORAGE_BUCKET}
 
 .PHONY: upload upload-eval-files
 upload upload-eval-files:
 	which a-get
-	cd .. && find models/${MODEL_HOME} -name '*.eval.zip' | xargs swift upload ${STORAGE_BUCKET}
+	cd .. && find models/${MODEL_HOME} -name '*.eval.zip' | xargs swift upload ${STORAGE_BUCKET} --changed --skip-identical
 	swift post ${STORAGE_BUCKET} --read-acl ".r:*"
 
 .PHONY: upload-all
 upload-all:
 	which a-get
-	cd .. && find models/ -name '*.eval.zip' | xargs swift upload ${STORAGE_BUCKET}
+	cd .. && find models/ -name '*.eval.zip' | xargs swift upload ${STORAGE_BUCKET} --changed --skip-identical
 	swift post ${STORAGE_BUCKET} --read-acl ".r:*"
 
 .PHONY: upload-dryrun upload-eval-files-dryrun
 upload-dryrun upload-eval-files-dryrun:
 	@echo 'which a-get'
 	@echo "cd .. && find models/${MODEL_HOME} -name '*.eval.zip' | xargs swift upload ${STORAGE_BUCKET}"
+
+
+
+
+.PHONY: download download-eval-files
+download download-eval-files: ${MODEL_EVALZIPS}
+
+.PHONY: download-all
+download-all:
+	${MAKE} ALL_MODELSOURCES=1 download
+
+%.eval.zip: %.scores.txt
+	wget -qq -O $@ ${STORAGE_URL}/models/$@

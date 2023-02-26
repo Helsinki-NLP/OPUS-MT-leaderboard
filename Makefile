@@ -52,6 +52,18 @@ all: released-models.txt release-history.txt
 	${MAKE} all-langpair-scores
 	find ${LEADERBOARD_DIR}/ -name '*.txt' | xargs git add
 
+USER_CONTRIBUTED_FILES := $(shell find models/unverified -type f -name '*.output')
+USER_CONTRIBUTED_FILE  ?= $(firstword ${USER_CONTRIBUTED_FILES})
+
+eval-userfile:
+
+
+.PHONY: fetch-zipfiles
+fetch-zipfiles:
+	${MAKE} -C models download-all
+
+
+
 
 .PHONY: all-external
 all-external:
