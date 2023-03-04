@@ -47,5 +47,12 @@ translate: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
 ${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
 	echo "create $@"
 	mkdir -p $(dir $@)
-	module load pytorch && python3 translate.py -m ${MODEL} -i ${SRC} -o ${TRG} < $< > $@
+	mkdir -p ${MODEL_DIR}
+	find ${MODEL_DIR} -name '*.${LANGPAIR}.compare' -exec cat {} \; |\
+	../../tools/find-missing-translations.pl -i $< -o $@.found > $@.missing
+	module load pytorch && python3 translate.py -m ${MODEL} \
+		-i ${SRC} -o ${TRG} < $@.missing > $@.translated
+	../../tools/merge-with-missing-translations.pl \
+		-i $@.missing -t $@.translated < $@.found > $@
+	rm -f $@.found $@.missing $@.translated
 

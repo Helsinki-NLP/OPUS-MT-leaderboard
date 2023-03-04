@@ -46,13 +46,17 @@ endif
 UPDATE_LEADERBOARDS := $(foreach m,${METRICS},$(patsubst %,%$(m)-scores.txt,${UPDATE_SCORE_DIRS}))
 
 
+LANGPAIR_LISTS  := scores/langpairs.txt external-scores/langpairs.txt user-scores/langpairs.txt
+BENCHMARK_LISTS := scores/benchmarks.txt external-scores/benchmarks.txt user-scores/benchmarks.txt
+
 .PHONY: all
 all: released-models.txt release-history.txt
 	${MAKE} refresh-leaderboards
 	${MAKE} all-langpair-scores
+	${MAKE} ${LANGPAIR_LISTS} ${BENCHMARK_LISTS}
 	find ${LEADERBOARD_DIR}/ -name '*.txt' | xargs git add
 
-USER_CONTRIBUTED_FILES  := $(shell find models/unverified/work -type f -name '*.output')
+USER_CONTRIBUTED_FILES  := $(shell find models/unverified -type f -name '*.output')
 USER_CONTRIBUTED_FILE   ?= $(firstword ${USER_CONTRIBUTED_FILES})
 CONTRIBUTED_USERNAME    := $(word 5,$(subst /, ,${USER_CONTRIBUTED_FILE}))
 CONTRIBUTED_MODEL       := $(patsubst models/unverified/work/unverified/${CONTRIBUTED_USERNAME}/%/,%,\
@@ -236,6 +240,20 @@ ${UPDATE_LEADERBOARDS}: ${UPDATE_SCORE_DIRS}
 	    mv $@.sorted $@; \
 	  fi; \
 	fi
+
+
+
+%/langpairs.txt: %
+	find $(dir $@) -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort > $@
+
+
+%/benchmarks.txt: %
+	for b in $(sort $(shell find $(dir $@) -mindepth 2 -maxdepth 2 -type d -printf '%f\n')); do \
+	  echo -n "$$b	" >> $@; \
+	  find $(dir $@) -name "$$b" -type d | cut -f2 -d/ | sort -u | tr "\n" ' ' >> $@; \
+	  echo "" >> $@; \
+	done
+
 
 
 

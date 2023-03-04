@@ -205,13 +205,39 @@ endif
 .PHONY: output
 output: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
 
+NVIDIA_GPU_QUERY = timestamp,name,pci.bus_id,driver_version,pstate,pcie.link.gen.max,pcie.link.gen.current,temperature.gpu,utilization.gpu,utilization.memory,power.draw,memory.total,memory.free,memory.used
+
 ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.input
+	@echo "........ create $(patsubst ${WORK_DIR}/%,%,$@)"
+	@mkdir -p $(dir $@)
+	@mkdir -p ${MODEL_DIR}
+	@echo "Translating sentences from $(notdir $<) to ${TRG}"          > $@.log
+	@echo ""                                                          >> $@.log
 	if [ -e $< ]; then \
 	  if [ -s $< ]; then \
-	    ${LOAD_ENV} && ${MARIAN_DECODER} -i $< \
+	    echo " - size of sentences to translate (subword tokenized):" >> $@.log; \
+	    cat $< | wc                                                   >> $@.log; \
+	    echo " - resources used to translate:"                        >> $@.log; \
+	    if command -v nvidia-smi &> /dev/null; then \
+	      nvidia-smi --query-gpu=${NVIDIA_GPU_QUERY} --format=csv -l 1 > $@.gpu & \
+	      echo "nvidia-smi process ID: $$!"; \
+	    fi; \
+	    ${LOAD_ENV} && \
+	    ${TIME} -v -o $@.time \
+	    ${MARIAN_DECODER} -i $< \
 		-c ${WORK_DIR}/model/decoder.yml \
 		${MARIAN_DECODER_FLAGS} |\
 	    sed 's/ //g;s/▁/ /g' | sed 's/^ *//;s/ *$$//' > $@; \
+	    cat $@.time >> $@.log; \
+	    rm -f $@.time; \
+	    if command -v nvidia-smi &> /dev/null; then \
+	      kill %1; \
+	      echo " - GPU utlization:" >> $@.log; \
+	      cat $@.gpu                >> $@.log; \
+	      rm -f $@.gpu; \
+	    fi \
 	  fi \
 	fi
+	@mv $@.log $(patsubst ${WORK_DIR}/%.output,${MODEL_DIR}/%.log,$@)
+
 

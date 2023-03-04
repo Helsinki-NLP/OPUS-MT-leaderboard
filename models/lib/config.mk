@@ -32,6 +32,12 @@ include ${REPOHOME}lib/slurm.mk
 GPUJOB_HPC_MEM = 20g
 
 
+TIME := $(shell which time || echo "time")
+
+FIND_TRANSLATIONS  := ${REPOHOME}tools/find-missing-translations.pl
+MERGE_TRANSLATIONS := ${REPOHOME}tools/merge-with-missing-translations.pl
+
+
 ## directory with all test sets (submodule OPUS-MT-testsets)
 
 TESTSET_HOME   := ${REPOHOME}OPUS-MT-testsets/testsets

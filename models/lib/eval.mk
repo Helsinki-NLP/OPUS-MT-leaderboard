@@ -100,8 +100,8 @@ eval-testsets: ${TRANSLATED_BENCHMARKS} ${EVALUATED_BENCHMARKS}
 
 ${MODEL_DIR}/%.${LANGPAIR}.compare: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
 	@mkdir -p ${dir $@}
-	${MAKE} $(patsubst ${MODEL_DIR}/%.${LANGPAIR}.compare,${WORK_DIR}/%.${LANGPAIR}.output,$@)
-	if [ -s $(patsubst ${MODEL_DIR}/%.${LANGPAIR}.compare,${WORK_DIR}/%.${LANGPAIR}.output,$@) ]; then \
+	@${MAKE} $(patsubst ${MODEL_DIR}/%.${LANGPAIR}.compare,${WORK_DIR}/%.${LANGPAIR}.output,$@)
+	@if [ -s $(patsubst ${MODEL_DIR}/%.${LANGPAIR}.compare,${WORK_DIR}/%.${LANGPAIR}.output,$@) ]; then \
 	  paste -d "\n" $^ $(patsubst ${MODEL_DIR}/%.${LANGPAIR}.compare,${WORK_DIR}/%.${LANGPAIR}.output,$@) |\
 	  sed 'n;n;G;' > $@; \
 	fi
@@ -115,19 +115,19 @@ ${MODEL_DIR}/%.${LANGPAIR}.compare: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${T
 
 ${EVALUATED_BENCHMARKS}: ${BENCHMARK_SCORE_FILES}
 	${MAKE} $(patsubst %,$(basename $@).%,${METRICS})
-	for m in ${METRICS}; do \
+	@for m in ${METRICS}; do \
 	  if [ $$m == comet ]; then \
 	    tail -1 $(basename $@).$$m | sed 's/^.*score:/COMET+default =/' >> $@; \
 	  else \
 	    cat $(basename $@).$$m >> $@; \
 	  fi \
 	done
-	rev $@ | sort | uniq -f2 | rev > $@.uniq
-	mv -f $@.uniq $@
+	@rev $@ | sort | uniq -f2 | rev > $@.uniq
+	@mv -f $@.uniq $@
 
 
 ## adjust tokenisation to non-space-separated languages
-ifneq ($(filter cmn yue zho,${TRG}),)
+ifneq ($(filter cmn yue zho,$(firstword $(subst _, ,${TRG}))),)
   SACREBLEU_PARAMS = --tokenize zh
 endif
 
@@ -140,64 +140,70 @@ ifneq ($(filter kor,${TRG}),)
 endif
 
 ${MODEL_DIR}/%.${LANGPAIR}.spbleu: ${MODEL_DIR}/%.${LANGPAIR}.compare
-	mkdir -p ${dir $@}
-	sed -n '1~4p' $< > $@.src
-	sed -n '2~4p' $< > $@.ref
-	sed -n '3~4p' $< > $@.hyp
-	cat $@.hyp | \
+	@echo "... create ${MODEL}/$(notdir $@)"
+	@mkdir -p ${dir $@}
+	@sed -n '1~4p' $< > $@.src
+	@sed -n '2~4p' $< > $@.ref
+	@sed -n '3~4p' $< > $@.hyp
+	@cat $@.hyp | \
 	sacrebleu -f text --metrics=bleu --tokenize flores200 $@.ref > $@
-	rm -f $@.src $@.ref $@.hyp
+	@rm -f $@.src $@.ref $@.hyp
 
 ${MODEL_DIR}/%.${LANGPAIR}.bleu: ${MODEL_DIR}/%.${LANGPAIR}.compare
-	mkdir -p ${dir $@}
-	sed -n '1~4p' $< > $@.src
-	sed -n '2~4p' $< > $@.ref
-	sed -n '3~4p' $< > $@.hyp
-	cat $@.hyp | \
+	@echo "... create ${MODEL}/$(notdir $@)"
+	@mkdir -p ${dir $@}
+	@sed -n '1~4p' $< > $@.src
+	@sed -n '2~4p' $< > $@.ref
+	@sed -n '3~4p' $< > $@.hyp
+	@cat $@.hyp | \
 	sacrebleu -f text ${SACREBLEU_PARAMS} $@.ref > $@
-	rm -f $@.src $@.ref $@.hyp
+	@rm -f $@.src $@.ref $@.hyp
 
 ${MODEL_DIR}/%.${LANGPAIR}.chrf: ${MODEL_DIR}/%.${LANGPAIR}.compare
-	mkdir -p ${dir $@}
-	sed -n '1~4p' $< > $@.src
-	sed -n '2~4p' $< > $@.ref
-	sed -n '3~4p' $< > $@.hyp
-	cat $@.hyp | \
+	@echo "... create ${MODEL}/$(notdir $@)"
+	@mkdir -p ${dir $@}
+	@sed -n '1~4p' $< > $@.src
+	@sed -n '2~4p' $< > $@.ref
+	@sed -n '3~4p' $< > $@.hyp
+	@cat $@.hyp | \
 	sacrebleu -f text ${SACREBLEU_PARAMS} --metrics=chrf --width=3 $@.ref |\
 	perl -pe 'unless (/version\:1\./){@a=split(/\s+/);$$a[-1]/=100;$$_=join(" ",@a)."\n";}' > $@
-	rm -f $@.src $@.ref $@.hyp
+	@rm -f $@.src $@.ref $@.hyp
 
 ${MODEL_DIR}/%.${LANGPAIR}.chrf++: ${MODEL_DIR}/%.${LANGPAIR}.compare
-	mkdir -p ${dir $@}
-	sed -n '1~4p' $< > $@.src
-	sed -n '2~4p' $< > $@.ref
-	sed -n '3~4p' $< > $@.hyp
-	cat $@.hyp | \
+	@echo "... create ${MODEL}/$(notdir $@)"
+	@mkdir -p ${dir $@}
+	@sed -n '1~4p' $< > $@.src
+	@sed -n '2~4p' $< > $@.ref
+	@sed -n '3~4p' $< > $@.hyp
+	@cat $@.hyp | \
 	sacrebleu -f text ${SACREBLEU_PARAMS} --metrics=chrf --width=3 --chrf-word-order 2 $@.ref |\
 	perl -pe 'unless (/version\:1\./){@a=split(/\s+/);$$a[-1]/=100;$$_=join(" ",@a)."\n";}' > $@
-	rm -f $@.src $@.ref $@.hyp
+	@rm -f $@.src $@.ref $@.hyp
 
 ${MODEL_DIR}/%.${LANGPAIR}.ter: ${MODEL_DIR}/%.${LANGPAIR}.compare
-	mkdir -p ${dir $@}
-	sed -n '1~4p' $< > $@.src
-	sed -n '2~4p' $< > $@.ref
-	sed -n '3~4p' $< > $@.hyp
-	cat $@.hyp | \
+	@echo "... create ${MODEL}/$(notdir $@)"
+	@mkdir -p ${dir $@}
+	@sed -n '1~4p' $< > $@.src
+	@sed -n '2~4p' $< > $@.ref
+	@sed -n '3~4p' $< > $@.hyp
+	@cat $@.hyp | \
 	sacrebleu -f text ${SACREBLEU_PARAMS} --metrics=ter $@.ref > $@
-	rm -f $@.src $@.ref $@.hyp
+	@rm -f $@.src $@.ref $@.hyp
 
 ifneq (${GPU_AVAILABLE},1)
   COMET_PARAM += --gpus 0
 endif
 
 ${MODEL_DIR}/%.${LANGPAIR}.comet: ${MODEL_DIR}/%.${LANGPAIR}.compare
-	mkdir -p ${dir $@}
-	sed -n '1~4p' $< > $@.src
-	sed -n '2~4p' $< > $@.ref
-	sed -n '3~4p' $< > $@.hyp
-	${LOAD_COMET_ENV} ${COMET_SCORE} ${COMET_PARAM} \
+	@echo "... create ${MODEL}/$(notdir $@)"
+	@mkdir -p ${dir $@}
+	@sed -n '1~4p' $< > $@.src
+	@sed -n '2~4p' $< > $@.ref
+	@sed -n '3~4p' $< > $@.hyp
+	@${LOAD_COMET_ENV} ${COMET_SCORE} ${COMET_PARAM} \
 		-s $@.src -r $@.ref -t $@.hyp | cut -f2,3 > $@
-	rm -f $@.src $@.ref $@.hyp
+	@rm -f $@.src $@.ref $@.hyp
 
 
 
@@ -223,7 +229,8 @@ ifndef SKIP_NEW_EVALUATION
 	${MAKE} eval-langpairs
 	${MAKE} cleanup
 endif
-	if [ -d ${MODEL_DIR} ]; then \
+	@echo "... create ${MODEL}/$(notdir $@)"
+	@if [ -d ${MODEL_DIR} ]; then \
 	  echo "... create ${MODEL_SCORES}"; \
 	  grep -H BLEU ${MODEL_DIR}/*.bleu | sed 's/.bleu//' | sort          > $@.bleu; \
 	  grep -H chrF ${MODEL_DIR}/*.chrf | sed 's/.chrf//' | sort          > $@.chrf; \
@@ -264,7 +271,8 @@ endif
 ##-------------------------------------------------
 
 ${MODEL_DIR}.%-scores.txt: ${MODEL_SCORES}
-	if [ -d ${MODEL_DIR} ]; then \
+	@echo "... create ${MODEL}/$(notdir $@)"
+	@if [ -d ${MODEL_DIR} ]; then \
 	  mkdir -p $(dir $@); \
 	  grep -H . ${MODEL_DIR}/*.$(patsubst ${MODEL_DIR}.%-scores.txt,%,$@) > $@.all; \
 	  cut -f1 -d: $@.all | rev | cut -f2 -d. | rev                        > $@.langs; \
@@ -283,7 +291,8 @@ ${MODEL_DIR}.%-scores.txt: ${MODEL_SCORES}
 ## specific recipe for COMET scores
 
 ${MODEL_DIR}.comet-scores.txt: ${MODEL_SCORES}
-	if [ -d ${MODEL_DIR} ]; then \
+	@echo "... create ${MODEL}/$(notdir $@)"
+	@if [ -d ${MODEL_DIR} ]; then \
 	  mkdir -p $(dir $@); \
 	  grep -H '^score:' ${MODEL_DIR}/*.comet | sort                  > $@.comet; \
 	  cut -f1 -d: $@.comet | rev | cut -f2 -d. | rev                 > $@.langs; \
@@ -314,7 +323,7 @@ fetch-model-scores: ${MODEL_DIR}
 ## prepare the model evaluation file directory
 ## fetch already existing evaluations
 ${MODEL_DIR}:
-	mkdir -p $@
+	@mkdir -p $@
 	-if [ -e ${MODEL_EVALZIP} ]; then \
 	  cd ${MODEL_DIR}; \
 	  unzip -n ${MODEL_EVALZIP}; \
@@ -328,7 +337,8 @@ ${MODEL_DIR}:
 
 .PHONY: pack-model-scores
 pack-model-scores:
-	if [ -d ${MODEL_DIR} ]; then \
+	@if [ -d ${MODEL_DIR} ]; then \
+	  echo "... pack model scores from ${MODEL}"; \
 	  cd ${MODEL_DIR} && find . -name '*.*' | xargs zip ${MODEL_EVALZIP}; \
 	  find ${MODEL_DIR} -name '*.*' -delete; \
 	  if [ -d ${MODEL_DIR} ]; then \
@@ -343,7 +353,7 @@ pack-all-model-scores: ${MODEL_PACK_EVAL}
 
 .PHONY: ${MODEL_PACK_EVAL}
 ${MODEL_PACK_EVAL}:
-	if [ -d ${MODEL_HOME}/$(@:.pack=) ]; then \
+	@if [ -d ${MODEL_HOME}/$(@:.pack=) ]; then \
 	  ${MAKE} MODEL=$(@:.pack=) pack-model-scores; \
 	fi
 

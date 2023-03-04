@@ -60,19 +60,20 @@ endif
 ifdef BROKEN_NODES
 	echo '#SBATCH --exclude=${BROKEN_NODES}' >> ${TMPWORKDIR}/$@
 endif
-	echo '${HPC_EXTRA}' >> ${TMPWORKDIR}/$@
-	echo '${HPC_EXTRA1}' >> ${TMPWORKDIR}/$@
-	echo '${HPC_EXTRA2}' >> ${TMPWORKDIR}/$@
-	echo '${HPC_EXTRA3}' >> ${TMPWORKDIR}/$@
-	echo '${HPC_GPU_EXTRA1}' >> ${TMPWORKDIR}/$@
-	echo '${HPC_GPU_EXTRA2}' >> ${TMPWORKDIR}/$@
-	echo '${HPC_GPU_EXTRA3}' >> ${TMPWORKDIR}/$@
-	echo '${LOAD_GPU_ENV}'           >> ${TMPWORKDIR}/$@
+	echo '${HPC_EXTRA}'               >> ${TMPWORKDIR}/$@
+	echo '${HPC_EXTRA1}'              >> ${TMPWORKDIR}/$@
+	echo '${HPC_EXTRA2}'              >> ${TMPWORKDIR}/$@
+	echo '${HPC_EXTRA3}'              >> ${TMPWORKDIR}/$@
+	echo '${HPC_GPU_EXTRA1}'          >> ${TMPWORKDIR}/$@
+	echo '${HPC_GPU_EXTRA2}'          >> ${TMPWORKDIR}/$@
+	echo '${HPC_GPU_EXTRA3}'          >> ${TMPWORKDIR}/$@
+	echo '${LOAD_GPU_ENV}'            >> ${TMPWORKDIR}/$@
 	echo 'cd $${SLURM_SUBMIT_DIR:-.}' >> ${TMPWORKDIR}/$@
 	echo 'pwd' >> ${TMPWORKDIR}/$@
-	echo 'echo "Starting at `date`"' >> ${TMPWORKDIR}/$@
+	echo 'echo "Starting at `date`"'  >> ${TMPWORKDIR}/$@
 	echo 'srun ${MAKE} -j ${GPUJOB_HPC_JOBS} ${MAKEARGS} ${@:.submit=}' >> ${TMPWORKDIR}/$@
 	echo 'echo "Finishing at `date`"' >> ${TMPWORKDIR}/$@
+	echo 'seff $SLURM_JOBID'          >> ${TMPWORKDIR}/$@
 	sbatch ${SBATCH_ARGS} ${TMPWORKDIR}/$@
 	mkdir -p ${WORKDIR}
 	mv ${TMPWORKDIR}/$@ ${WORKDIR}/$@
@@ -117,12 +118,13 @@ endif
 	echo '${HPC_CPU_EXTRA1}' >> ${TMPWORKDIR}/$@
 	echo '${HPC_CPU_EXTRA2}' >> ${TMPWORKDIR}/$@
 	echo '${HPC_CPU_EXTRA3}' >> ${TMPWORKDIR}/$@
-	echo '${LOAD_CPU_ENV}'           >> ${TMPWORKDIR}/$@
+	echo '${LOAD_CPU_ENV}'            >> ${TMPWORKDIR}/$@
 	echo 'cd $${SLURM_SUBMIT_DIR:-.}' >> ${TMPWORKDIR}/$@
 	echo 'pwd' >> ${TMPWORKDIR}/$@
-	echo 'echo "Starting at `date`"' >> ${TMPWORKDIR}/$@
-	echo '${MAKE} -j ${CPUJOB_HPC_JOBS} ${MAKEARGS} ${@:.submitcpu=}' >> ${TMPWORKDIR}/$@
+	echo 'echo "Starting at `date`"'  >> ${TMPWORKDIR}/$@
+	echo 'srun ${MAKE} -j ${CPUJOB_HPC_JOBS} ${MAKEARGS} ${@:.submitcpu=}' >> ${TMPWORKDIR}/$@
 	echo 'echo "Finishing at `date`"' >> ${TMPWORKDIR}/$@
+	echo 'seff $SLURM_JOBID'          >> ${TMPWORKDIR}/$@
 	sbatch ${SBATCH_ARGS} ${TMPWORKDIR}/$@
 	mkdir -p ${WORKDIR}
 	mv ${TMPWORKDIR}/$@ ${WORKDIR}/$@

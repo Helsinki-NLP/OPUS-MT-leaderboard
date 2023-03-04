@@ -45,7 +45,14 @@ TRGID ?= ja_XX
 ${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
 	echo "create $@"
 	mkdir -p $(dir $@)
+	mkdir -p ${MODEL_DIR}
+	find ${MODEL_DIR} -name '*.${LANGPAIR}.compare' -exec cat {} \; |\
+	../../tools/find-missing-translations.pl -i $< -o $@.found > $@.missing
 	module load pytorch && python3 ../huggingface/translate.py \
 		-m ${MODEL} -b ${BATCH_SIZE} -l ${MAX_LENGTH} \
-		-i ${SRCID} -o ${TRGID} < $< > $@
+		-i ${SRCID} -o ${TRGID} < $@.missing > $@.translated
+	../../tools/merge-with-missing-translations.pl \
+		-i $@.missing -t $@.translated < $@.found > $@
+	rm -f $@.found $@.missing $@.translated
+
 
