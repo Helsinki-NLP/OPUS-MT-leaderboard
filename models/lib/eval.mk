@@ -12,19 +12,50 @@ eval-pivot:
 	${MAKE} SRC_LANGS=${PIVOTLANG} pack-model-scores
 
 
-EVAL_MODEL_TARGET = $(patsubst %,%-evalmodel,${MODELS})
+EVAL_MODEL_TARGETS = $(patsubst %,%-evalmodel,${MODELS})
 
+# eval-models: evaluate all models
+# NEW: continue if the SLURM job breaks (see below)
+#
+# .PHONY: eval-models
+# eval-models: ${EVAL_MODEL_TARGETS}
+
+
+## define how may repetitions of slurm jobs we
+## can submit in case a jobs times out or breaks
+## SLURM_REPEAT     = current iteration
+## SLURM_MAX_REPEAT = maximum number of iterations we allow
+
+SLURM_REPEAT     ?= 0
+SLURM_MAX_REPEAT ?= 10
+
+# eval models - if this is a slurm job (i.e. SLURM_JOBID is set):
+# - submit another one that continues training in case the current one breaks
+# - only continue a certain number of times to avoid infinte loops
 .PHONY: eval-models
-eval-models: ${EVAL_MODEL_TARGET}
+eval-models:
+ifdef SLURM_JOBID
+	if [ ${SLURM_REPEAT} -lt ${SLURM_MAX_REPEAT} ]; then \
+	  echo "submit job that continues to train in case the current one breaks or times out"; \
+	  echo "current iteration: ${SLURM_REPEAT}"; \
+	  ${MAKE} SLURM_REPEAT=$$(( ${SLURM_REPEAT} + 1 )) \
+		SBATCH_ARGS="-d afternotok:${SLURM_JOBID}" $@.submit; \
+	else \
+	  echo "reached maximum number of repeated slurm jobs: ${SLURM_REPEAT}"; \
+	fi
+endif
+	${MAKE} ${EVAL_MODEL_TARGETS}
 
-.PHONY: ${EVAL_MODEL_TARGET}
-${EVAL_MODEL_TARGET}:
+
+
+.PHONY: ${EVAL_MODEL_TARGETS}
+${EVAL_MODEL_TARGETS}:
 	-${MAKE} MODEL=$(@:-evalmodel=) eval-model
 
 
-EVAL_MODEL_REVERSE_TARGET = $(call reverse,${EVAL_MODEL_TARGET})
+EVAL_MODEL_REVERSE_TARGETS = $(call reverse,${EVAL_MODEL_TARGETS})
 
-eval-models-reverse-order: ${EVAL_MODEL_REVERSE_TARGET}
+eval-models-reverse-order: ${EVAL_MODEL_REVERSE_TARGETS}
 
 ##-------------------------------------------------
 ## evaluate the model with all benchmarks available
@@ -216,6 +247,12 @@ ${MODEL_DIR}/%.${LANGPAIR}.comet: ${MODEL_DIR}/%.${LANGPAIR}.compare
 # - avoid re-running things that are already done
 # - ingest the new evaluation scores
 #
+#
+# problem with very large multilingual models:
+#
+#	  grep -H BLEU ${MODEL_DIR}/*.bleu | sed 's/.bleu//' | sort          > $@.bleu; \
+#	  grep -H chrF ${MODEL_DIR}/*.chrf | sed 's/.chrf//' | sort          > $@.chrf;
+
 
 ${MODEL_SCORES}: ${TESTSET_INDEX}
 ifndef SKIP_OLD_EVALUATION
@@ -232,8 +269,8 @@ endif
 	@echo "... create ${MODEL}/$(notdir $@)"
 	@if [ -d ${MODEL_DIR} ]; then \
 	  echo "... create ${MODEL_SCORES}"; \
-	  grep -H BLEU ${MODEL_DIR}/*.bleu | sed 's/.bleu//' | sort          > $@.bleu; \
-	  grep -H chrF ${MODEL_DIR}/*.chrf | sed 's/.chrf//' | sort          > $@.chrf; \
+	  find ${MODEL_DIR} -name '*.bleu' | xargs grep -H BLEU | sed 's/.bleu//' | sort > $@.bleu; \
+	  find ${MODEL_DIR} -name '*.chrf' | xargs grep -H chrF | sed 's/.chrf//' | sort > $@.chrf; \
 	  join -t: -j1 $@.bleu $@.chrf                                       > $@.bleu-chrf; \
 	  cut -f1 -d: $@.bleu-chrf | rev | cut -f1 -d. | rev                 > $@.langs; \
 	  cut -f1 -d: $@.bleu-chrf | rev | cut -f1 -d/ | cut -f2- -d. | rev  > $@.testsets; \
@@ -269,12 +306,15 @@ endif
 ## generic recipe for extracting scores for a metric
 ## (works for all sacrebleu results but not for other metrics)
 ##-------------------------------------------------
+##
+#
+#	  grep -H . ${MODEL_DIR}/*.$(patsubst ${MODEL_DIR}.%-scores.txt,%,$@) > $@.all;
 
 ${MODEL_DIR}.%-scores.txt: ${MODEL_SCORES}
 	@echo "... create ${MODEL}/$(notdir $@)"
 	@if [ -d ${MODEL_DIR} ]; then \
 	  mkdir -p $(dir $@); \
-	  grep -H . ${MODEL_DIR}/*.$(patsubst ${MODEL_DIR}.%-scores.txt,%,$@) > $@.all; \
+	  find ${MODEL_DIR} -name '*.$(patsubst ${MODEL_DIR}.%-scores.txt,%,$@)' | xargs grep -H . > $@.all; \
 	  cut -f1 -d: $@.all | rev | cut -f2 -d. | rev                        > $@.langs; \
 	  cut -f1 -d: $@.all | rev | cut -f1 -d/ | cut -f3- -d. | rev         > $@.testsets; \
 	  cut -f3 -d ' '  $@.all                                              > $@.scores; \
@@ -289,12 +329,14 @@ ${MODEL_DIR}.%-scores.txt: ${MODEL_SCORES}
 
 
 ## specific recipe for COMET scores
+#
+#	  grep -H '^score:' ${MODEL_DIR}/*.comet | sort                  > $@.comet; \
 
 ${MODEL_DIR}.comet-scores.txt: ${MODEL_SCORES}
 	@echo "... create ${MODEL}/$(notdir $@)"
 	@if [ -d ${MODEL_DIR} ]; then \
 	  mkdir -p $(dir $@); \
-	  grep -H '^score:' ${MODEL_DIR}/*.comet | sort                  > $@.comet; \
+	  find ${MODEL_DIR} -name '*.comet' | xargs grep -H '^score:' | sort > $@.comet; \
 	  cut -f1 -d: $@.comet | rev | cut -f2 -d. | rev                 > $@.langs; \
 	  cut -f1 -d: $@.comet | rev | cut -f1 -d/ | cut -f3- -d. | rev  > $@.testsets; \
 	  cat $@.comet | rev | cut -f1 -d' ' | rev                       > $@.comet-scores; \
@@ -340,6 +382,7 @@ pack-model-scores:
 	@if [ -d ${MODEL_DIR} ]; then \
 	  echo "... pack model scores from ${MODEL}"; \
 	  cd ${MODEL_DIR} && find . -name '*.*' | xargs zip ${MODEL_EVALZIP}; \
+	  find ${MODEL_DIR} -name '*.log' -printf '%P\n' > ${MODEL_DIR}.logfiles; \
 	  find ${MODEL_DIR} -name '*.*' -delete; \
 	  if [ -d ${MODEL_DIR} ]; then \
 	    rmdir ${MODEL_DIR}; \

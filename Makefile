@@ -118,12 +118,14 @@ fetch-zipfiles:
 all-external:
 	${MAKE} -s MODELSOURCE=external update-all-leaderboards
 	${MAKE} -s MODELSOURCE=external all-langpair-scores
+	${MAKE} -s external-scores/langpairs.txt external-scores/benchmarks.txt
 	find external-scores/ -name '*.txt' | xargs git add
 
 .PHONY: all-contributed
 all-contributed:
 	${MAKE} -s MODELSOURCE=contributed update-all-leaderboards
 	${MAKE} -s MODELSOURCE=contributed all-langpair-scores
+	${MAKE} -s user-scores/langpairs.txt user-scores/benchmarks.txt
 	find user-scores/ -name '*.txt' | xargs git add
 
 

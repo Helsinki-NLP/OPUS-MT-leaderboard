@@ -80,6 +80,7 @@ register-scores:
 register: ${SCOREFILES_DONE}
 	find ${MODEL_HOME}/ -name '*.txt' | xargs git add
 	find ${MODEL_HOME}/ -name '*.registered' | xargs git add
+	-find ${MODEL_HOME}/ -name '*.logfiles' | xargs git add
 
 
 ## register the scores for the current model

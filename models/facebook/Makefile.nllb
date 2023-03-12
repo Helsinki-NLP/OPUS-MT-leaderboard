@@ -48,6 +48,12 @@ NLLB_LANGID_FIXED = $(shell 	l=$(call NLLB_LANGID,${1},${2}); \
 				  echo arb_Arab; \
 			    	elif [ $$l == ara_Latn ]; then \
 				  echo arb_Latn; \
+			    	elif [ $$l == fas_Arab ]; then \
+				  echo pes_Arab; \
+			    	elif [ $$l == jpn ]; then \
+				  echo jpn_Jpan; \
+			    	elif [ $$l == kor ]; then \
+				  echo kor_Hang; \
 			    	elif [ $$l == cmn_Hans ]; then \
 				  echo zho_Hans; \
 			    	elif [ $$l == cmn_Hant ]; then \
@@ -63,7 +69,7 @@ NLLB_LANGID_FIXED = $(shell 	l=$(call NLLB_LANGID,${1},${2}); \
 all: eval-models
 
 eval-flores101:
-	${MAKE} SRC_LANGS="${FLORES101_LANGS}" TRG_LANGS="${FLORES101_LANGS}" eval-model
+	${MAKE} SRC_LANGS="${FLORES101_LANGS}" TRG_LANGS="${FLORES101_LANGS}" eval-models
 
 
 
@@ -124,11 +130,13 @@ ${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG
 	  echo "........ translate sentences from $(notdir $<)"; \
 	  echo " - size of (missing) sentences to translate:"      >> $@.log; \
 	  cat $@.missing | wc                                      >> $@.log; \
-	  echo " - resources used to translate:"                   >> $@.log; \
 	  if command -v nvidia-smi &> /dev/null; then \
 	    nvidia-smi --query-gpu=${NVIDIA_GPU_QUERY} --format=csv -l 1 > $@.gpu & \
 	    echo "nvidia-smi process ID: $$!"; \
+	    echo -n " - energy-comsumption counter before: "       >> $@.log; \
+	    python3 ../../tools/energy-consumption-counter.py      >> $@.log; \
 	  fi; \
+	  echo " - resources used to translate:"                   >> $@.log; \
 	  module load pytorch && \
 	  cat $@.missing | \
 	  ${TIME} -v -o $@.time python3 ${RUNSCRIPT} \
@@ -139,8 +147,10 @@ ${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG
 	  cat $@.time >> $@.log; \
 	  if command -v nvidia-smi &> /dev/null; then \
 	    kill %1; \
-	    echo " - GPU utlization:" >> $@.log; \
-	    cat $@.gpu                >> $@.log; \
+	    echo -n " - energy-comsumption counter after: "        >> $@.log; \
+	    python3 ../../tools/energy-consumption-counter.py      >> $@.log; \
+	    echo " - GPU utlization:"                              >> $@.log; \
+	    cat $@.gpu                                             >> $@.log; \
 	  fi \
 	fi
 	@${MERGE_TRANSLATIONS} -i $@.missing -t $@.translated < $@.found > $@

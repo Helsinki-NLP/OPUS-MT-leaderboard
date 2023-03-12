@@ -101,3 +101,6 @@ TESTSET_DIR   := ${TESTSET_HOME}/${LANGPAIR}
 TESTSETS      ?= ${notdir ${basename ${wildcard ${TESTSET_DIR}/*.${SRC}}}}
 TESTSET       ?= ${firstword ${TESTSETS}}
 
+
+print-makefile-variables:
+	$(foreach var,$(.VARIABLES),$(info $(var) = $($(var))))

@@ -23,17 +23,17 @@ NLLB_MODELS := nllb-200-distilled-600M nllb-200-distilled-1.3B nllb-200-1.3B nll
 
 nllb-jobs:
 	for m in ${NLLB_MODELS}; do \
-	  ${MAKE} -f Makefile.nllb MODEL=$$m METRICS="bleu spbleu chrf chrf++" eval-model.submit; \
+	  ${MAKE} -f Makefile.nllb MODELS=$$m METRICS="bleu spbleu chrf chrf++" eval-models.submit; \
 	done
 
 nllb-flores101-jobs:
 	for m in ${NLLB_MODELS}; do \
-	  ${MAKE} -f Makefile.nllb MODEL=$$m METRICS="bleu spbleu chrf chrf++" eval-flores101.submit; \
+	  ${MAKE} -f Makefile.nllb MODELS=$$m METRICS="bleu spbleu chrf chrf++" eval-flores101.submit; \
 	done
 
 nllb-pivot-jobs:
 	for m in ${NLLB_MODELS}; do \
-	  ${MAKE} -f Makefile.nllb MODEL=$$m eval-pivot.submit; \
+	  ${MAKE} -f Makefile.nllb MODELS=$$m eval-pivot.submit; \
 	done
 
 
@@ -45,7 +45,7 @@ M2M100_MODEL  ?= ${firstword ${M2M100_MODELS}}
 BATCH_SIZE    ?= 16
 
 m2m100:
-	${MAKE} -f Makefile.m2m100 METRICS="bleu spbleu chrf chrf++" MODELS=${M2M100_MODEL} BATCH_SIZE=${BATCH_SIZE} eval-model
+	${MAKE} -f Makefile.m2m100 METRICS="bleu spbleu chrf chrf++" MODELS=${M2M100_MODEL} BATCH_SIZE=${BATCH_SIZE} eval-models
 
 m2m100-jobs:
 	${MAKE} M2M100_MODEL=m2m100_418M BATCH_SIZE=16 m2m100.submit

@@ -43,42 +43,45 @@ endif
 %.submit:
 	mkdir -p ${WORKDIR}
 	mkdir -p ${dir ${TMPWORKDIR}/$@}
-	echo '#!/bin/bash -l' > ${TMPWORKDIR}/$@
-	echo '#SBATCH -J "${@:.submit=}"' >>${TMPWORKDIR}/$@
-	echo '#SBATCH -o ${@:.submit=}.out.%j' >> ${TMPWORKDIR}/$@
-	echo '#SBATCH -e ${@:.submit=}.err.%j' >> ${TMPWORKDIR}/$@
+	echo '#!/bin/bash -l'                    > ${TMPWORKDIR}/$@
+	echo '#SBATCH -J "${@:.submit=}"'       >> ${TMPWORKDIR}/$@
+	echo '#SBATCH -o ${@:.submit=}.out.%j'  >> ${TMPWORKDIR}/$@
+	echo '#SBATCH -e ${@:.submit=}.err.%j'  >> ${TMPWORKDIR}/$@
 ifdef EMAIL
-	echo '#SBATCH --mail-type=END' >> ${TMPWORKDIR}/$@
-	echo '#SBATCH --mail-user=${EMAIL}' >> ${TMPWORKDIR}/$@
+	echo '#SBATCH --mail-type=END'          >> ${TMPWORKDIR}/$@
+	echo '#SBATCH --mail-user=${EMAIL}'     >> ${TMPWORKDIR}/$@
 endif
-	echo '#SBATCH --mem=${GPUJOB_HPC_MEM}' >> ${TMPWORKDIR}/$@
-	echo '#SBATCH -n ${GPUJOB_HPC_CORES}' >> ${TMPWORKDIR}/$@
-	echo '#SBATCH -N ${GPUJOB_HPC_NODES}' >> ${TMPWORKDIR}/$@
+	echo '#SBATCH --mem=${GPUJOB_HPC_MEM}'  >> ${TMPWORKDIR}/$@
+	echo '#SBATCH -n ${GPUJOB_HPC_CORES}'   >> ${TMPWORKDIR}/$@
+	echo '#SBATCH -N ${GPUJOB_HPC_NODES}'   >> ${TMPWORKDIR}/$@
 	echo '#SBATCH -t ${GPUJOB_HPC_TIME}:00' >> ${TMPWORKDIR}/$@
-	echo '#SBATCH -p ${GPUJOB_HPC_QUEUE}' >> ${TMPWORKDIR}/$@
-	echo '#SBATCH ${HPC_GPU_ALLOCATION}' >> ${TMPWORKDIR}/$@
+	echo '#SBATCH -p ${GPUJOB_HPC_QUEUE}'   >> ${TMPWORKDIR}/$@
+	echo '#SBATCH ${HPC_GPU_ALLOCATION}'    >> ${TMPWORKDIR}/$@
 ifdef BROKEN_NODES
 	echo '#SBATCH --exclude=${BROKEN_NODES}' >> ${TMPWORKDIR}/$@
 endif
-	echo '${HPC_EXTRA}'               >> ${TMPWORKDIR}/$@
-	echo '${HPC_EXTRA1}'              >> ${TMPWORKDIR}/$@
-	echo '${HPC_EXTRA2}'              >> ${TMPWORKDIR}/$@
-	echo '${HPC_EXTRA3}'              >> ${TMPWORKDIR}/$@
-	echo '${HPC_GPU_EXTRA1}'          >> ${TMPWORKDIR}/$@
-	echo '${HPC_GPU_EXTRA2}'          >> ${TMPWORKDIR}/$@
-	echo '${HPC_GPU_EXTRA3}'          >> ${TMPWORKDIR}/$@
-	echo '${LOAD_GPU_ENV}'            >> ${TMPWORKDIR}/$@
-	echo 'cd $${SLURM_SUBMIT_DIR:-.}' >> ${TMPWORKDIR}/$@
-	echo 'pwd' >> ${TMPWORKDIR}/$@
-	echo 'echo "Starting at `date`"'  >> ${TMPWORKDIR}/$@
+	echo '${HPC_EXTRA}'                     >> ${TMPWORKDIR}/$@
+	echo '${HPC_EXTRA1}'                    >> ${TMPWORKDIR}/$@
+	echo '${HPC_EXTRA2}'                    >> ${TMPWORKDIR}/$@
+	echo '${HPC_EXTRA3}'                    >> ${TMPWORKDIR}/$@
+	echo '${HPC_GPU_EXTRA1}'                >> ${TMPWORKDIR}/$@
+	echo '${HPC_GPU_EXTRA2}'                >> ${TMPWORKDIR}/$@
+	echo '${HPC_GPU_EXTRA3}'                >> ${TMPWORKDIR}/$@
+	echo '${LOAD_GPU_ENV}'                  >> ${TMPWORKDIR}/$@
+	echo 'cd $${SLURM_SUBMIT_DIR:-.}'       >> ${TMPWORKDIR}/$@
+	echo 'pwd'                              >> ${TMPWORKDIR}/$@
+	echo 'echo "Starting at `date`"'        >> ${TMPWORKDIR}/$@
+	echo "echo ''"                          >> ${TMPWORKDIR}/$@
+	echo "Makefile variables:"              >> ${TMPWORKDIR}/$@
+	echo "${MAKE} print-makefile-variables" >> ${TMPWORKDIR}/$@
+	echo "echo ''"                          >> ${TMPWORKDIR}/$@
 	echo 'srun ${MAKE} -j ${GPUJOB_HPC_JOBS} ${MAKEARGS} ${@:.submit=}' >> ${TMPWORKDIR}/$@
-	echo 'echo "Finishing at `date`"' >> ${TMPWORKDIR}/$@
-	echo 'seff $SLURM_JOBID'          >> ${TMPWORKDIR}/$@
+	echo 'echo "Finishing at `date`"'       >> ${TMPWORKDIR}/$@
+	echo 'seff $SLURM_JOBID'                >> ${TMPWORKDIR}/$@
 	sbatch ${SBATCH_ARGS} ${TMPWORKDIR}/$@
 	mkdir -p ${WORKDIR}
 	mv ${TMPWORKDIR}/$@ ${WORKDIR}/$@
 
-# 	echo 'srun ${MAKE} NR=${NR} MODELTYPE=${MODELTYPE} DATASET=${DATASET} SRC=${SRC} TRG=${TRG} PRE_SRC=${PRE_SRC} PRE_TRG=${PRE_TRG} ${MAKEARGS} ${@:.submit=}' >> $@
 
 
 ## submit job to cpu queue
