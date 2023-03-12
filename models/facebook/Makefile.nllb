@@ -50,10 +50,24 @@ NLLB_LANGID_FIXED = $(shell 	l=$(call NLLB_LANGID,${1},${2}); \
 				  echo arb_Latn; \
 			    	elif [ $$l == fas_Arab ]; then \
 				  echo pes_Arab; \
+			    	elif [ $$l == ful_Latn ]; then \
+				  echo fuv_Latn; \
 			    	elif [ $$l == jpn ]; then \
 				  echo jpn_Jpan; \
 			    	elif [ $$l == kor ]; then \
 				  echo kor_Hang; \
+			    	elif [ $$l == kea_Latn ]; then \
+				  echo lim_Latn; \
+			    	elif [ $$l == lav_Latn ]; then \
+				  echo lvs_Latn; \
+			    	elif [ $$l == mon_Cyrl ]; then \
+				  echo khk_Cyrl; \
+			    	elif [ $$l == orm_Latn ]; then \
+				  echo gaz_Latn; \
+			    	elif [ $$l == pus_Arab ]; then \
+				  echo pbt_Arab; \
+			    	elif [ $$l == uzb_Latn ]; then \
+				  echo uzn_Latn; \
 			    	elif [ $$l == cmn_Hans ]; then \
 				  echo zho_Hans; \
 			    	elif [ $$l == cmn_Hant ]; then \
