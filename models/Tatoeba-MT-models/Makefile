@@ -185,16 +185,16 @@ endif
 endif
 
 
-${WORK_DIR}/${TESTSET}.${LANGPAIR}.input: ${TESTSET_DIR}/${TESTSET}.${SRC}
+${WORK_DIR}/%.${LANGPAIR}.input: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
 	${PREPROCESS} < $< > $@
 ## check whether we need to replace the target language labels
 ifeq (${USE_TARGET_LABELS},1)
-ifneq (${wildcard ${TESTSET_DIR}/${TESTSET}.${TRG}.labels},)
-	cut -f2- -d' ' $@ > $@.tmp1
-	sed 's/^/>>/;s/$$/<</' < ${TESTSET_DIR}/${TESTSET}.${TRG}.labels > $@.tmp2
-	paste -d' ' $@.tmp2 $@.tmp1 > $@
-	rm -f $@.tmp2 $@.tmp1
-endif
+	if [ -e $(word 2,$^).labels ]; then \
+	  cut -f2- -d' ' $@ > $@.tmp1; \
+	  sed 's/^/>>/;s/$$/<</' < $(word 2,$^).labels > $@.tmp2; \
+	  paste -d' ' $@.tmp2 $@.tmp1 > $@; \
+	  rm -f $@.tmp2 $@.tmp1; \
+	fi
 endif
 
 
@@ -207,7 +207,7 @@ output: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
 
 NVIDIA_GPU_QUERY = timestamp,name,pci.bus_id,driver_version,pstate,pcie.link.gen.max,pcie.link.gen.current,temperature.gpu,utilization.gpu,utilization.memory,power.draw,memory.total,memory.free,memory.used
 
-${WORK_DIR}/${TESTSET}.${LANGPAIR}.output: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.input
+${WORK_DIR}/%.${LANGPAIR}.output: ${WORK_DIR}/%.${LANGPAIR}.input
 	@echo "........ create $(patsubst ${WORK_DIR}/%,%,$@)"
 	@mkdir -p $(dir $@)
 	@mkdir -p ${MODEL_DIR}

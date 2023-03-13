@@ -78,10 +78,15 @@ register-scores:
 ## register scores from current model in leaderboards
 .PHONY: register
 register: ${SCOREFILES_DONE}
+ifdef ALL_MODELS
 	find ${MODEL_HOME}/ -name '*.txt' | xargs git add
 	find ${MODEL_HOME}/ -name '*.registered' | xargs git add
 	-find ${MODEL_HOME}/ -name '*.logfiles' | xargs git add
-
+else
+	git add ${MODEL_DIR}.*.txt
+	git add ${MODEL_DIR}.*.registered
+	-git add ${MODEL_DIR}.logfiles
+endif
 
 ## register the scores for the current model
 ## (scores will be added to some temporary files sorted by language pair and benchmark)

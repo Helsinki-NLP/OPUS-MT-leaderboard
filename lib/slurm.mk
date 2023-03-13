@@ -71,16 +71,17 @@ endif
 	echo 'cd $${SLURM_SUBMIT_DIR:-.}'       >> ${TMPWORKDIR}/$@
 	echo 'pwd'                              >> ${TMPWORKDIR}/$@
 	echo 'echo "Starting at `date`"'        >> ${TMPWORKDIR}/$@
-	echo "echo ''"                          >> ${TMPWORKDIR}/$@
-	echo "Makefile variables:"              >> ${TMPWORKDIR}/$@
-	echo "${MAKE} print-makefile-variables" >> ${TMPWORKDIR}/$@
-	echo "echo ''"                          >> ${TMPWORKDIR}/$@
 	echo 'srun ${MAKE} -j ${GPUJOB_HPC_JOBS} ${MAKEARGS} ${@:.submit=}' >> ${TMPWORKDIR}/$@
 	echo 'echo "Finishing at `date`"'       >> ${TMPWORKDIR}/$@
-	echo 'seff $SLURM_JOBID'                >> ${TMPWORKDIR}/$@
+	echo 'seff $$SLURM_JOBID'               >> ${TMPWORKDIR}/$@
 	sbatch ${SBATCH_ARGS} ${TMPWORKDIR}/$@
 	mkdir -p ${WORKDIR}
 	mv ${TMPWORKDIR}/$@ ${WORKDIR}/$@
+
+#	echo "echo ''"                          >> ${TMPWORKDIR}/$@
+#	echo "Makefile variables:"              >> ${TMPWORKDIR}/$@
+#	echo "${MAKE} print-makefile-variables" >> ${TMPWORKDIR}/$@
+#	echo "echo ''"                          >> ${TMPWORKDIR}/$@
 
 
 
@@ -127,7 +128,7 @@ endif
 	echo 'echo "Starting at `date`"'  >> ${TMPWORKDIR}/$@
 	echo 'srun ${MAKE} -j ${CPUJOB_HPC_JOBS} ${MAKEARGS} ${@:.submitcpu=}' >> ${TMPWORKDIR}/$@
 	echo 'echo "Finishing at `date`"' >> ${TMPWORKDIR}/$@
-	echo 'seff $SLURM_JOBID'          >> ${TMPWORKDIR}/$@
+	echo 'seff $$SLURM_JOBID'         >> ${TMPWORKDIR}/$@
 	sbatch ${SBATCH_ARGS} ${TMPWORKDIR}/$@
 	mkdir -p ${WORKDIR}
 	mv ${TMPWORKDIR}/$@ ${WORKDIR}/$@

@@ -40,20 +40,24 @@ METRICFILES = ${sort ${wildcard ${LEADERBOARD_DIR}/${LANGPAIR}/*/${METRIC}-score
 
 ifdef UPDATE_ALL_LEADERBOARDS
   UPDATE_SCORE_DIRS := $(sort $(dir ${wildcard ${LEADERBOARD_DIR}/*/*/*.unsorted.txt}))
+  UPDATE_LANGPAIRS  := $(sort $(dir $(patsubst ${LEADERBOARD_DIR}/%/,%,${UPDATE_SCORE_DIRS})))
 else
   UPDATE_SCORE_DIRS := $(sort $(dir ${wildcard ${LEADERBOARD_DIR}/${LANGPAIR}/*/*.unsorted.txt}))
+  UPDATE_LANGPAIRS  := ${LANGPAIR}
 endif
 UPDATE_LEADERBOARDS := $(foreach m,${METRICS},$(patsubst %,%$(m)-scores.txt,${UPDATE_SCORE_DIRS}))
+
 
 
 LANGPAIR_LISTS  := scores/langpairs.txt external-scores/langpairs.txt user-scores/langpairs.txt
 BENCHMARK_LISTS := scores/benchmarks.txt external-scores/benchmarks.txt user-scores/benchmarks.txt
 
 .PHONY: all
-all: released-models.txt release-history.txt
-	${MAKE} refresh-leaderboards
-	${MAKE} all-langpair-scores
-	${MAKE} ${LANGPAIR_LISTS} ${BENCHMARK_LISTS}
+all: scores
+	${MAKE} -s refresh-leaderboards
+	${MAKE} -s UPDATE_ALL_LEADERBOARDS=1 langpair-scores
+	${MAKE} -s released-models.txt release-history.txt
+	${MAKE} -s ${LANGPAIR_LISTS} ${BENCHMARK_LISTS}
 	find ${LEADERBOARD_DIR}/ -name '*.txt' | xargs git add
 
 USER_CONTRIBUTED_FILES  := $(shell find models/unverified -type f -name '*.output')
@@ -117,17 +121,26 @@ fetch-zipfiles:
 .PHONY: all-external
 all-external:
 	${MAKE} -s MODELSOURCE=external update-all-leaderboards
-	${MAKE} -s MODELSOURCE=external all-langpair-scores
+	${MAKE} -s MODELSOURCE=external UPDATE_ALL_LEADERBOARDS=1 langpair-scores
 	${MAKE} -s external-scores/langpairs.txt external-scores/benchmarks.txt
 	find external-scores/ -name '*.txt' | xargs git add
 
 .PHONY: all-contributed
 all-contributed:
-	${MAKE} -s MODELSOURCE=contributed update-all-leaderboards
-	${MAKE} -s MODELSOURCE=contributed all-langpair-scores
+	${MAKE} -s MODELSOURCE=contributed refresh-leaderboards
+	${MAKE} -s MODELSOURCE=contributed UPDATE_ALL_LEADERBOARDS=1 langpair-scores
 	${MAKE} -s user-scores/langpairs.txt user-scores/benchmarks.txt
 	find user-scores/ -name '*.txt' | xargs git add
 
+
+.PHONY: langpair-scores
+langpair-scores:
+	@for l in ${UPDATE_LANGPAIRS}; do \
+	  echo "extract top/avg scores for $$l"; \
+	  ${MAKE} -s LANGPAIR=$$l top-scores; \
+	  ${MAKE} -s LANGPAIR=$$l avg-scores; \
+	  ${MAKE} -s LANGPAIR=$$l model-list; \
+	done
 
 .PHONY: all-langpair-scores
 all-langpair-scores:
@@ -177,7 +190,7 @@ sort-updated-leaderboards refresh-leaderboards:
 
 
 released-models.txt: scores
-	find ${LEADERBOARD_DIR}/ -name 'bleu-scores.txt' | xargs cat | cut -f2 | sort -u > $@
+	find scores/ -name 'bleu-scores.txt' | xargs cat | cut -f2 | sort -u > $@
 
 release-history.txt: released-models.txt
 	cat $< | rev | cut -f3 -d'/' | rev > $@.pkg
