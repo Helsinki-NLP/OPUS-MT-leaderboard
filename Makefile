@@ -55,7 +55,6 @@ BENCHMARK_LISTS := scores/benchmarks.txt external-scores/benchmarks.txt user-sco
 .PHONY: all
 all: scores
 	${MAKE} -s refresh-leaderboards
-	${MAKE} -s UPDATE_ALL_LEADERBOARDS=1 langpair-scores
 	${MAKE} -s released-models.txt release-history.txt
 	${MAKE} -s ${LANGPAIR_LISTS} ${BENCHMARK_LISTS}
 	find ${LEADERBOARD_DIR}/ -name '*.txt' | xargs git add
@@ -121,14 +120,12 @@ fetch-zipfiles:
 .PHONY: all-external
 all-external:
 	${MAKE} -s MODELSOURCE=external update-all-leaderboards
-	${MAKE} -s MODELSOURCE=external UPDATE_ALL_LEADERBOARDS=1 langpair-scores
 	${MAKE} -s external-scores/langpairs.txt external-scores/benchmarks.txt
 	find external-scores/ -name '*.txt' | xargs git add
 
 .PHONY: all-contributed
 all-contributed:
 	${MAKE} -s MODELSOURCE=contributed refresh-leaderboards
-	${MAKE} -s MODELSOURCE=contributed UPDATE_ALL_LEADERBOARDS=1 langpair-scores
 	${MAKE} -s user-scores/langpairs.txt user-scores/benchmarks.txt
 	find user-scores/ -name '*.txt' | xargs git add
 
@@ -176,12 +173,15 @@ all-model-lists:
 
 .PHONY: update-leaderboards
 update-leaderboards:  ${UPDATE_LEADERBOARDS}
+	${MAKE} langpair-scores
 
 .PHONY: update-all-leaderboards
 update-all-leaderboards:
 	@for l in ${LANGPAIRS}; do \
 	  ${MAKE} -s LANGPAIR=$$l update-leaderboards; \
 	done
+	${MAKE} all-langpair-scores
+
 
 .PHONY: sort-updated-leaderboards refresh-leaderboards
 sort-updated-leaderboards refresh-leaderboards:
