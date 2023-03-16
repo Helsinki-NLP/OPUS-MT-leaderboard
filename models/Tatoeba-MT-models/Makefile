@@ -221,17 +221,23 @@ ${WORK_DIR}/%.${LANGPAIR}.output: ${WORK_DIR}/%.${LANGPAIR}.input
 	    if command -v nvidia-smi &> /dev/null; then \
 	      nvidia-smi --query-gpu=${NVIDIA_GPU_QUERY} --format=csv -l 1 > $@.gpu & \
 	      echo "nvidia-smi process ID: $$!"; \
+	      echo -n " - energy-comsumption counter before: "            >> $@.log; \
+	      python3 ../../tools/energy-consumption-counter.py           >> $@.log; \
 	    fi; \
 	    ${LOAD_ENV} && \
 	    ${TIME} -v -o $@.time \
 	    ${MARIAN_DECODER} -i $< \
 		-c ${WORK_DIR}/model/decoder.yml \
-		${MARIAN_DECODER_FLAGS} |\
+		${MARIAN_DECODER_FLAGS} 2> $@.marian |\
 	    sed 's/ //g;s/▁/ /g' | sed 's/^ *//;s/ *$$//' > $@; \
-	    cat $@.time >> $@.log; \
-	    rm -f $@.time; \
+	    cat $@.time                                                   >> $@.log; \
+	    echo " - log info from marian-decoder:"                       >> $@.log; \
+	    cat $@.marian                                                 >> $@.log; \
+	    rm -f $@.time $@.marian; \
 	    if command -v nvidia-smi &> /dev/null; then \
 	      kill %1; \
+	      echo -n " - energy-comsumption counter after: "             >> $@.log; \
+	      python3 ../../tools/energy-consumption-counter.py           >> $@.log; \
 	      echo " - GPU utlization:" >> $@.log; \
 	      cat $@.gpu                >> $@.log; \
 	      rm -f $@.gpu; \
