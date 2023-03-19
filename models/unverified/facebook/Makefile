@@ -6,7 +6,9 @@ REPOHOME := ${PWD}/../../../
 
 
 MODEL_PARAM = 	USER_NAME=facebook USER_MODEL=nllb-200-54.5B \
-		MODEL_URL=https://github.com/facebookresearch/fairseq/tree/nllb
+		MODEL_URL=unverified/facebook/nllb-200-54.5B
+
+# MODEL_URL=https://github.com/facebookresearch/fairseq/tree/nllb
 
 MODEL_WORKDIR = ../work/unverified/facebook/nllb-200-54.5B
 

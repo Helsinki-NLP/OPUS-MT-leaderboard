@@ -1,3 +1,9 @@
+# -*-makefile-*-
+
+
+PWD      := ${shell pwd}
+REPOHOME := ${PWD}/
+
 
 ## directory with leaderboard files depending on the source of the models
 ##   - default = OPUS-MT models (stored in scores/)
@@ -184,8 +190,27 @@ update-leaderboards: ${UPDATE_LEADERBOARDS}
 	  ${MAKE} -s LANGPAIR=$$l model-list; \
 	done
 
+
+## update all leaderboards with phony targets for each language pair
+## this scales to large lists of language pairs
+## but is super-slow ....
+
+UPDATE_LEADERBOARD_TARGETS = $(patsubst %,%-update-leaderboard,${LANGPAIRS})
+
 .PHONY: update-all-leaderboards
-update-all-leaderboards:
+update-all-leaderboards: $(UPDATE_LEADERBOARD_TARGETS)
+
+.PHONY: $(UPDATE_LEADERBOARD_TARGETS)
+$(UPDATE_LEADERBOARD_TARGETS):
+	${MAKE} -s LANGPAIR=$(@:-update-leaderboard=) update-leaderboards
+
+
+## update using a for loop:
+## this is much faster but  breaks if the LANGPAIRS becomes too big
+## (arghument list too long)
+
+.PHONY: update-all-leaderboards-loop
+update-all-leaderboards-loop:
 	@for l in ${LANGPAIRS}; do \
 	  ${MAKE} -s LANGPAIR=$$l update-leaderboards; \
 	done
@@ -299,3 +324,8 @@ ${MERGED_METRICFILES}: merged-scores/%: ${LEADERBOARD_DIR}/%
 	  ${MAKE} -s LANGPAIR=$$l merge-with-external; \
 	done
 
+
+
+include ${REPOHOME}lib/env.mk
+include ${REPOHOME}lib/config.mk
+include ${REPOHOME}lib/slurm.mk
