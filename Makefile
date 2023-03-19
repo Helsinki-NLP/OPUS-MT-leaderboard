@@ -171,16 +171,25 @@ all-model-lists:
 
 
 
+# .PHONY: update-leaderboards
+# update-leaderboards: langpair-scores
+#	${MAKE} langpair-scores
+
 .PHONY: update-leaderboards
-update-leaderboards:  ${UPDATE_LEADERBOARDS}
-	${MAKE} langpair-scores
+update-leaderboards: ${UPDATE_LEADERBOARDS}
+	@for l in ${UPDATE_LANGPAIRS}; do \
+	  echo "extract top/avg scores for $$l"; \
+	  ${MAKE} -s LANGPAIR=$$l top-scores; \
+	  ${MAKE} -s LANGPAIR=$$l avg-scores; \
+	  ${MAKE} -s LANGPAIR=$$l model-list; \
+	done
 
 .PHONY: update-all-leaderboards
 update-all-leaderboards:
 	@for l in ${LANGPAIRS}; do \
 	  ${MAKE} -s LANGPAIR=$$l update-leaderboards; \
 	done
-	${MAKE} all-langpair-scores
+#	${MAKE} all-langpair-scores
 
 
 .PHONY: sort-updated-leaderboards refresh-leaderboards

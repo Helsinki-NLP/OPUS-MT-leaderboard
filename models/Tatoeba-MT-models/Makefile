@@ -215,15 +215,17 @@ ${WORK_DIR}/%.${LANGPAIR}.output: ${WORK_DIR}/%.${LANGPAIR}.input
 	@echo ""                                                          >> $@.log
 	if [ -e $< ]; then \
 	  if [ -s $< ]; then \
+	    echo " - size of sentences to translate:"                     >> $@.log; \
+	    cat $(patsubst ${WORK_DIR}/%.${LANGPAIR}.input,${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG},$<) | wc -l >> $@.log; \
 	    echo " - size of sentences to translate (subword tokenized):" >> $@.log; \
 	    cat $< | wc                                                   >> $@.log; \
-	    echo " - resources used to translate:"                        >> $@.log; \
 	    if command -v nvidia-smi &> /dev/null; then \
 	      nvidia-smi --query-gpu=${NVIDIA_GPU_QUERY} --format=csv -l 1 > $@.gpu & \
 	      echo "nvidia-smi process ID: $$!"; \
 	      echo -n " - energy-comsumption counter before: "            >> $@.log; \
 	      python3 ../../tools/energy-consumption-counter.py           >> $@.log; \
 	    fi; \
+	    echo " - resources used to translate:"                        >> $@.log; \
 	    ${LOAD_ENV} && \
 	    ${TIME} -v -o $@.time \
 	    ${MARIAN_DECODER} -i $< \
