@@ -11,6 +11,11 @@ REPOHOME := ${PWD}/
 ##   - contributed tanslations (stored in user-scores/)
 ##   - all scores merged (stored in merged-scores/)
 
+ifdef LANGPAIRDIR
+  LEADERBOARD_DIR = $(firstword $(subst /, ,${LANGPAIRDIR}))
+  LANGPAIR = $(lastword $(subst /, ,${LANGPAIRDIR}))
+endif
+
 ifeq (${MODELSOURCE},external)
   LEADERBOARD_DIR = external-scores
 else ifeq (${MODELSOURCE},contributed)
@@ -195,7 +200,7 @@ update-leaderboards: ${UPDATE_LEADERBOARDS}
 ## this scales to large lists of language pairs
 ## but is super-slow ....
 
-UPDATE_LEADERBOARD_TARGETS = $(patsubst %,%-update-leaderboard,${LANGPAIRS})
+UPDATE_LEADERBOARD_TARGETS = $(sort $(patsubst %,%-update-leaderboard,${LANGPAIRS}))
 
 .PHONY: update-all-leaderboards
 update-all-leaderboards: $(UPDATE_LEADERBOARD_TARGETS)
@@ -215,6 +220,12 @@ update-all-leaderboards-loop:
 	  ${MAKE} -s LANGPAIR=$$l update-leaderboards; \
 	done
 #	${MAKE} all-langpair-scores
+
+## another solution: use find
+.PHONY: update-all-leaderboards-find
+update-all-leaderboards-find:
+	find ${LEADERBOARD_DIR} -maxdepth 1 -mindepth 1 -type d \
+		-exec ${MAKE} -s LANGPAIRDIR={} update-leaderboards \;
 
 
 .PHONY: sort-updated-leaderboards refresh-leaderboards

@@ -36,7 +36,7 @@ TIME := $(shell which time || echo "time")
 
 FIND_TRANSLATIONS  := ${REPOHOME}tools/find-missing-translations.pl
 MERGE_TRANSLATIONS := ${REPOHOME}tools/merge-with-missing-translations.pl
-
+MONITOR            := ${REPOHOME}tools/monitor
 
 ## directory with all test sets (submodule OPUS-MT-testsets)
 

@@ -28,6 +28,7 @@ TIME=$(which time || echo "time")
 NVIDIA_GPU_QUERY=timestamp,name,pci.bus_id,driver_version,pstate,pcie.link.gen.max,pcie.link.gen.current,temperature.gpu,utilization.gpu,utilization.memory,power.draw,memory.total,memory.free,memory.used
 
 tmpfile=$(mktemp)
+echo " - temporary log-files: ${tmpfile}[.gpu]"     >&2
 
 if command -v nvidia-smi &> /dev/null
 then
