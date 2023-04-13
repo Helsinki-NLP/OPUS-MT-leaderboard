@@ -28,7 +28,6 @@ endif
 
 
 ## all language pairs and all evaluation metrics
-
 LANGPAIRS  := $(sort $(notdir $(wildcard ${LEADERBOARD_DIR}/*-*)))
 METRICS    := bleu spbleu chrf chrf++ comet
 
@@ -145,39 +144,39 @@ all-contributed:
 langpair-scores:
 	@for l in ${UPDATE_LANGPAIRS}; do \
 	  echo "extract top/avg scores for $$l"; \
-	  ${MAKE} -s LANGPAIR=$$l top-scores; \
-	  ${MAKE} -s LANGPAIR=$$l avg-scores; \
-	  ${MAKE} -s LANGPAIR=$$l model-list; \
+	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 top-scores; \
+	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 avg-scores; \
+	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 model-list; \
 	done
 
 .PHONY: all-langpair-scores
 all-langpair-scores:
 	@for l in ${LANGPAIRS}; do \
 	  echo "extract top/avg scores for $$l"; \
-	  ${MAKE} -s LANGPAIR=$$l top-scores; \
-	  ${MAKE} -s LANGPAIR=$$l avg-scores; \
-	  ${MAKE} -s LANGPAIR=$$l model-list; \
+	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 top-scores; \
+	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 avg-scores; \
+	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 model-list; \
 	done
 
 .PHONY: all-avg-scores
 all-avg-scores:
 	@for l in ${LANGPAIRS}; do \
 	  echo "extract avg scores for $$l"; \
-	  ${MAKE} -s LANGPAIR=$$l avg-scores; \
+	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 avg-scores; \
 	done
 
 .PHONY: all-top-scores
 all-top-scores:
 	@for l in ${LANGPAIRS}; do \
 	  echo "extract top scores for $$l"; \
-	  ${MAKE} -s LANGPAIR=$$l top-scores; \
+	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 top-scores; \
 	done
 
 .PHONY: all-model-lists
 all-model-lists:
 	@for l in ${LANGPAIRS}; do \
 	  echo "extract model lists $$l"; \
-	  ${MAKE} -s LANGPAIR=$$l model-list; \
+	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 model-list; \
 	done
 
 
@@ -190,9 +189,9 @@ all-model-lists:
 update-leaderboards: ${UPDATE_LEADERBOARDS}
 	@for l in ${UPDATE_LANGPAIRS}; do \
 	  echo "extract top/avg scores for $$l"; \
-	  ${MAKE} -s LANGPAIR=$$l top-scores; \
-	  ${MAKE} -s LANGPAIR=$$l avg-scores; \
-	  ${MAKE} -s LANGPAIR=$$l model-list; \
+	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 top-scores; \
+	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 avg-scores; \
+	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 model-list; \
 	done
 
 
@@ -217,7 +216,7 @@ $(UPDATE_LEADERBOARD_TARGETS):
 .PHONY: update-all-leaderboards-loop
 update-all-leaderboards-loop:
 	@for l in ${LANGPAIRS}; do \
-	  ${MAKE} -s LANGPAIR=$$l update-leaderboards; \
+	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 update-leaderboards; \
 	done
 #	${MAKE} all-langpair-scores
 
@@ -332,7 +331,7 @@ ${MERGED_METRICFILES}: merged-scores/%: ${LEADERBOARD_DIR}/%
 .PHONY: merge-all-scores
  merge-all-scores:
 	@for l in ${LANGPAIRS}; do \
-	  ${MAKE} -s LANGPAIR=$$l merge-with-external; \
+	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 merge-with-external; \
 	done
 
 
