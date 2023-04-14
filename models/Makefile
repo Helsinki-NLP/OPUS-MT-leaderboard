@@ -47,7 +47,6 @@ SCOREFILES_DONE := ${SCOREFILES:.txt=.registered}
 all: register-all
 	${MAKE} upload-all
 
-
 .PHONY: register-all
 register-all:
 	for s in ${ALL_SOURCES}; do \
@@ -55,8 +54,14 @@ register-all:
 	done
 
 .PHONY: register-opusmt
-register-opusmt:
+register-opusmt: register-opus-mt register-tatoeba-mt
+
+.PHONY: register-opus-mt
+register-opus-mt:
 	${MAKE} SOURCE=OPUS-MT-models ALL_MODELS=1 register
+
+.PHONY: register-tatoeba-mt
+register-tatoeba-mt:
 	${MAKE} SOURCE=Tatoeba-MT-models ALL_MODELS=1 register
 
 .PHONY: register-external
@@ -106,13 +111,29 @@ STORAGE_URL   := https://object.pouta.csc.fi/${STORAGE_BUCKET}
 .PHONY: upload upload-eval-files
 upload upload-eval-files:
 	which a-get
-	cd .. && find models/${MODEL_HOME} -name '*.eval.zip' | xargs swift upload ${STORAGE_BUCKET} --changed --skip-identical
+	if [ `find .${MODEL_HOME} -size -5G -name '*.eval.zip' | wc -l` -gt 0 ]; then \
+	  cd .. && find models/${MODEL_HOME} -size -5G -name '*.eval.zip' | \
+		xargs swift upload ${STORAGE_BUCKET} --changed --skip-identical; \
+	fi
+	if [ `find .${MODEL_HOME} -size +5G -name '*.eval.zip' | wc -l` -gt 0 ]; then \
+	  cd .. && find models/${MODEL_HOME} -size +5G -name '*.eval.zip' | \
+		xargs swift upload ${STORAGE_BUCKET} --changed --skip-identical --use-slo --segment-size 5G; \
+	fi
 	swift post ${STORAGE_BUCKET} --read-acl ".r:*"
+
+# -size +5G
 
 .PHONY: upload-all
 upload-all:
 	which a-get
-	cd .. && find models/ -name '*.eval.zip' | xargs swift upload ${STORAGE_BUCKET} --changed --skip-identical
+	if [ `find . -size -5G -name '*.eval.zip' | wc -l` -gt 0 ]; then \
+	  cd .. && find models/ -size -5G -name '*.eval.zip' | \
+		xargs swift upload ${STORAGE_BUCKET} --changed --skip-identical; \
+	fi
+	if [ `find . -size +5G -name '*.eval.zip' | wc -l` -gt 0 ]; then \
+	  cd .. && find models/ -size +5G -name '*.eval.zip' | \
+		xargs swift upload ${STORAGE_BUCKET} --changed --skip-identical --use-slo --segment-size 5G; \
+	fi
 	swift post ${STORAGE_BUCKET} --read-acl ".r:*"
 
 .PHONY: upload-dryrun upload-eval-files-dryrun

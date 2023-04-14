@@ -48,7 +48,7 @@ METRICFILES = ${sort ${wildcard ${LEADERBOARD_DIR}/${LANGPAIR}/*/${METRIC}-score
 ##    (for all language pairs if UPDATE_ALL_LEADERBOARDS is set)
 ##    (for the selected LANGPAIR otherwise)
 
-ifdef UPDATE_ALL_LEADERBOARDS
+ifeq (${UPDATE_ALL_LEADERBOARDS},1)
   UPDATE_SCORE_DIRS := $(sort $(dir ${wildcard ${LEADERBOARD_DIR}/*/*/*.unsorted.txt}))
   UPDATE_LANGPAIRS  := $(sort $(dir $(patsubst ${LEADERBOARD_DIR}/%/,%,${UPDATE_SCORE_DIRS})))
 else
@@ -63,11 +63,12 @@ LANGPAIR_LISTS  := scores/langpairs.txt external-scores/langpairs.txt user-score
 BENCHMARK_LISTS := scores/benchmarks.txt external-scores/benchmarks.txt user-scores/benchmarks.txt
 
 .PHONY: all
-all: scores
+all: ${LEADERBOARD_DIR}
+	@find ${LEADERBOARD_DIR} -name '*unsorted*' -empty -delete
 	${MAKE} -s refresh-leaderboards
 	${MAKE} -s released-models.txt release-history.txt
 	${MAKE} -s ${LANGPAIR_LISTS} ${BENCHMARK_LISTS}
-	find ${LEADERBOARD_DIR}/ -name '*.txt' | xargs git add
+	find ${LEADERBOARD_DIR}/ -name '*.txt' | grep -v unsorted | xargs git add
 
 USER_CONTRIBUTED_FILES  := $(shell find models/unverified -type f -name '*.output')
 USER_CONTRIBUTED_FILE   ?= $(firstword ${USER_CONTRIBUTED_FILES})
@@ -129,19 +130,22 @@ fetch-zipfiles:
 
 .PHONY: all-external
 all-external:
+	find external-scores -name '*unsorted*' -empty -delete
 	${MAKE} -s MODELSOURCE=external update-all-leaderboards
 	${MAKE} -s external-scores/langpairs.txt external-scores/benchmarks.txt
-	find external-scores/ -name '*.txt' | xargs git add
+	find external-scores/ -name '*.txt' | grep -v unsorted | xargs git add
 
 .PHONY: all-contributed
 all-contributed:
+	find user-scores -name '*unsorted*' -empty -delete
 	${MAKE} -s MODELSOURCE=contributed refresh-leaderboards
 	${MAKE} -s user-scores/langpairs.txt user-scores/benchmarks.txt
-	find user-scores/ -name '*.txt' | xargs git add
+	find user-scores/ -name '*.txt' | grep -v unsorted | xargs git add
 
 
 .PHONY: langpair-scores
 langpair-scores:
+	@find ${LEADERBOARD_DIR} -name '*unsorted*' -empty -delete
 	@for l in ${UPDATE_LANGPAIRS}; do \
 	  echo "extract top/avg scores for $$l"; \
 	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 top-scores; \
@@ -151,6 +155,7 @@ langpair-scores:
 
 .PHONY: all-langpair-scores
 all-langpair-scores:
+	@find ${LEADERBOARD_DIR} -name '*unsorted*' -empty -delete
 	@for l in ${LANGPAIRS}; do \
 	  echo "extract top/avg scores for $$l"; \
 	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 top-scores; \
@@ -160,6 +165,7 @@ all-langpair-scores:
 
 .PHONY: all-avg-scores
 all-avg-scores:
+	@find ${LEADERBOARD_DIR} -name '*unsorted*' -empty -delete
 	@for l in ${LANGPAIRS}; do \
 	  echo "extract avg scores for $$l"; \
 	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 avg-scores; \
@@ -167,6 +173,7 @@ all-avg-scores:
 
 .PHONY: all-top-scores
 all-top-scores:
+	@find ${LEADERBOARD_DIR} -name '*unsorted*' -empty -delete
 	@for l in ${LANGPAIRS}; do \
 	  echo "extract top scores for $$l"; \
 	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 top-scores; \
@@ -174,6 +181,7 @@ all-top-scores:
 
 .PHONY: all-model-lists
 all-model-lists:
+	@find ${LEADERBOARD_DIR} -name '*unsorted*' -empty -delete
 	@for l in ${LANGPAIRS}; do \
 	  echo "extract model lists $$l"; \
 	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 model-list; \
