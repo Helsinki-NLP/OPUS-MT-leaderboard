@@ -36,7 +36,8 @@ endif
 ## to get a list of all *.eval.zip files (a very long list)
 
 ifdef ALL_MODELSOURCES
-  MODEL_EVALZIPS := $(patsubst %.scores.txt,%.eval.zip,${shell find . -name '*.scores.txt' -printf "%P\n"})
+  # MODEL_EVALZIPS := $(patsubst %.scores.txt,%.eval.zip,${shell find . -name '*.scores.txt' -printf "%P\n"})
+  MODEL_EVALZIPS := $(patsubst ./%.scores.txt,%.eval.zip,$(shell find . -name '*.scores.txt'))
 endif
 
 MODEL_EVALZIPS  ?= $(patsubst %,%.eval.zip,$(sort $(basename ${SCOREFILES:.txt=})))
@@ -111,12 +112,12 @@ STORAGE_URL   := https://object.pouta.csc.fi/${STORAGE_BUCKET}
 .PHONY: upload upload-eval-files
 upload upload-eval-files:
 	which a-get
-	if [ `find .${MODEL_HOME} -size -5G -name '*.eval.zip' | wc -l` -gt 0 ]; then \
-	  cd .. && find models/${MODEL_HOME} -size -5G -name '*.eval.zip' | \
+	if [ `find .${MODEL_HOME} -size -5G -name '*.zip' | wc -l` -gt 0 ]; then \
+	  cd .. && find models/${MODEL_HOME} -size -5G -name '*.zip' | \
 		xargs swift upload ${STORAGE_BUCKET} --changed --skip-identical; \
 	fi
-	if [ `find .${MODEL_HOME} -size +5G -name '*.eval.zip' | wc -l` -gt 0 ]; then \
-	  cd .. && find models/${MODEL_HOME} -size +5G -name '*.eval.zip' | \
+	if [ `find .${MODEL_HOME} -size +5G -name '*.zip' | wc -l` -gt 0 ]; then \
+	  cd .. && find models/${MODEL_HOME} -size +5G -name '*.zip' | \
 		xargs swift upload ${STORAGE_BUCKET} --changed --skip-identical --use-slo --segment-size 5G; \
 	fi
 	swift post ${STORAGE_BUCKET} --read-acl ".r:*"
@@ -126,12 +127,12 @@ upload upload-eval-files:
 .PHONY: upload-all
 upload-all:
 	which a-get
-	if [ `find . -size -5G -name '*.eval.zip' | wc -l` -gt 0 ]; then \
-	  cd .. && find models/ -size -5G -name '*.eval.zip' | \
+	if [ `find . -size -5G -name '*.zip' | wc -l` -gt 0 ]; then \
+	  cd .. && find models/ -size -5G -name '*.zip' | \
 		xargs swift upload ${STORAGE_BUCKET} --changed --skip-identical; \
 	fi
-	if [ `find . -size +5G -name '*.eval.zip' | wc -l` -gt 0 ]; then \
-	  cd .. && find models/ -size +5G -name '*.eval.zip' | \
+	if [ `find . -size +5G -name '*.zip' | wc -l` -gt 0 ]; then \
+	  cd .. && find models/ -size +5G -name '*.zip' | \
 		xargs swift upload ${STORAGE_BUCKET} --changed --skip-identical --use-slo --segment-size 5G; \
 	fi
 	swift post ${STORAGE_BUCKET} --read-acl ".r:*"
@@ -139,7 +140,7 @@ upload-all:
 .PHONY: upload-dryrun upload-eval-files-dryrun
 upload-dryrun upload-eval-files-dryrun:
 	@echo 'which a-get'
-	@echo "cd .. && find models/${MODEL_HOME} -name '*.eval.zip' | xargs swift upload ${STORAGE_BUCKET}"
+	@echo "cd .. && find models/${MODEL_HOME} -name '*.zip' | xargs swift upload ${STORAGE_BUCKET}"
 
 
 
