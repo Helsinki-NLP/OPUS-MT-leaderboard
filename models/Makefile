@@ -10,13 +10,12 @@
 PWD      := ${shell pwd}
 REPOHOME := ${PWD}/../
 
-ALL_SOURCES      := $(filter-out lib,$(notdir ${shell find . -maxdepth 1 -mindepth 1 -type d}))
-OPUSMT_SOURCES   := OPUS-MT-models Tatoeba-MT-models
-EXTERNAL_SOURCES := $(filter-out ${OPUSMT_SOURCES} unverified,${ALL_SOURCES})
 
-SOURCE     ?= facebook
-MODEL_HOME ?= ${SOURCE}
-MODEL      ?= nllb-200-distilled-600M
+ALL_SOURCES := $(filter-out lib,$(notdir ${shell find . -maxdepth 1 -mindepth 1 -type d}))
+
+SOURCE      ?= Tatoeba-MT-models
+MODEL_HOME  ?= ${SOURCE}
+MODEL       ?= deu-eng/opus-2021-02-22
 
 include lib/config.mk
 
@@ -64,16 +63,6 @@ register-opus-mt:
 .PHONY: register-tatoeba-mt
 register-tatoeba-mt:
 	${MAKE} SOURCE=Tatoeba-MT-models ALL_MODELS=1 register
-
-.PHONY: register-external
-register-external:
-	for s in ${EXTERNAL_SOURCES}; do \
-	  ${MAKE} SOURCE=$$s ALL_MODELS=1 register; \
-	done
-
-.PHONY: register-contributed
-register-contributed:
-	${MAKE} SOURCE=unverified ALL_MODELS=1 register
 
 
 ## register scores from all models in current source in leaderboards

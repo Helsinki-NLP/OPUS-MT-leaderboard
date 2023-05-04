@@ -5,26 +5,12 @@ PWD      := ${shell pwd}
 REPOHOME := ${PWD}/
 
 
-## directory with leaderboard files depending on the source of the models
-##   - default = OPUS-MT models (stored in scores/)
-##   - external models (stored in external-scores/)
-##   - contributed tanslations (stored in user-scores/)
-##   - all scores merged (stored in merged-scores/)
-
 ifdef LANGPAIRDIR
   LEADERBOARD_DIR = $(firstword $(subst /, ,${LANGPAIRDIR}))
   LANGPAIR = $(lastword $(subst /, ,${LANGPAIRDIR}))
 endif
 
-ifeq (${MODELSOURCE},external)
-  LEADERBOARD_DIR = external-scores
-else ifeq (${MODELSOURCE},contributed)
-  LEADERBOARD_DIR = user-scores
-else ifeq (${MODELSOURCE},all)
-  LEADERBOARD_DIR = merged-scores
-else
-  LEADERBOARD_DIR = scores
-endif
+LEADERBOARD_DIR ?= scores
 
 
 ## all language pairs and all evaluation metrics
@@ -59,8 +45,8 @@ UPDATE_LEADERBOARDS := $(foreach m,${METRICS},$(patsubst %,%$(m)-scores.txt,${UP
 
 
 
-LANGPAIR_LISTS  := scores/langpairs.txt external-scores/langpairs.txt user-scores/langpairs.txt
-BENCHMARK_LISTS := scores/benchmarks.txt external-scores/benchmarks.txt user-scores/benchmarks.txt
+LANGPAIR_LISTS  := scores/langpairs.txt
+BENCHMARK_LISTS := scores/benchmarks.txt
 
 .PHONY: all
 all: ${LEADERBOARD_DIR}
@@ -70,53 +56,6 @@ all: ${LEADERBOARD_DIR}
 	${MAKE} -s ${LANGPAIR_LISTS} ${BENCHMARK_LISTS}
 	find ${LEADERBOARD_DIR}/ -name '*.txt' | grep -v unsorted | xargs git add
 
-USER_CONTRIBUTED_FILES  := $(shell find models/unverified -type f -name '*.output')
-USER_CONTRIBUTED_FILE   ?= $(firstword ${USER_CONTRIBUTED_FILES})
-CONTRIBUTED_USERNAME    := $(word 5,$(subst /, ,${USER_CONTRIBUTED_FILE}))
-CONTRIBUTED_MODEL       := $(patsubst models/unverified/work/unverified/${CONTRIBUTED_USERNAME}/%/,%,\
-				$(dir ${USER_CONTRIBUTED_FILE}))
-CONTRIBUTED_MODEL_YAML  := models/unverified/${CONTRIBUTED_USERNAME}/${CONTRIBUTED_MODEL}.yml
-CONTRIBUTED_TRANSLATION := $(notdir ${USER_CONTRIBUTED_FILE})
-CONTRIBUTED_TRANSLATION_TESTSET  := $(basename $(basename ${CONTRIBUTED_TRANSLATION}))
-CONTRIBUTED_TRANSLATION_LANGPAIR := $(patsubst .%,%,$(suffix $(basename ${CONTRIBUTED_TRANSLATION})))
-
-ifneq ($(wildcard ${CONTRIBUTED_MODEL_YAML}),)
-  CONTRIBUTED_MODEL_WEBSITE := $(shell grep 'website:' ${CONTRIBUTED_MODEL_YAML} | cut -f2- -d: | sed 's/^ *//')
-endif
-
-
-## evaluate a new user-contributed file
-## register the scores
-## update user-score leaderboards
-##
-## NOTE: don't allow concurrent jobs because of racing conditions!
-
-eval-userfile:
-ifneq ($(wildcard ${USER_CONTRIBUTED_FILE}),)
-	@echo ${CONTRIBUTED_MODEL_YAML}
-	@echo ${USER_CONTRIBUTED_FILE}
-	@echo ${CONTRIBUTED_USERNAME}
-	@echo ${CONTRIBUTED_MODEL}
-	@echo ${CONTRIBUTED_TRANSLATION_TESTSET}
-	@echo ${CONTRIBUTED_TRANSLATION_LANGPAIR}
-	@echo ${CONTRIBUTED_MODEL_WEBSITE}
-	${MAKE} -C models/unverified \
-		USER_NAME='${CONTRIBUTED_USERNAME}' \
-		USER_MODEL='${CONTRIBUTED_MODEL}' \
-		TESTSETS='${CONTRIBUTED_TRANSLATION_TESTSET}' \
-		LANGPAIR='${CONTRIBUTED_TRANSLATION_LANGPAIR}' \
-		MODEL_URL='${CONTRIBUTED_MODEL_WEBSITE}' \
-	all
-	rm -f ${USER_CONTRIBUTED_FILE}
-	${MAKE} -C models \
-		SOURCE=unverified \
-		MODEL='${CONTRIBUTED_USERNAME}/${CONTRIBUTED_MODEL}' \
-	register
-	${MAKE} -s all-contributed
-else
-	@echo "No file to be evaluated!"
-endif
-
 
 
 ## fetch all evaluation zip file
@@ -124,24 +63,6 @@ endif
 .PHONY: fetch-zipfiles
 fetch-zipfiles:
 	${MAKE} -C models download-all
-
-
-
-
-.PHONY: all-external
-all-external:
-	find external-scores -name '*unsorted*' -empty -delete
-	${MAKE} -s MODELSOURCE=external update-all-leaderboards
-	${MAKE} -s external-scores/langpairs.txt external-scores/benchmarks.txt
-	find external-scores/ -name '*.txt' | grep -v unsorted | xargs git add
-
-.PHONY: all-contributed
-all-contributed:
-	find user-scores -name '*unsorted*' -empty -delete
-	${MAKE} -s MODELSOURCE=contributed refresh-leaderboards
-	${MAKE} -s user-scores/langpairs.txt user-scores/benchmarks.txt
-	find user-scores/ -name '*.txt' | grep -v unsorted | xargs git add
-
 
 .PHONY: langpair-scores
 langpair-scores:
@@ -321,26 +242,6 @@ ${UPDATE_LEADERBOARDS}: ${UPDATE_SCORE_DIRS}
 	  echo "" >> $@; \
 	done
 
-
-
-
-## merge external and internal scores
-## TODO: do we really want to create a copy of all files?
-
-MERGED_METRICFILES = $(patsubst ${LEADERBOARD_DIR}/%,merged-scores/%,${METRICFILES})
-
-.PHONY: merge-with-external
-merge-with-external: ${MERGED_METRICFILES}
-${MERGED_METRICFILES}: merged-scores/%: ${LEADERBOARD_DIR}/%
-	mkdir (dir $@)
-	-cat $< $(patsubst merged-scores/%,external-scores/%,$@) |\
-	sort -k1,1nr -u | uniq -f2 > $@
-
-.PHONY: merge-all-scores
- merge-all-scores:
-	@for l in ${LANGPAIRS}; do \
-	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 merge-with-external; \
-	done
 
 
 
