@@ -143,3 +143,23 @@ download-all:
 
 %.eval.zip: %.scores.txt
 	-wget -qq -O $@ ${STORAGE_URL}/models/$@
+
+
+
+SCOREFILES_VALIDATED = $(patsubst %,%.validated,${SCOREFILES})
+
+validate-all-scorefiles:
+	for s in ${ALL_SOURCES}; do \
+	  ${MAKE} SOURCE=$$s ALL_MODELS=1 validate-scorefiles; \
+	done
+
+validate-scorefiles: ${SCOREFILES_VALIDATED}
+
+${SCOREFILES_VALIDATED}: %.validated: %
+	@if [ `sort -u $< | wc -l` != `cat $< | wc -l` ]; then \
+	  echo "$< has duplicated lines"; \
+	  mv -f $< $@; \
+	  sort -u $@ > $<; \
+	fi
+	@touch $@
+
