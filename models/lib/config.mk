@@ -40,8 +40,9 @@ MONITOR            := ${REPOHOME}tools/monitor
 
 ## directory with all test sets (submodule OPUS-MT-testsets)
 
-TESTSET_HOME   := ${REPOHOME}OPUS-MT-testsets/testsets
-TESTSET_INDEX  := ${REPOHOME}OPUS-MT-testsets/index.txt
+OPUSMT_TESTSETS := ${REPOHOME}OPUS-MT-testsets
+TESTSET_HOME    := ${OPUSMT_TESTSETS}/testsets
+TESTSET_INDEX   := ${OPUSMT_TESTSETS}/index.txt
 
 
 ## model directory (for test results)
@@ -56,7 +57,6 @@ LEADERBOARD_DIR = ${REPOHOME}scores
 
 ## convenient function to reverse a list
 reverse = $(if $(wordlist 2,2,$(1)),$(call reverse,$(wordlist 2,$(words $(1)),$(1))) $(firstword $(1)),$(1))
-
 
 LEADERBOARD_GITURL = https://raw.githubusercontent.com/Helsinki-NLP/OPUS-MT-leaderboard/master
 MODELSCORE_STORAGE = ${LEADERBOARD_GITURL}/models/$(notdir ${MODEL_HOME})
@@ -84,15 +84,73 @@ MODEL_LANGPAIRS ?= ${shell for s in ${SRC_LANGS}; do \
 				for t in ${TRG_LANGS}; do echo "$$s-$$t"; done done}
 
 
-ALL_LANGPAIRS := $(notdir ${wildcard ${TESTSET_HOME}/*})
+#-------------------------------------------------
+# new structure of OPUS-MT-testsets (check index files)
+#-------------------------------------------------
+
+TESTSET_FILES        := ${OPUSMT_TESTSETS}/testsets.tsv
+LANGPAIR_TO_TESTSETS := ${OPUSMT_TESTSETS}/langpair2benchmark.tsv
+TESTSETS_TO_LANGPAIR := ${OPUSMT_TESTSETS}/benchmark2langpair.tsv
+
+ALL_LANGPAIRS := $(shell cut -f1 ${LANGPAIR_TO_TESTSETS})
 LANGPAIRS     := ${sort $(filter ${ALL_LANGPAIRS},${MODEL_LANGPAIRS})}
 LANGPAIR      ?= ${firstword ${LANGPAIRS}}
 LANGPAIRSTR   := ${LANGPAIR}
 SRC           := ${firstword ${subst -, ,${LANGPAIR}}}
 TRG           := ${lastword ${subst -, ,${LANGPAIR}}}
+
+
+# get all test sets available for this language pair
+# - all testsets from the index
+# - all testsets in testset sub directories
+
 TESTSET_DIR   := ${TESTSET_HOME}/${LANGPAIR}
-TESTSETS      ?= ${notdir ${basename ${wildcard ${TESTSET_DIR}/*.${SRC}}}}
-TESTSET       ?= ${firstword ${TESTSETS}}
+TESTSETS      := $(sort $(shell grep '^${LANGPAIR}	' ${LANGPAIR_TO_TESTSETS} | cut -f2) \
+			${notdir ${basename ${wildcard ${TESTSET_DIR}/*.${SRC}}}})
+
+TESTSET      := $(firstword ${TESTSETS})
+TESTSET_SRC  := $(patsubst %,${OPUSMT_TESTSETS}/%,\
+		$(shell grep '^${SRC}	${TRG}	${TESTSET}	' ${TESTSET_FILES} | cut -f7))
+TESTSET_REFS := $(patsubst %,${OPUSMT_TESTSETS}/%,\
+		$(shell grep '^${SRC}	${TRG}	${TESTSET}	' ${TESTSET_FILES} | cut -f8-))
+TESTSET_TRG  := $(firstword ${TESTSET_REFS})
+
+TESTSET_DOMAINS := $(patsubst %,${OPUSMT_TESTSETS}/%,\
+		$(shell grep '^${SRC}	${TRG}	${TESTSET}	' ${TESTSET_FILES} | cut -f4))
+TESTSET_LABELS  := $(patsubst %,${OPUSMT_TESTSETS}/%,\
+		$(shell grep '^${SRC}	${TRG}	${TESTSET}	' ${TESTSET_FILES} | cut -f6))
+
+
+ifeq ($(wildcard ${TESTSET_SRC}),)
+  TESTSET_SRC := ${TESTSET_DIR}/${TESTSET}.${SRC}
+endif
+
+ifeq ($(wildcard ${TESTSET_TRG}),)
+  TESTSET_TRG := ${TESTSET_DIR}/${TESTSET}.${TRG}
+  TESTSET_REFS := ${TESTSET_TRG}
+ifeq ($(wildcard ${TESTSET_TRG}).labels,)
+  TESTSET_LABELS := ${TESTSET_TRG}.labels
+endif
+endif
+
+
+#-------------------------------------------------
+# old structure of OPUS-MT-testsets (sub-directories)
+#-------------------------------------------------
+
+# ALL_LANGPAIRS := $(notdir ${wildcard ${TESTSET_HOME}/*})
+# LANGPAIRS     := ${sort $(filter ${ALL_LANGPAIRS},${MODEL_LANGPAIRS})}
+# LANGPAIR      ?= ${firstword ${LANGPAIRS}}
+# LANGPAIRSTR   := ${LANGPAIR}
+# SRC           := ${firstword ${subst -, ,${LANGPAIR}}}
+# TRG           := ${lastword ${subst -, ,${LANGPAIR}}}
+# TESTSET_DIR   := ${TESTSET_HOME}/${LANGPAIR}
+# TESTSETS      ?= ${notdir ${basename ${wildcard ${TESTSET_DIR}/*.${SRC}}}}
+# TESTSET       ?= ${firstword ${TESTSETS}}
+# TESTSET_SRC   ?= ${TESTSET_DIR}/${TESTSET}.${SRC}
+# TESTSET_TRG   ?= ${TESTSET_DIR}/${TESTSET}.${TRG}
+
+
 
 
 print-makefile-variables:

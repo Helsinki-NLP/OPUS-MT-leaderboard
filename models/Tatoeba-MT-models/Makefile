@@ -185,13 +185,13 @@ endif
 endif
 
 
-${WORK_DIR}/%.${LANGPAIR}.input: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
+${WORK_DIR}/%.${LANGPAIR}.input: ${TESTSET_SRC}
 	${PREPROCESS} < $< > $@
 ## check whether we need to replace the target language labels
 ifeq (${USE_TARGET_LABELS},1)
-	if [ -e $(word 2,$^).labels ]; then \
+	if [ -e $(TESTSET_LABELS) ]; then \
 	  cut -f2- -d' ' $@ > $@.tmp1; \
-	  sed 's/^/>>/;s/$$/<</' < $(word 2,$^).labels > $@.tmp2; \
+	  sed 's/^/>>/;s/$$/<</' < $(TESTSET_LABELS) > $@.tmp2; \
 	  paste -d' ' $@.tmp2 $@.tmp1 > $@; \
 	  rm -f $@.tmp2 $@.tmp1; \
 	fi
@@ -209,7 +209,7 @@ output: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
 ## new: prepare data inside of this target instead of depending on it
 ##      as a pre-requisite
 
-${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
+${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_SRC}
 	@echo "........ create $(patsubst ${WORK_DIR}/%,%,$@)"
 	@mkdir -p $(dir $@)
 	@mkdir -p ${MODEL_DIR}
@@ -222,9 +222,9 @@ ${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG
 ##------------------------------------------------------------
 	@${PREPROCESS} < $< > $(@:.output=.input)
 ifeq (${USE_TARGET_LABELS},1)
-	@if [ -e $(word 2,$^).labels ]; then \
+	@if [ -e $(TESTSET_LABELS) ]; then \
 	  cut -f2- -d' ' $(@:.output=.input)           > $@.tmp1; \
-	  sed 's/^/>>/;s/$$/<</' < $(word 2,$^).labels > $@.tmp2; \
+	  sed 's/^/>>/;s/$$/<</' < $(TESTSET_LABELS) > $@.tmp2; \
 	  paste -d' ' $@.tmp2 $@.tmp1 > $(@:.output=.input); \
 	  rm -f $@.tmp2 $@.tmp1; \
 	fi
@@ -241,50 +241,5 @@ endif
 	    sed 's/ //g;s/▁/ /g' | sed 's/^ *//;s/ *$$//' > $@; \
 	fi
 	@mv $@.log $(patsubst ${WORK_DIR}/%.output,${MODEL_DIR}/%.log,$@)
-
-
-
-# NVIDIA_GPU_QUERY = timestamp,name,pci.bus_id,driver_version,pstate,pcie.link.gen.max,pcie.link.gen.current,temperature.gpu,utilization.gpu,utilization.memory,power.draw,memory.total,memory.free,memory.used
-
-# ${WORK_DIR}/%.${LANGPAIR}.output: ${WORK_DIR}/%.${LANGPAIR}.input
-# 	@echo "........ create $(patsubst ${WORK_DIR}/%,%,$@)"
-# 	@mkdir -p $(dir $@)
-# 	@mkdir -p ${MODEL_DIR}
-# 	@echo "Translating sentences from $(notdir $<) to ${TRG}"          > $@.log
-# 	@echo ""                                                          >> $@.log
-# 	if [ -e $< ]; then \
-# 	  if [ -s $< ]; then \
-# 	    echo " - size of sentences to translate:"                     >> $@.log; \
-# 	    cat $(patsubst ${WORK_DIR}/%.${LANGPAIR}.input,${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG},$<) | wc -l >> $@.log; \
-# 	    echo " - size of sentences to translate (subword tokenized):" >> $@.log; \
-# 	    cat $< | wc                                                   >> $@.log; \
-# 	    if command -v nvidia-smi &> /dev/null; then \
-# 	      nvidia-smi --query-gpu=${NVIDIA_GPU_QUERY} --format=csv -l 1 > $@.gpu & \
-# 	      echo "nvidia-smi process ID: $$!"; \
-# 	      echo -n " - energy-comsumption counter before: "            >> $@.log; \
-# 	      python3 ../../tools/energy-consumption-counter.py           >> $@.log; \
-# 	    fi; \
-# 	    echo " - resources used to translate:"                        >> $@.log; \
-# 	    ${LOAD_ENV} && \
-# 	    ${TIME} -v -o $@.time \
-# 	    ${MARIAN_DECODER} -i $< \
-# 		-c ${WORK_DIR}/model/decoder.yml \
-# 		${MARIAN_DECODER_FLAGS} 2> $@.marian |\
-# 	    sed 's/ //g;s/▁/ /g' | sed 's/^ *//;s/ *$$//' > $@; \
-# 	    cat $@.time                                                   >> $@.log; \
-# 	    echo " - log info from marian-decoder:"                       >> $@.log; \
-# 	    cat $@.marian                                                 >> $@.log; \
-# 	    rm -f $@.time $@.marian; \
-# 	    if command -v nvidia-smi &> /dev/null; then \
-# 	      kill %1; \
-# 	      echo -n " - energy-comsumption counter after: "             >> $@.log; \
-# 	      python3 ../../tools/energy-consumption-counter.py           >> $@.log; \
-# 	      echo " - GPU utlization:" >> $@.log; \
-# 	      cat $@.gpu                >> $@.log; \
-# 	      rm -f $@.gpu; \
-# 	    fi \
-# 	  fi \
-# 	fi
-# 	@mv $@.log $(patsubst ${WORK_DIR}/%.output,${MODEL_DIR}/%.log,$@)
 
 
