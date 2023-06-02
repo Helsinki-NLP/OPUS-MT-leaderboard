@@ -1,6 +1,22 @@
 # -*-makefile-*-
 
 
+.PHONY: print-model-info
+print-model-info:
+	@echo "${MODEL_URL}"
+	@echo "${MODEL_DIST}"
+	@echo "${MODEL}"
+	@echo "${LANGPAIRS}"
+	@echo ""
+	@echo "available benchmarks:"
+	@echo "${AVAILABLE_BENCHMARKS}" | tr ' ' "\n"
+	@echo ""
+	@echo "tested benchmarks:"
+	@echo "${TESTED_BENCHMARKS}" | tr ' ' "\n"
+	@echo ""
+	@echo "missing benchmarks:"
+	@echo "${MISSING_BENCHMARKS}" | tr ' ' "\n"
+
 
 .PHONY: eval-pivot
 eval-pivot:
@@ -50,6 +66,7 @@ endif
 
 .PHONY: ${EVAL_MODEL_TARGETS}
 ${EVAL_MODEL_TARGETS}:
+	-${MAKE} MODEL=$(@:-evalmodel=) get-available-benchmarks
 	-${MAKE} MODEL=$(@:-evalmodel=) eval-model
 
 
@@ -67,8 +84,8 @@ eval-models-reverse-order: ${EVAL_MODEL_REVERSE_TARGETS}
 ## register the scores and update the leaderboard
 ##-------------------------------------------------
 
-.PHONY: eval-model
-eval-model: ${MODEL_EVAL_SCORES}
+.PHONY: eval-model-old
+eval-model-old: ${MODEL_EVAL_SCORES}
 	@if [ $(words $(wildcard $^)) -ne $(words $^) ]; then \
 	  echo "score files missing ... fetch model and scores!"; \
 	  ${MAKE} fetch; \
@@ -87,6 +104,53 @@ update-eval-files:
 	  mv -f ${MODEL_SCORES} ${MODEL_SCORES}.${TODAY}; \
 	fi
 	${MAKE} eval-model-files
+
+
+## new way of evaluating missing benchmarks
+## TODO: this would not add missing metrics
+
+.PHONY: eval-model
+eval-model: ${MODEL_TESTSETS}
+	@echo ".... evaluate ${MODEL}"
+ifneq (${MISSING_BENCHMARKS},)
+	${MAKE} fetch
+	${MAKE} eval-missing-benchmarks
+	${MAKE} cleanup
+	${MAKE} ${MODEL_EVAL_SCORES}; \
+	${MAKE} pack-model-scores
+else
+	@echo ".... nothing is missing"
+endif
+
+.PHONY: eval-missing-benchmarks
+eval-missing-benchmarks: ${MISSING_BENCHMARKS}
+
+${MISSING_BENCHMARKS}:
+	${MAKE} LANGPAIR=$(firstword $(subst /, ,$@)) \
+		TESTSET=$(lastword $(subst /, ,$@)) \
+	eval
+
+## get all available benchmarks for the current model
+
+.PHONY: get-available-benchmarks
+get-available-benchmarks: ${MODEL_TESTSETS}
+
+${MODEL_TESTSETS}: ${LANGPAIR_TO_TESTSETS}
+	rm -f $@
+	@l=$(foreach lp,${LANGPAIRS},\
+		$(shell grep '^${lp}	' ${LANGPAIR_TO_TESTSETS} | \
+			cut -f2 | tr ' ' "\n" | \
+			sed 's|^|${lp}/|' >> $@))
+	@echo "available testsets stored in $@"
+
+
+
+
+
+
+
+
+
 
 .PHONY: eval
 eval: 	${MODEL_DIR}/${TESTSET}.${LANGPAIR}.compare \

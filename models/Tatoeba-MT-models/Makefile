@@ -25,6 +25,7 @@ MODEL_DIST      ?= ${firstword ${MODEL_DISTS}}
 MODEL_LANGPAIR   = ${firstword ${subst /, ,${MODEL}}}
 
 MODEL_URL        = ${MODEL_STORAGE}/${MODEL}.zip
+MODEL_YAML       = ${MODEL_STORAGE}/${MODEL}.yml
 MODEL_EVAL_URL   = ${MODEL_URL:.zip=.eval.zip}
 
 
@@ -37,12 +38,16 @@ WORK_DIR  ?= ${WORK_HOME}/${MODEL}
 
 MODELINFO = ${WORK_DIR}/model/README.md
 ifneq (${wildcard ${MODELINFO}},)
-  SRC_LANGS = ${shell grep '\* source language(s)' ${MODELINFO} | cut -f2 -d: | xargs}
-  TRG_LANGS = ${shell grep '\* valid language labels' ${MODELINFO} | cut -f2 -d: | tr '<>' '  ' | xargs}
+  SRC_LANGS := ${shell grep '\* source language(s)' ${MODELINFO} | cut -f2 -d: | xargs}
+  TRG_LANGS := ${shell grep '\* valid language labels' ${MODELINFO} | cut -f2 -d: | tr '<>' '  ' | xargs}
 ifeq (${words ${TRG_LANGS}},0)
-  TRG_LANGS = ${shell grep '\* target language(s)' ${MODELINFO} | cut -f2 -d: | xargs}
+  TRG_LANGS := ${shell grep '\* target language(s)' ${MODELINFO} | cut -f2 -d: | xargs}
 endif
+else
+  SRC_LANGS := $(shell wget -qq -O - ${MODEL_YAML} | yq '.source-languages' | cut -f2 -d' ')
+  TRG_LANGS := $(shell wget -qq -O - ${MODEL_YAML} | yq '.target-languages' | cut -f2 -d' ')
 endif
+
 
 #-------------------------------------------------
 # all language pairs that the model supports
@@ -63,6 +68,7 @@ include ../lib/eval.mk
 all: eval-models
 
 all-reverse: eval-models-reverse-order
+
 
 #-------------------------------------------------
 ## phony targets to evaluate only new models

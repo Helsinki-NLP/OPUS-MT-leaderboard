@@ -51,6 +51,7 @@ TESTSET_INDEX   := ${OPUSMT_TESTSETS}/index.txt
 MODEL_HOME      ?= ${PWD}
 MODEL_DIR       = ${MODEL_HOME}/${MODEL}
 MODEL_EVALZIP   = ${MODEL_DIR}.eval.zip
+MODEL_TESTSETS  = ${MODEL_DIR}.testsets.tsv
 
 LEADERBOARD_DIR = ${REPOHOME}scores
 
@@ -80,8 +81,10 @@ MODEL_EVAL_SCORES   = ${MODEL_SCORES} ${MODEL_METRIC_SCORES}
 
 ## if MODEL_LANGPAIRS is not set then simply combine all SRCLANGS with all TRG_LANGS
 
-MODEL_LANGPAIRS ?= ${shell for s in ${SRC_LANGS}; do \
+ifndef MODEL_LANGPAIRS
+  MODEL_LANGPAIRS := ${shell for s in ${SRC_LANGS}; do \
 				for t in ${TRG_LANGS}; do echo "$$s-$$t"; done done}
+endif
 
 
 #-------------------------------------------------
@@ -132,6 +135,38 @@ ifeq ($(wildcard ${TESTSET_TRG}).labels,)
   TESTSET_LABELS := ${TESTSET_TRG}.labels
 endif
 endif
+
+
+
+## get all available benchmarks for the current model
+## TODO: is this super expensive? (for highly multilingual models)
+## TODO: should we also check for each metric what is missing?
+## --> yes, this does not scale!
+
+## the assignment below would extract all available benchmarks
+## for all supported language pairs in the given model
+## --> but this does not scale well for highly multilingual models
+## --> do it only once and store the list in a file
+#
+# AVAILABLE_BENCHMARKS := $(sort \
+#			$(foreach langpair,${LANGPAIRS},\
+#			$(patsubst %,${langpair}/%,\
+#			$(shell grep '^${langpair}	' ${LANGPAIR_TO_TESTSETS} | cut -f2))))
+
+## store available benchmarks for this model in a file
+## --> problem: this will be outdated if new benchmarks appear!
+
+ifeq ($(wildcard ${MODEL_TESTSETS}),)
+  MAKE_BENCHMARK_FILE := $(foreach lp,${LANGPAIRS},\
+	$(shell grep '^${lp}	' ${LANGPAIR_TO_TESTSETS} | \
+		cut -f2 | tr ' ' "\n" | \
+		sed 's|^|${lp}/|' >> ${MODEL_TESTSETS}))
+endif
+
+AVAILABLE_BENCHMARKS := $(shell cut -f1 ${MODEL_TESTSETS})
+TESTED_BENCHMARKS    := $(sort $(shell cut -f1,2 ${MODEL_SCORES} | tr "\t" '/'))
+MISSING_BENCHMARKS   := $(filter-out ${TESTED_BENCHMARKS},${AVAILABLE_BENCHMARKS})
+
 
 
 #-------------------------------------------------
