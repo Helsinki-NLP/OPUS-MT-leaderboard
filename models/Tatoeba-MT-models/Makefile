@@ -89,6 +89,9 @@ eval-new-models:
 		grep '^1 ' | cut -f2 -d' ')" all
 
 
+print-available-testsets:
+	@echo ${TESTSETS}
+
 #-------------------------------------------------
 # fetch model and get supported languages
 #-------------------------------------------------
@@ -189,12 +192,14 @@ ${WORK_DIR}/%.${LANGPAIR}.input: ${TESTSET_SRC}
 	${PREPROCESS} < $< > $@
 ## check whether we need to replace the target language labels
 ifeq (${USE_TARGET_LABELS},1)
+ifneq ($(TESTSET_LABELS),)
 	if [ -e $(TESTSET_LABELS) ]; then \
 	  cut -f2- -d' ' $@ > $@.tmp1; \
 	  sed 's/^/>>/;s/$$/<</' < $(TESTSET_LABELS) > $@.tmp2; \
 	  paste -d' ' $@.tmp2 $@.tmp1 > $@; \
 	  rm -f $@.tmp2 $@.tmp1; \
 	fi
+endif
 endif
 
 
@@ -222,12 +227,14 @@ ${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_SRC}
 ##------------------------------------------------------------
 	@${PREPROCESS} < $< > $(@:.output=.input)
 ifeq (${USE_TARGET_LABELS},1)
-	@if [ -e $(TESTSET_LABELS) ]; then \
+ifneq ($(TESTSET_LABELS),)
+	if [ -e $(TESTSET_LABELS) ]; then \
 	  cut -f2- -d' ' $(@:.output=.input)           > $@.tmp1; \
-	  sed 's/^/>>/;s/$$/<</' < $(TESTSET_LABELS) > $@.tmp2; \
+	  sed 's/^/>>/;s/$$/<</' < $(TESTSET_LABELS)   > $@.tmp2; \
 	  paste -d' ' $@.tmp2 $@.tmp1 > $(@:.output=.input); \
 	  rm -f $@.tmp2 $@.tmp1; \
 	fi
+endif
 endif
 	if [ -s $(@:.output=.input) ]; then \
 	    echo " - size of sentences to translate:"                     >> $@.log; \

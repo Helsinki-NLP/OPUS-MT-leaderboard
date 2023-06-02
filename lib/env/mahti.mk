@@ -112,4 +112,5 @@ LOAD_EXTRACTLEX_BUILD_ENV = module load cmake boost
 # LOAD_COMET_ENV = module purge && module load pytorch && singularity_wrapper exec
 # COMET_SCORE = ${HOME}/.local/bin/comet-score
 
-LOAD_COMET_ENV = module purge && module load pytorch/1.13 &&
+# LOAD_COMET_ENV = module purge && module load pytorch/1.13 &&
+LOAD_COMET_ENV = module purge && module load pytorch/2.0 &&
