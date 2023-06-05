@@ -14,7 +14,8 @@ LEADERBOARD_DIR ?= scores
 
 
 ## all language pairs and all evaluation metrics
-LANGPAIRS  := $(sort $(notdir $(wildcard ${LEADERBOARD_DIR}/*-*)))
+# LANGPAIRS := $(sort $(notdir $(wildcard ${LEADERBOARD_DIR}/*-*)))
+LANGPAIRS  := $(sort $(shell find scores -name '*-*' -mindepth 1 -maxdepth 1 -type d -printf "%f "))
 METRICS    := bleu spbleu chrf chrf++ comet
 
 
@@ -140,7 +141,7 @@ $(UPDATE_LEADERBOARD_TARGETS):
 
 ## update using a for loop:
 ## this is much faster but  breaks if the LANGPAIRS becomes too big
-## (arghument list too long)
+## (argument list too long)
 
 .PHONY: update-all-leaderboards-loop
 update-all-leaderboards-loop:
