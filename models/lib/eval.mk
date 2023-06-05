@@ -7,6 +7,7 @@ print-model-info:
 	@echo "${MODEL_DIST}"
 	@echo "${MODEL}"
 	@echo "${LANGPAIRS}"
+	@echo "${TESTSET}"
 	@echo ""
 	@echo "available benchmarks:"
 	@echo "${AVAILABLE_BENCHMARKS}" | tr ' ' "\n"
@@ -116,7 +117,7 @@ ifneq (${MISSING_BENCHMARKS},)
 	${MAKE} fetch
 	${MAKE} eval-missing-benchmarks
 	${MAKE} cleanup
-	${MAKE} ${MODEL_EVAL_SCORES}; \
+	${MAKE} SKIP_NEW_EVALUATION=1 ${MODEL_EVAL_SCORES}; \
 	${MAKE} pack-model-scores
 else
 	@echo ".... nothing is missing"
@@ -153,7 +154,7 @@ ${MODEL_TESTSETS}: ${LANGPAIR_TO_TESTSETS}
 
 
 .PHONY: eval
-eval: 	${MODEL_DIR}/${TESTSET}.${LANGPAIR}.compare \
+eval:	${MODEL_DIR}/${TESTSET}.${LANGPAIR}.compare \
 	${MODEL_DIR}/${TESTSET}.${LANGPAIR}.eval
 
 
@@ -181,7 +182,8 @@ ${EVAL_BENCHMARK_TARGETS}:
 
 TRANSLATED_BENCHMARKS = $(patsubst %,${MODEL_DIR}/%.${LANGPAIR}.compare,${TESTSETS})
 EVALUATED_BENCHMARKS  = $(patsubst %,${MODEL_DIR}/%.${LANGPAIR}.eval,${TESTSETS})
-BENCHMARK_SCORE_FILES = $(foreach m,${METRICS},$(patsubst %.eval,%.${m},${EVALUATED_BENCHMARKS}))
+# BENCHMARK_SCORE_FILES = $(foreach m,${METRICS},$(patsubst %.eval,%.${m},${EVALUATED_BENCHMARKS}))
+BENCHMARK_SCORE_FILES = $(foreach m,${METRICS},${MODEL_DIR}/${TESTSET}.${LANGPAIR}.${m})
 
 ## don't delete those files when used in implicit rules
 .NOTINTERMEDIATE: ${TRANSLATED_BENCHMARKS} ${EVALUATED_BENCHMARKS} ${BENCHMARK_SCORE_FILES}
@@ -198,11 +200,20 @@ BENCHMARK_SCORE_FILES = $(foreach m,${METRICS},$(patsubst %.eval,%.${m},${EVALUA
 ## compare source. reference and hypothesis
 ## NOTE: this only shows one reference translation
 
-${MODEL_DIR}/%.${LANGPAIR}.compare: ${TESTSET_SRC} ${TESTSET_TRG} ${WORK_DIR}/%.${LANGPAIR}.output
+${MODEL_DIR}/${TESTSET}.${LANGPAIR}.compare: 
+	${MAKE} ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
 	@mkdir -p ${dir $@}
-	if [ -s $(word 3,$^) ]; then \
-	  paste -d "\n" $^ | sed 'n;n;G;' > $@; \
+	@if [ -s ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output ]; then \
+	  paste -d "\n" ${TESTSET_SRC} ${TESTSET_TRG} \
+			${WORK_DIR}/${TESTSET}.${LANGPAIR}.output | sed 'n;n;G;' > $@; \
 	fi
+
+
+# ${MODEL_DIR}/%.${LANGPAIR}.compare: ${TESTSET_SRC} ${TESTSET_TRG} ${WORK_DIR}/%.${LANGPAIR}.output
+# 	@mkdir -p ${dir $@}
+# 	@if [ -s $(word 3,$^) ]; then \
+# 	  paste -d "\n" $^ | sed 'n;n;G;' > $@; \
+# 	fi
 
 
 
@@ -395,7 +406,7 @@ ${MODEL_DIR}/%.${LANGPAIR}.comet: ${MODEL_DIR}/%.${LANGPAIR}.compare
 #	  grep -H chrF ${MODEL_DIR}/*.chrf | sed 's/.chrf//' | sort          > $@.chrf;
 
 
-${MODEL_SCORES}: ${TESTSET_INDEX}
+${MODEL_SCORES}: ${TESTSET_INDEX} ${TESTSET_FILES}
 ifndef SKIP_OLD_EVALUATION
 	-if [ ! -e $@ ]; then \
 	  mkdir -p $(dir $@); \

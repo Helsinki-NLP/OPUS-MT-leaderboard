@@ -49,9 +49,9 @@ TESTSET_INDEX   := ${OPUSMT_TESTSETS}/index.txt
 ## model score file and zipfile with evaluation results
 
 MODEL_HOME      ?= ${PWD}
-MODEL_DIR       = ${MODEL_HOME}/${MODEL}
-MODEL_EVALZIP   = ${MODEL_DIR}.eval.zip
-MODEL_TESTSETS  = ${MODEL_DIR}.testsets.tsv
+MODEL_DIR       := ${MODEL_HOME}/${MODEL}
+MODEL_EVALZIP   := ${MODEL_DIR}.eval.zip
+MODEL_TESTSETS  := ${MODEL_DIR}.testsets.tsv
 
 LEADERBOARD_DIR = ${REPOHOME}scores
 
@@ -68,9 +68,9 @@ MODELSCORE_STORAGE = ${LEADERBOARD_GITURL}/models/$(notdir ${MODEL_HOME})
 ##   - for a specific metric (MODEL_METRIC_SCORES)
 ##   - all score files (MODEL_EVAL_SCORES)
 
-MODEL_SCORES        = ${MODEL_DIR}.scores.txt
-MODEL_METRIC_SCORES = $(patsubst %,${MODEL_DIR}.%-scores.txt,${METRICS})
-MODEL_EVAL_SCORES   = ${MODEL_SCORES} ${MODEL_METRIC_SCORES}
+MODEL_SCORES        := ${MODEL_DIR}.scores.txt
+MODEL_METRIC_SCORES := $(patsubst %,${MODEL_DIR}.%-scores.txt,${METRICS})
+MODEL_EVAL_SCORES   := ${MODEL_SCORES} ${MODEL_METRIC_SCORES}
 
 
 
@@ -111,7 +111,7 @@ TESTSET_DIR   := ${TESTSET_HOME}/${LANGPAIR}
 TESTSETS      := $(sort $(shell grep '^${LANGPAIR}	' ${LANGPAIR_TO_TESTSETS} | cut -f2) \
 			${notdir ${basename ${wildcard ${TESTSET_DIR}/*.${SRC}}}})
 
-TESTSET      := $(firstword ${TESTSETS})
+TESTSET      ?= $(firstword ${TESTSETS})
 TESTSET_SRC  := $(patsubst %,${OPUSMT_TESTSETS}/%,\
 		$(shell grep '^${SRC}	${TRG}	${TESTSET}	' ${TESTSET_FILES} | cut -f7))
 TESTSET_REFS := $(patsubst %,${OPUSMT_TESTSETS}/%,\
@@ -129,7 +129,7 @@ ifeq ($(wildcard ${TESTSET_SRC}),)
 endif
 
 ifeq ($(wildcard ${TESTSET_TRG}),)
-  TESTSET_TRG := ${TESTSET_DIR}/${TESTSET}.${TRG}
+  TESTSET_TRG  := ${TESTSET_DIR}/${TESTSET}.${TRG}
   TESTSET_REFS := ${TESTSET_TRG}
 ifeq ($(wildcard ${TESTSET_TRG}).labels,)
   TESTSET_LABELS := ${TESTSET_TRG}.labels

@@ -117,13 +117,14 @@ upload-all:
 	which a-get
 	if [ `find . -size -5G -name '*.zip' | wc -l` -gt 0 ]; then \
 	  cd .. && find models/ -size -5G -name '*.zip' | \
-		xargs swift upload ${STORAGE_BUCKET} --changed --skip-identical; \
+		xargs -n 100 swift upload ${STORAGE_BUCKET} --changed --skip-identical; \
 	fi
 	if [ `find . -size +5G -name '*.zip' | wc -l` -gt 0 ]; then \
 	  cd .. && find models/ -size +5G -name '*.zip' | \
-		xargs swift upload ${STORAGE_BUCKET} --changed --skip-identical --use-slo --segment-size 5G; \
+		xargs -n 100 swift upload ${STORAGE_BUCKET} --changed --skip-identical --use-slo --segment-size 5G; \
 	fi
 	swift post ${STORAGE_BUCKET} --read-acl ".r:*"
+
 
 .PHONY: upload-dryrun upload-eval-files-dryrun
 upload-dryrun upload-eval-files-dryrun:

@@ -243,7 +243,11 @@ ${UPDATE_LEADERBOARDS}: ${UPDATE_SCORE_DIRS}
 	done
 
 
+remove-devsets:
+	make -C admin remove-devsets
 
+remove-devevalfiles:
+	make -C admin remove-devevalfiles
 
 include ${REPOHOME}lib/env.mk
 include ${REPOHOME}lib/config.mk

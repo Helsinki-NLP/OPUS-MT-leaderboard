@@ -21,7 +21,8 @@ endif
 
 MODELS          := $(patsubst %.zip,%,${MODEL_DISTS})
 MODEL           ?= ${firstword ${MODELS}}
-MODEL_DIST      ?= ${firstword ${MODEL_DISTS}}
+MODEL_DIST      ?= ${MODEL}.zip
+# MODEL_DIST    ?= ${firstword ${MODEL_DISTS}}
 MODEL_LANGPAIR   = ${firstword ${subst /, ,${MODEL}}}
 
 MODEL_URL        = ${MODEL_STORAGE}/${MODEL}.zip
