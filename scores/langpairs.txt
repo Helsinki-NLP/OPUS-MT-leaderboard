@@ -88,6 +88,7 @@ acm-ary
 acm-arz
 acm-eng
 acm-fin
+acm-hau
 acm-heb
 acm-jpn
 acm-kab
@@ -170,6 +171,7 @@ amh-arz
 amh-eng
 amh-est
 amh-fin
+amh-hau
 amh-heb
 amh-hun
 amh-kab
@@ -361,6 +363,7 @@ asm-rus
 asm-san
 asm-sin
 asm-slv
+asm-snd
 asm-spa
 asm-swe
 asm-ukr
@@ -417,6 +420,7 @@ ast-tpi
 ast-ukr
 ast-urd
 ast-vec
+ast-zsm
 awa-asm
 awa-ben
 awa-bho
@@ -436,6 +440,7 @@ awa-pan
 awa-por
 awa-san
 awa-sin
+awa-snd
 awa-spa
 awa-tur
 awa-urd
@@ -454,9 +459,12 @@ bak-eng
 bak-est
 bak-fin
 bak-hun
+bak-kaz
+bak-kir
 bak-tat
 bak-tuk
 bak-tur
+bak-uig
 bam-eng
 bam-fin
 ban-eng
@@ -465,6 +473,7 @@ bel-afr
 bel-asm
 bel-ast
 bel-ben
+bel-bos
 bel-bul
 bel-cat
 bel-ces
@@ -492,6 +501,7 @@ bel-ind
 bel-isl
 bel-ita
 bel-kab
+bel-lat
 bel-lav
 bel-lim
 bel-lit
@@ -512,6 +522,7 @@ bel-scn
 bel-slk
 bel-slv
 bel-spa
+bel-srp
 bel-srp_Cyrl
 bel-swe
 bel-szl
@@ -519,6 +530,7 @@ bel-tpi
 bel-tur
 bel-ukr
 bel-urd
+bel-yue
 bel-zho
 bem-eng
 bem-fin
@@ -553,6 +565,7 @@ ben-ltz
 ben-mai
 ben-mar
 ben-mkd
+ben-nep
 ben-nld
 ben-nob
 ben-npi
@@ -602,6 +615,7 @@ bod-kac
 bod-lus
 bod-mni
 bod-mya
+bod-yue
 bos-bel
 bos-bul
 bos-ces
@@ -616,6 +630,7 @@ bos-mkd
 bos-pol
 bos-rus
 bos-slv
+bos-srp
 bos-srp_Cyrl
 bos-ukr
 bre-eng
@@ -627,6 +642,8 @@ bul-asm
 bul-ast
 bul-bel
 bul-ben
+bul-bos
+bul-bul
 bul-cat
 bul-ces
 bul-cmn_Hans
@@ -672,6 +689,7 @@ bul-scn
 bul-slk
 bul-slv
 bul-spa
+bul-srp
 bul-srp_Cyrl
 bul-swe
 bul-szl
@@ -740,6 +758,8 @@ cat-tur
 cat-ukr
 cat-urd
 cat-vec
+cat-yue
+cat-zsm
 cbk-eng
 ceb-eng
 ceb-fin
@@ -758,6 +778,7 @@ ces-asm
 ces-ast
 ces-bel
 ces-ben
+ces-bos
 ces-bul
 ces-cat
 ces-cmn_Hans
@@ -803,6 +824,7 @@ ces-scn
 ces-slk
 ces-slv
 ces-spa
+ces-srp
 ces-srp_Cyrl
 ces-swe
 ces-szl
@@ -874,9 +896,12 @@ crh-eng
 crh-est
 crh-fin
 crh-hun
+crh-kaz
+crh-kir
 crh-tat
 crh-tuk
 crh-tur
+crh-uig
 cym-afr
 cym-asm
 cym-ast
@@ -934,6 +959,7 @@ dan-ces
 dan-cmn_Hans
 dan-cmn_Hant
 dan-cym
+dan-dan
 dan-deu
 dan-ell
 dan-eng
@@ -975,6 +1001,7 @@ dan-slv
 dan-spa
 dan-srp_Cyrl
 dan-swe
+dan-tpi
 dan-tur
 dan-ukr
 dan-urd
@@ -996,6 +1023,7 @@ deu-cmn_Hant
 deu-cor
 deu-cym
 deu-dan
+deu-deu
 deu-dsb
 deu-ell
 deu-eng
@@ -1075,6 +1103,7 @@ deu-urd
 deu-vie
 deu-yid
 deu-zho
+deu-zsm
 dik-eng
 dik-fin
 dsb-deu
@@ -1109,6 +1138,7 @@ ell-ces
 ell-cym
 ell-dan
 ell-deu
+ell-ell
 ell-eng
 ell-epo
 ell-fin
@@ -1202,6 +1232,7 @@ eng-dtp
 eng-dyu
 eng-dzo
 eng-ell
+eng-eng
 eng-epo
 eng-est
 eng-eus
@@ -1287,6 +1318,7 @@ eng-lij
 eng-lim
 eng-lin
 eng-lit
+eng-liv
 eng-lmo
 eng-ltg
 eng-ltz
@@ -1406,6 +1438,8 @@ eng-yue
 eng-yue_Hans
 eng-yue_Hant
 eng-zho
+eng-zho_Hans
+eng-zho_Hant
 eng-zsm
 eng-zsm_Latn
 eng-zul
@@ -1413,6 +1447,7 @@ eng-zza
 epo-afr
 epo-awa
 epo-bel
+epo-bos
 epo-bul
 epo-ces
 epo-cor
@@ -1420,6 +1455,7 @@ epo-dan
 epo-deu
 epo-ell
 epo-eng
+epo-epo
 epo-fao
 epo-fin
 epo-fra
@@ -1458,6 +1494,7 @@ epo-yid
 est-afr
 est-bak
 est-bel
+est-bos
 est-bul
 est-ces
 est-dan
@@ -1469,6 +1506,7 @@ est-fra
 est-hrv
 est-hun
 est-isl
+est-kaz
 est-lav
 est-lim
 est-lit
@@ -1483,6 +1521,7 @@ est-rus
 est-slk
 est-slv
 est-spa
+est-srp
 est-srp_Cyrl
 est-swe
 est-szl
@@ -1490,6 +1529,7 @@ est-tat
 est-tpi
 est-tur
 est-ukr
+est-uzb
 eus-deu
 eus-eng
 eus-fin
@@ -1612,6 +1652,7 @@ fin-ewe
 fin-fao
 fin-fas
 fin-fij
+fin-fin
 fin-fkv
 fin-fon
 fin-fra
@@ -1642,6 +1683,7 @@ fin-jpn_Hani
 fin-jpn_Hira
 fin-jpn_Kana
 fin-kab
+fin-kaz
 fin-khm
 fin-lav
 fin-lim
@@ -1652,6 +1694,7 @@ fin-ltz
 fin-lug
 fin-mkd
 fin-mlt
+fin-msa
 fin-nld
 fin-nno
 fin-nob
@@ -1666,6 +1709,7 @@ fin-slk
 fin-slv
 fin-sna
 fin-spa
+fin-srp
 fin-srp_Cyrl
 fin-swe
 fin-szl
@@ -1673,10 +1717,13 @@ fin-tat
 fin-tpi
 fin-tur
 fin-ukr
+fin-uzb
 fin-vie
 fin-xho
 fin-yor
+fin-yue
 fin-zho
+fin-zsm
 fkv-fin
 fon-eng
 fon-fin
@@ -1710,7 +1757,9 @@ fra-est
 fra-eus
 fra-fao
 fra-fin
+fra-fra
 fra-fur
+fra-gcf
 fra-gla
 fra-gle
 fra-glg
@@ -1787,6 +1836,7 @@ fra-wuu
 fra-xho
 fra-yid
 fra-yor
+fra-yue
 frr-deu
 fry-eng
 fry-nld
@@ -1933,6 +1983,7 @@ glg-tur
 glg-ukr
 glg-urd
 glg-vec
+glg-yue
 gos-deu
 gos-eng
 gos-nld
@@ -2050,6 +2101,7 @@ heb-fao
 heb-fin
 heb-fra
 heb-glg
+heb-heb
 heb-hun
 heb-isl
 heb-ita
@@ -2106,6 +2158,7 @@ hin-ltz
 hin-mai
 hin-mar
 hin-mkd
+hin-nep
 hin-nld
 hin-nob
 hin-npi
@@ -2132,6 +2185,7 @@ hrv-asm
 hrv-ast
 hrv-bel
 hrv-ben
+hrv-bos
 hrv-bul
 hrv-cat
 hrv-ces
@@ -2174,6 +2228,7 @@ hrv-rus
 hrv-scn
 hrv-slv
 hrv-spa
+hrv-srp
 hrv-srp_Cyrl
 hrv-swe
 hrv-ukr
@@ -2188,6 +2243,7 @@ hun-ara
 hun-arz
 hun-bak
 hun-bel
+hun-bos
 hun-bul
 hun-ces
 hun-cmn_Hans
@@ -2202,13 +2258,16 @@ hun-fin
 hun-fra
 hun-heb
 hun-hrv
+hun-hun
 hun-ind
 hun-isl
 hun-kab
+hun-kaz
 hun-khm
 hun-lim
 hun-ltz
 hun-mkd
+hun-msa
 hun-nld
 hun-nno
 hun-nob
@@ -2216,6 +2275,7 @@ hun-pol
 hun-rus
 hun-slk
 hun-slv
+hun-srp
 hun-srp_Cyrl
 hun-swe
 hun-szl
@@ -2223,7 +2283,10 @@ hun-tat
 hun-tpi
 hun-tur
 hun-ukr
+hun-uzb
 hun-vie
+hun-yue
+hun-zsm
 hye-afr
 hye-asm
 hye-ast
@@ -2343,6 +2406,7 @@ ind-lmo
 ind-ltz
 ind-mar
 ind-mkd
+ind-msa
 ind-nld
 ind-nob
 ind-npi
@@ -2366,6 +2430,8 @@ ind-ukr
 ind-urd
 ind-vec
 ind-war
+ind-yue
+ind-zsm
 ind-zsm_Latn
 isl-afr
 isl-asm
@@ -2461,6 +2527,7 @@ ita-hye
 ita-ido
 ita-ind
 ita-isl
+ita-ita
 ita-jpn
 ita-jpn_Hani
 ita-jpn_Hira
@@ -2502,7 +2569,9 @@ ita-urd
 ita-vec
 ita-vie
 ita-yid
+ita-yue
 ita-zho
+ita-zsm
 jav-ceb
 jav-eng
 jav-fin
@@ -2568,6 +2637,7 @@ jpn-hrv
 jpn-hun
 jpn-ind
 jpn-ita
+jpn-jpn
 jpn_Kana-deu
 jpn_Kana-eng
 jpn_Kana-fin
@@ -2608,6 +2678,7 @@ kab-fra
 kab-heb
 kab-hun
 kab-ita
+kab-kab
 kab-kat
 kab-ltz
 kab-mlt
@@ -2642,11 +2713,20 @@ kas_Deva-fin
 kat-eng
 kat-fin
 kat-rus
+kaz-bak
+kaz-crh
 kaz_Cyrl-eng
 kaz-eng
 kaz-est
 kaz-fin
 kaz-hun
+kaz-kir
+kaz-mon
+kaz-tat
+kaz-tuk
+kaz-tur
+kaz-uig
+kaz-uzb
 kbp-eng
 kbp-fin
 kea-afr
@@ -2671,15 +2751,25 @@ khm-hun
 khm-ind
 khm-msa
 khm-pol
+khm-sat
 khm-vie
 kik-eng
 kik-fin
 kin-eng
 kin-fin
+kir-bak
+kir-crh
 kir-eng
 kir-est
 kir-fin
 kir-hun
+kir-kaz
+kir-mon
+kir-tat
+kir-tuk
+kir-tur
+kir-uig
+kir-uzb
 kmb-eng
 kmb-fin
 kmr-eng
@@ -2877,6 +2967,7 @@ lit-swe
 lit-tur
 lit-ukr
 lit-urd
+liv-eng
 lmo-afr
 lmo-ast
 lmo-cat
@@ -3042,6 +3133,7 @@ mar-lit
 mar-ltz
 mar-mai
 mar-mkd
+mar-nep
 mar-nld
 mar-nob
 mar-npi
@@ -3068,6 +3160,7 @@ mkd-asm
 mkd-ast
 mkd-bel
 mkd-ben
+mkd-bos
 mkd-bul
 mkd-cat
 mkd-ces
@@ -3108,6 +3201,7 @@ mkd-scn
 mkd-slk
 mkd-slv
 mkd-spa
+mkd-srp
 mkd-srp_Cyrl
 mkd-swe
 mkd-szl
@@ -3147,7 +3241,10 @@ mon-eng
 mon-est
 mon-fin
 mon-hun
+mon-kaz
+mon-kir
 mon-tur
+mon-uzb
 mos-eng
 mos-fin
 mri-eng
@@ -3174,6 +3271,7 @@ msa-rus
 msa-sun
 msa-ukr
 msa-war
+msa-yue
 msa-zho
 mya-bod
 mya-cmn_Hans
@@ -3186,6 +3284,7 @@ mya-hun
 mya-kac
 mya-lus
 mya-mni
+mya-yue
 nds-deu
 nds-eng
 nds-fra
@@ -3194,7 +3293,11 @@ nds-nld
 nds-por
 nds-rus
 nds-spa
+nep-ben
 nep-eng
+nep-hin
+nep-mar
+nep-urd
 nld-afr
 nld-asm
 nld-ast
@@ -3240,6 +3343,7 @@ nld-ltz
 nld-mar
 nld-mkd
 nld-nds
+nld-nld
 nld-nno
 nld-nob
 nld-nor
@@ -3482,6 +3586,7 @@ oci-tur
 oci-ukr
 oci-urd
 oci-vec
+oci-yue
 orm-eng
 orm-est
 orm-fin
@@ -3493,6 +3598,7 @@ ory-fin
 ota_Arab-eng
 ota-eng
 ota_Latn-eng
+ota-tur
 pag-ceb
 pag-eng
 pag-fin
@@ -3577,6 +3683,7 @@ pol-asm
 pol-ast
 pol-bel
 pol-ben
+pol-bos
 pol-bul
 pol-cat
 pol-ces
@@ -3624,6 +3731,7 @@ pol-scn
 pol-slk
 pol-slv
 pol-spa
+pol-srp
 pol-srp_Cyrl
 pol-swe
 pol-szl
@@ -3690,6 +3798,7 @@ por-npi
 por-oci
 por-pap
 por-pol
+por-por
 por-pus
 por-ron
 por-rus
@@ -3706,6 +3815,7 @@ por-tur
 por-ukr
 por-urd
 por-vec
+por-yue
 prg-eng
 prs-eng
 prs-fin
@@ -3825,6 +3935,7 @@ ron-tur
 ron-ukr
 ron-urd
 ron-vec
+ron-yue
 run-deu
 run-eng
 run-fin
@@ -3840,6 +3951,7 @@ rus-ast
 rus-awa
 rus-bel
 rus-ben
+rus-bos
 rus-bul
 rus-cat
 rus-ces
@@ -3895,10 +4007,12 @@ rus-pol
 rus-por
 rus-pus
 rus-ron
+rus-rus
 rus-scn
 rus-slk
 rus-slv
 rus-spa
+rus-srp
 rus-srp_Cyrl
 rus-srp_Latn
 rus-swe
@@ -3911,6 +4025,7 @@ rus-ukr
 rus-urd
 rus-vie
 rus-yid
+rus-yue
 rus-yue_Hans
 rus-zho
 sag-eng
@@ -3999,6 +4114,7 @@ slv-asm
 slv-ast
 slv-bel
 slv-ben
+slv-bos
 slv-bul
 slv-cat
 slv-ces
@@ -4045,6 +4161,7 @@ slv-rus
 slv-scn
 slv-slk
 slv-spa
+slv-srp
 slv-srp_Cyrl
 slv-swe
 slv-szl
@@ -4166,6 +4283,7 @@ spa-rus
 spa-scn
 spa-slv
 spa-sna
+spa-spa
 spa-srd
 spa-srp_Cyrl
 spa-swe
@@ -4180,6 +4298,7 @@ spa-vie
 spa-xho
 spa-yid
 spa-yor
+spa-yue
 spa-zho
 sqi-eng
 srd-afr
@@ -4208,6 +4327,7 @@ srd-spa
 srd-tpi
 srd-vec
 srp-bel
+srp-bos
 srp-bul
 srp-ces
 srp_Cyrl-ast
@@ -4336,6 +4456,7 @@ swe-slv
 swe-sna
 swe-spa
 swe-srp_Cyrl
+swe-swe
 swe-tha
 swe-tur
 swe-ukr
@@ -4375,8 +4496,11 @@ tat-eng
 tat-est
 tat-fin
 tat-hun
+tat-kaz
+tat-kir
 tat-tuk
 tat-tur
+tat-uig
 tel-eng
 tel-fin
 tel-kan
@@ -4453,11 +4577,15 @@ tuk-eng
 tuk-est
 tuk-fin
 tuk-hun
+tuk-kaz
+tuk-kir
 tuk_Latn-eng
 tuk-tat
 tuk-tur
+tuk-uig
 tum-eng
 tum-fin
+tur-apc
 tur-ara
 tur-ara_Latn
 tur-arz
@@ -4486,6 +4614,8 @@ tur-ita
 tur-jpn
 tur-jpn_Hira
 tur-kab
+tur-kaz
+tur-kir
 tur-lit
 tur-ltz
 tur-mon
@@ -4493,6 +4623,7 @@ tur-nld
 tur-nno
 tur-nob
 tur-oci
+tur-ota
 tur-por
 tur-ron
 tur-rus
@@ -4500,7 +4631,10 @@ tur-spa
 tur-swe
 tur-tat
 tur-tuk
+tur-tur
+tur-uig
 tur-ukr
+tur-uzb
 twi-eng
 twi-fin
 tzl-eng
@@ -4508,16 +4642,24 @@ tzl_Latn-eng
 tzm-eng
 tzm-fin
 uig_Arab-eng
+uig-bak
+uig-crh
 uig-eng
 uig-est
 uig-fin
 uig-hun
+uig-kaz
+uig-kir
+uig-tat
+uig-tuk
+uig-tur
 ukr-afr
 ukr-asm
 ukr-ast
 ukr-awa
 ukr-bel
 ukr-ben
+ukr-bos
 ukr-bul
 ukr-cat
 ukr-ces
@@ -4572,13 +4714,16 @@ ukr-scn
 ukr-slk
 ukr-slv
 ukr-spa
+ukr-srp
 ukr-srp_Cyrl
 ukr-srp_Latn
 ukr-swe
 ukr-szl
 ukr-tpi
 ukr-tur
+ukr-ukr
 ukr-urd
+ukr-yue
 ukr-zho
 umb-eng
 umb-fin
@@ -4614,6 +4759,7 @@ urd-ltz
 urd-mai
 urd-mar
 urd-mkd
+urd-nep
 urd-nld
 urd-nob
 urd-npi
@@ -4634,7 +4780,11 @@ uzb-eng
 uzb-est
 uzb-fin
 uzb-hun
+uzb-kaz
+uzb-kir
 uzb_Latn-eng
+uzb-mon
+uzb-tur
 uzn-eng
 uzn-fin
 vec-afr
@@ -4680,7 +4830,9 @@ vie-khm
 vie-msa
 vie-pol
 vie-rus
+vie-sat
 vie-spa
+vie-vie
 vie-zho
 vol-eng
 vol-epo
@@ -4717,6 +4869,7 @@ yid-lad_Latn
 yid-lfn_Latn
 yid-rus
 yid-spa
+yid-yid
 yor-eng
 yor-fin
 yor-fra
@@ -4739,6 +4892,8 @@ zho-bul
 zho-deu
 zho-eng
 zho-fin
+zho_Hans-eng
+zho_Hant-eng
 zho-heb
 zho-hun
 zho-ita
@@ -4772,5 +4927,6 @@ zsm-rus
 zsm-sun
 zsm-ukr
 zsm-war
+zsm-yue
 zul-eng
 zza-eng
