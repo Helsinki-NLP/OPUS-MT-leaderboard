@@ -22,7 +22,6 @@ endif
 MODELS          := $(patsubst %.zip,%,${MODEL_DISTS})
 MODEL           ?= ${firstword ${MODELS}}
 MODEL_DIST      ?= ${MODEL}.zip
-# MODEL_DIST    ?= ${firstword ${MODEL_DISTS}}
 MODEL_LANGPAIR   = ${firstword ${subst /, ,${MODEL}}}
 
 MODEL_URL        = ${MODEL_STORAGE}/${MODEL}.zip
@@ -58,8 +57,12 @@ MODEL_LANGPAIRS := $(sort ${MODEL_LANGPAIR} \
 	${shell for s in ${SRC_LANGS}; do \
 		for t in ${TRG_LANGS}; do echo "$$s-$$t"; done done})
 
-include ../lib/config.mk
-include ../lib/eval.mk
+
+include ${REPOHOME}build/config.mk
+include ${REPOHOME}build/eval.mk
+
+# include ../lib/config.mk
+# include ../lib/eval.mk
 
 #-------------------------------------------------
 ## make all evaluation zip-files
@@ -96,9 +99,6 @@ eval-new-models:
 		grep '^1 ' | cut -f2 -d' ')" all
 
 
-print-available-testsets:
-	@echo ${TESTSETS}
-
 #-------------------------------------------------
 # fetch model and get supported languages
 #-------------------------------------------------
@@ -124,39 +124,6 @@ ${WORK_DIR}/model/decoder.yml:
 		< ${dir $@}preprocess-old.sh > ${dir $@}preprocess.sh
 	chmod +x ${dir $@}preprocess.sh
 
-
-
-
-#-------------------------------------------------
-# find models for which we miss some evaluation
-#-------------------------------------------------
-
-MODEL_EVAL_MISSING := $(patsubst %,%.missing,${ALL_LANGPAIRS})
-.INTERMEDIATE: ${MODEL_EVAL_MISSING}
-
-.PHONY: find-missing
-find-missing: eval.missing models.missing
-
-eval.missing: ${MODEL_EVAL_MISSING}
-	find . -name '*.missing' | xargs cat | sort -u > $@
-
-models.missing: eval.missing
-	cut -f1 $< | sort -u > $@
-
-${MODEL_EVAL_MISSING}:
-	if [ -e ${LEADERBOARD_DIR}/$(@:.missing=)/model-list.txt ]; then \
-	  for m in `grep 'Tatoeba-MT-models' ${LEADERBOARD_DIR}/$(@:.missing=)/model-list.txt`; do\
-	    for t in $(sort $(basename $(filter-out %.labels,$(notdir $(wildcard ${TESTSET_HOME}/$(@:.missing=)/*.*))))); do \
-	      for b in ${METRICS}; do \
-	        if [ ! -f ${LEADERBOARD_DIR}/$(@:.missing=)/$$t/$$b-scores.txt ]; then \
-	          echo "$$m	$$t	$$b" | sed 's#^.*MT-models/##' >> $@; \
-	        elif [ `grep "$$m" ${LEADERBOARD_DIR}/$(@:.missing=)/$$t/$$b-scores.txt | wc -l` -eq 0 ]; then \
-	          echo "$$m	$$t	$$b" | sed 's#^.*MT-models/##' >> $@; \
-	        fi \
-	      done \
-	    done \
-	  done \
-	fi
 
 
 
@@ -255,5 +222,42 @@ endif
 	    sed 's/ //g;s/▁/ /g' | sed 's/^ *//;s/ *$$//' > $@; \
 	fi
 	@mv $@.log $(patsubst ${WORK_DIR}/%.output,${MODEL_DIR}/%.log,$@)
+
+
+
+
+
+
+#-------------------------------------------------
+# find models for which we miss some evaluation
+# DEPRECATED
+#-------------------------------------------------
+
+# MODEL_EVAL_MISSING := $(patsubst %,%.missing,${ALL_LANGPAIRS})
+# .INTERMEDIATE: ${MODEL_EVAL_MISSING}
+
+# .PHONY: find-missing
+# find-missing: eval.missing models.missing
+
+# eval.missing: ${MODEL_EVAL_MISSING}
+# 	find . -name '*.missing' | xargs cat | sort -u > $@
+
+# models.missing: eval.missing
+# 	cut -f1 $< | sort -u > $@
+
+# ${MODEL_EVAL_MISSING}:
+# 	if [ -e ${LEADERBOARD_DIR}/$(@:.missing=)/model-list.txt ]; then \
+# 	  for m in `grep 'Tatoeba-MT-models' ${LEADERBOARD_DIR}/$(@:.missing=)/model-list.txt`; do\
+# 	    for t in $(sort $(basename $(filter-out %.labels,$(notdir $(wildcard ${TESTSET_HOME}/$(@:.missing=)/*.*))))); do \
+# 	      for b in ${METRICS}; do \
+# 	        if [ ! -f ${LEADERBOARD_DIR}/$(@:.missing=)/$$t/$$b-scores.txt ]; then \
+# 	          echo "$$m	$$t	$$b" | sed 's#^.*MT-models/##' >> $@; \
+# 	        elif [ `grep "$$m" ${LEADERBOARD_DIR}/$(@:.missing=)/$$t/$$b-scores.txt | wc -l` -eq 0 ]; then \
+# 	          echo "$$m	$$t	$$b" | sed 's#^.*MT-models/##' >> $@; \
+# 	        fi \
+# 	      done \
+# 	    done \
+# 	  done \
+# 	fi
 
 

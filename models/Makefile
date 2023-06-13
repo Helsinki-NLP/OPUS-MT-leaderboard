@@ -42,6 +42,7 @@ MODEL_EVALZIPS  ?= $(patsubst %,%.eval.zip,$(sort $(basename ${SCOREFILES:.txt=}
 SCOREFILES_DONE := ${SCOREFILES:.txt=.registered}
 
 
+
 .PHONY: all
 all: register-all
 	${MAKE} upload-all
