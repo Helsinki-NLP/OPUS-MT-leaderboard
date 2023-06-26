@@ -1,0 +1,7 @@
+chrF2+case.mixed+numchars.6+numrefs.1+space.False+version.1.4.2 = 0.110
+BLEU|nrefs:1|case:mixed|eff:no|tok:flores200|smooth:exp|version:2.3.1 = 5.7 39.4/14.6/5.9/2.4 (BP = 0.605 ratio = 0.665 hyp_len = 20981 ref_len = 31531)
+chrF2|nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.3.1 = 0.10963
+COMET+default = -0.3696
+chrF2++|nrefs:1|case:mixed|eff:yes|nc:6|nw:2|space:no|version:2.3.1 = 0.08267
+BLEU|nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.3.1 = 0.1 0.5/0.0/0.0/0.0 (BP = 1.000 ratio = 1.800 hyp_len = 3652 ref_len = 2029)
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.2 = 0.1 0.5/0.0/0.0/0.0 (BP = 1.000 ratio = 1.800 hyp_len = 3652 ref_len = 2029)

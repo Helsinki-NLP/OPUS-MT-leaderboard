@@ -1,0 +1,7 @@
+chrF2++|nrefs:1|case:mixed|eff:yes|nc:6|nw:2|space:no|version:2.3.1 = 0.60655
+BLEU|nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.0.0 = 39.9 73.1/49.5/33.7/23.3 (BP = 0.972 ratio = 0.972 hyp_len = 12593 ref_len = 12955)
+BLEU|nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.3.1 = 39.9 73.1/49.5/33.7/23.3 (BP = 0.972 ratio = 0.972 hyp_len = 12593 ref_len = 12955)
+COMET+default = 0.6816
+chrF2|nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.0.0 = 0.60928
+chrF2|nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.3.1 = 0.60928
+BLEU|nrefs:1|case:mixed|eff:no|tok:flores200|smooth:exp|version:2.3.1 = 42.2 71.6/50.7/36.4/26.3 (BP = 0.977 ratio = 0.977 hyp_len = 14920 ref_len = 15268)

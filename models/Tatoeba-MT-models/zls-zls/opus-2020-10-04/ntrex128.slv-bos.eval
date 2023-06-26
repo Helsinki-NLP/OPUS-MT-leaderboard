@@ -1,0 +1,5 @@
+COMET+default = 0.8222
+chrF2++|nrefs:1|case:mixed|eff:yes|nc:6|nw:2|space:no|version:2.3.1 = 0.43474
+BLEU|nrefs:1|case:mixed|eff:no|tok:flores200|smooth:exp|version:2.3.1 = 20.9 48.2/26.7/16.8/10.6 (BP = 0.953 ratio = 0.954 hyp_len = 67807 ref_len = 71106)
+BLEU|nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.3.1 = 15.9 47.7/21.2/11.0/5.8 (BP = 1.000 ratio = 1.000 hyp_len = 45035 ref_len = 45037)
+chrF2|nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.3.1 = 0.46638

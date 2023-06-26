@@ -162,15 +162,26 @@ endif
 endif
 
 
-${WORK_DIR}/%.${LANGPAIR}.input: ${TESTSET_SRC}
-	${PREPROCESS} < $< > $@
+#-------------------------------------------------
+# create input file
+#
+# prepare data for translation (subword tokenization)
+# check whether we need to replace the target language labels
+# if there are specific labels per test set instance
+#-------------------------------------------------
+
+.PHONY: input
+input: ${SYSTEM_INPUT}
+
+${SYSTEM_INPUT}: ${TESTSET_SRC}
+	@${PREPROCESS} < $< > $@
 ## check whether we need to replace the target language labels
 ifeq (${USE_TARGET_LABELS},1)
 ifneq ($(TESTSET_LABELS),)
-	if [ -e $(TESTSET_LABELS) ]; then \
-	  cut -f2- -d' ' $@ > $@.tmp1; \
+	@if [ -e $(TESTSET_LABELS) ]; then \
+	  cut -f2- -d' ' $@                          > $@.tmp1; \
 	  sed 's/^/>>/;s/$$/<</' < $(TESTSET_LABELS) > $@.tmp2; \
-	  paste -d' ' $@.tmp2 $@.tmp1 > $@; \
+	  paste -d' ' $@.tmp2 $@.tmp1                > $@; \
 	  rm -f $@.tmp2 $@.tmp1; \
 	fi
 endif
@@ -182,82 +193,27 @@ endif
 #-------------------------------------------------
 
 .PHONY: output
-output: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
+output: ${SYSTEM_OUTPUT}
 
-
-## new: prepare data inside of this target instead of depending on it
-##      as a pre-requisite
-
-${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_SRC}
-	@echo "........ create $(patsubst ${WORK_DIR}/%,%,$@)"
+${SYSTEM_OUTPUT}: ${TESTSET_SRC}
+	@echo "... create $(MODEL)/$(notdir $@)"
 	@mkdir -p $(dir $@)
 	@mkdir -p ${MODEL_DIR}
+	@${MAKE} -s ${SYSTEM_INPUT}
 	@echo "Translating sentences from $(notdir $<) to ${TRG}"          > $@.log
 	@echo ""                                                          >> $@.log
-##------------------------------------------------------------
-## prepare data for translation (subword tokenization)
-## check whether we need to replace the target language labels
-## if there are specific labels per test set instance
-##------------------------------------------------------------
-	@${PREPROCESS} < $< > $(@:.output=.input)
-ifeq (${USE_TARGET_LABELS},1)
-ifneq ($(TESTSET_LABELS),)
-	if [ -e $(TESTSET_LABELS) ]; then \
-	  cut -f2- -d' ' $(@:.output=.input)           > $@.tmp1; \
-	  sed 's/^/>>/;s/$$/<</' < $(TESTSET_LABELS)   > $@.tmp2; \
-	  paste -d' ' $@.tmp2 $@.tmp1 > $(@:.output=.input); \
-	  rm -f $@.tmp2 $@.tmp1; \
-	fi
-endif
-endif
-	if [ -s $(@:.output=.input) ]; then \
+	@if [ -s ${SYSTEM_INPUT} ]; then \
 	    echo " - size of sentences to translate:"                     >> $@.log; \
 	    cat $< | wc -l                                                >> $@.log; \
 	    echo " - size of sentences to translate (subword tokenized):" >> $@.log; \
-	    cat $(@:.output=.input) | wc                                  >> $@.log; \
+	    cat ${SYSTEM_INPUT} | wc                                      >> $@.log; \
 	    ${LOAD_ENV} && ${MONITOR} ${MARIAN_DECODER} \
-		-i $(@:.output=.input) \
+		-i ${SYSTEM_INPUT} \
 		-c ${WORK_DIR}/model/decoder.yml \
-		${MARIAN_DECODER_FLAGS} 2>> $@.log |\
+		${MARIAN_DECODER_FLAGS}                                  2>> $@.log |\
 	    sed 's/ //g;s/▁/ /g' | sed 's/^ *//;s/ *$$//' > $@; \
 	fi
-	@mv $@.log $(patsubst ${WORK_DIR}/%.output,${MODEL_DIR}/%.log,$@)
-
-
-
-
-
-
-#-------------------------------------------------
-# find models for which we miss some evaluation
-# DEPRECATED
-#-------------------------------------------------
-
-# MODEL_EVAL_MISSING := $(patsubst %,%.missing,${ALL_LANGPAIRS})
-# .INTERMEDIATE: ${MODEL_EVAL_MISSING}
-
-# .PHONY: find-missing
-# find-missing: eval.missing models.missing
-
-# eval.missing: ${MODEL_EVAL_MISSING}
-# 	find . -name '*.missing' | xargs cat | sort -u > $@
-
-# models.missing: eval.missing
-# 	cut -f1 $< | sort -u > $@
-
-# ${MODEL_EVAL_MISSING}:
-# 	if [ -e ${LEADERBOARD_DIR}/$(@:.missing=)/model-list.txt ]; then \
-# 	  for m in `grep 'Tatoeba-MT-models' ${LEADERBOARD_DIR}/$(@:.missing=)/model-list.txt`; do\
-# 	    for t in $(sort $(basename $(filter-out %.labels,$(notdir $(wildcard ${TESTSET_HOME}/$(@:.missing=)/*.*))))); do \
-# 	      for b in ${METRICS}; do \
-# 	        if [ ! -f ${LEADERBOARD_DIR}/$(@:.missing=)/$$t/$$b-scores.txt ]; then \
-# 	          echo "$$m	$$t	$$b" | sed 's#^.*MT-models/##' >> $@; \
-# 	        elif [ `grep "$$m" ${LEADERBOARD_DIR}/$(@:.missing=)/$$t/$$b-scores.txt | wc -l` -eq 0 ]; then \
-# 	          echo "$$m	$$t	$$b" | sed 's#^.*MT-models/##' >> $@; \
-# 	        fi \
-# 	      done \
-# 	    done \
-# 	  done \
-# 	fi
+	@mv $@.log $(patsubst %.output,%.log,$@)
+	@rm -f ${SYSTEM_INPUT}
 
 
