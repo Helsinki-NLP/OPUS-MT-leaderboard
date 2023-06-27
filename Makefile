@@ -1,6 +1,10 @@
 # -*-makefile-*-
 
 
+REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))../
+MAKEDIR  := ${REPOHOME}build/
+
+
 .PHONY: all
 all: scores
 	find scores -name '*unsorted*' -empty -delete
@@ -17,9 +21,9 @@ all-langpairs:
 	find scores/ -name '*.txt' | grep -v unsorted | xargs git add
 
 
-include ${REPOHOME}build/env.mk
-include ${REPOHOME}build/leaderboards.mk
-include ${REPOHOME}build/config.mk
-include ${REPOHOME}build/slurm.mk
+include ${MAKEDIR}env.mk
+include ${MAKEDIR}leaderboards.mk
+include ${MAKEDIR}config.mk
+include ${MAKEDIR}slurm.mk
 
 
