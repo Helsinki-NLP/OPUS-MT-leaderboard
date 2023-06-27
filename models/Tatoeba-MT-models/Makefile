@@ -4,7 +4,8 @@
 #
 
 PWD      := ${shell pwd}
-REPOHOME := ${PWD}/../../
+REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))../../
+MAKEDIR  := ${REPOHOME}build/
 
 
 MODEL_STORAGE := https://object.pouta.csc.fi/Tatoeba-MT-models
@@ -58,8 +59,8 @@ MODEL_LANGPAIRS := $(sort ${MODEL_LANGPAIR} \
 		for t in ${TRG_LANGS}; do echo "$$s-$$t"; done done})
 
 
-include ${REPOHOME}build/config.mk
-include ${REPOHOME}build/eval.mk
+include ${MAKEDIR}config.mk
+include ${MAKEDIR}eval.mk
 
 # include ../lib/config.mk
 # include ../lib/eval.mk

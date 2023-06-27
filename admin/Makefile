@@ -32,9 +32,6 @@ reorganize:
 	find ../models -name '*.output' -empty -delete
 	find ../models -name '*.eval' -empty -delete
 	find ../models -name '*.eval' | xargs touch
-	find ../models -name '*.eval' | xargs git add
-	git commit -am 'eval files added'
-	git push origin master
 
 push-git:
 	module load git && find ../models -name '*.eval' | xargs git add
@@ -49,4 +46,14 @@ push-git:
 	module load git && find ../models -name '*.zip' | grep -v eval | xargs git add
 	module load git && git commit -am 'zip files added'
 	module load git && git push origin master
+
+push-git-output:
+	find ../models -mindepth 3 -maxdepth 3 -type d -exec make {}.add-to-git \;
+
+%.add-to-git:
+	module load git && find $(@:.add-to-git=) -name '*.output' | xargs git add
+	module load git && git commit -am 'output files added for $(@:.add-to-git=)'
+	module load git && git push origin master
+
+
 
