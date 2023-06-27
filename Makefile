@@ -1,7 +1,7 @@
 # -*-makefile-*-
 
 
-REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))../
+REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))
 MAKEDIR  := ${REPOHOME}build/
 
 
