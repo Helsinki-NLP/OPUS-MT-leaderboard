@@ -21,9 +21,9 @@ all-langpairs:
 	find scores/ -name '*.txt' | grep -v unsorted | xargs git add
 
 
-include ${MAKEDIR}env.mk
+# include ${MAKEDIR}env.mk
 include ${MAKEDIR}leaderboards.mk
 include ${MAKEDIR}config.mk
-include ${MAKEDIR}slurm.mk
+# include ${MAKEDIR}slurm.mk
 
 
