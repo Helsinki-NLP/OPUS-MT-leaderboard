@@ -48,12 +48,18 @@ push-git:
 	module load git && git push origin master
 
 push-git-output:
-	find ../models -mindepth 3 -maxdepth 3 -type d -exec make {}.add-to-git \;
+	find ../models -mindepth 3 -maxdepth 3 -type d -exec make {}.add-outputs-to-git \;
 
-%.add-to-git:
-	module load git && find $(@:.add-to-git=) -name '*.output' | xargs git add
-	module load git && git commit -am 'output files added for $(@:.add-to-git=)'
+%.add-outputs-to-git:
+	module load git && find $(@:.add-outputs-to-git=) -name '*.output' | xargs git add
+	module load git && git commit -am 'output files added for $(@:.add-outputs-to-git=)'
 	module load git && git push origin master
 
 
+push-git-zip:
+	find ../models -mindepth 2 -maxdepth 2 -type d -exec make {}.add-zips-to-git \;
 
+%.add-zips-to-git:
+	module load git && find $(@:.add-zips-to-git=) -name '*.zip' | xargs git add
+	module load git && git commit -am 'zip files added for $(notdir $(@:.add-zips-to-git=))'
+	module load git && git push origin master
