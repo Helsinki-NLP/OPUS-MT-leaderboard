@@ -10,27 +10,11 @@
 REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))../
 MAKEDIR  := ${REPOHOME}build/
 
-
-
-SOURCE      ?= Tatoeba-MT-models
-MODEL_HOME  ?= ${SOURCE}
-MODEL       ?= deu-eng/opus-2021-02-22
-
+MODEL    ?= Tatoeba-MT-models/deu-eng/opus-2021-02-22
 
 .PHONY: all
 all: register-all
 	${MAKE} upload-all
-
-.PHONY: register-opusmt
-register-opusmt: register-opus-mt register-tatoeba-mt
-
-.PHONY: register-opus-mt
-register-opus-mt:
-	${MAKE} SOURCE=OPUS-MT-models ALL_MODELS=1 register
-
-.PHONY: register-tatoeba-mt
-register-tatoeba-mt:
-	${MAKE} SOURCE=Tatoeba-MT-models ALL_MODELS=1 register
 
 
 include ${MAKEDIR}config.mk
