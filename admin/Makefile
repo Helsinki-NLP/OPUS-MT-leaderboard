@@ -65,10 +65,13 @@ push-git-zip:
 	module load git && git push origin master
 
 
-UNTRACKED_ZIP_FILES := $(filter-out %.eval.zip,$(filter %.zip,$(shell git ls-files --others --exclude-standard ../models)))
+UNTRACKED_ZIP_FILES := $(filter-out %.eval.zip,$(filter %.zip,\
+		$(shell module load git && git ls-files --others --exclude-standard ../models)))
 PUSH_UNTRACKED_ZIP_FILES := $(patsubst %,%-pushgit,${UNTRACKED_ZIP_FILES})
 
+push-untracked-zip-files: ${PUSH_UNTRACKED_ZIP_FILES}
+
 %-pushgit:
-	git add $(@:-pushgit=)
-	git commit -am 'zip file added'
-	git push origin master
+	module load git && git add $(@:-pushgit=)
+	module load git && git commit -am 'zip file added'
+	module load git && git push origin master
