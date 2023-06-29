@@ -63,3 +63,12 @@ push-git-zip:
 	module load git && find $(@:.add-zips-to-git=) -name '*.zip' | xargs git add
 	module load git && git commit -am 'zip files added for $(notdir $(@:.add-zips-to-git=))'
 	module load git && git push origin master
+
+
+UNTRACKED_ZIP_FILES := $(filter-out %.eval.zip,$(filter %.zip,$(shell git ls-files --others --exclude-standard ../models)))
+PUSH_UNTRACKED_ZIP_FILES := $(patsubst %,%-pushgit,${UNTRACKED_ZIP_FILES})
+
+%-pushgit:
+	git add $(@:-pushgit=)
+	git commit -am 'zip file added'
+	git push origin master
