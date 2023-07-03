@@ -25,6 +25,7 @@ MODEL           ?= ${firstword ${MODELS}}
 MODEL_DIST      ?= ${MODEL}.zip
 MODEL_LANGPAIR   = ${firstword ${subst /, ,${MODEL}}}
 
+MODEL_HOME      := ${PWD}
 MODEL_URL        = ${MODEL_STORAGE}/${MODEL}.zip
 MODEL_YAML       = ${MODEL_STORAGE}/${MODEL}.yml
 MODEL_EVAL_URL   = ${MODEL_URL:.zip=.eval.zip}

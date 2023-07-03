@@ -9,8 +9,8 @@ MAKEDIR  := ${REPOHOME}build/
 all: scores
 	find scores -name '*unsorted*' -empty -delete
 	${MAKE} -s updated-leaderboards
-	${MAKE} -s scores/langpairs.txt user-scores/benchmarks.txt
-	find scores -name '*.txt' | grep -v unsorted | xargs git add
+	${MAKE} -s scores/langpairs.txt scores/benchmarks.txt
+	@git add scores/langpairs.txt scores/benchmarks.txt
 
 
 .PHONY: all-langpairs
@@ -18,7 +18,7 @@ all-langpairs:
 	@find scores -name '*unsorted*' -empty -delete
 	${MAKE} -s refresh-leaderboards
 	${MAKE} -s scores/langpairs.txt scores/benchmarks.txt
-	find scores/ -name '*.txt' | grep -v unsorted | xargs git add
+	@git add scores/langpairs.txt scores/benchmarks.txt
 
 
 include ${MAKEDIR}leaderboards.mk
