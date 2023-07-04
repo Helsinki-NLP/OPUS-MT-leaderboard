@@ -25,6 +25,16 @@ all-langpairs:
 overview-files: $(OVERVIEW_FILES)
 	@git add $^
 
+update-git:
+	git add $(OVERVIEW_FILES)
+	find scores -type f -name '*.txt' | xargs git add
+	find models -type f -name '*.txt' | xargs git add
+	find models -type f -name '*.registered' | xargs git add
+	find models -type f -name '*.output' | xargs git add
+	find models -type f -name '*.eval' | xargs git add
+	find models -type f -name '*.logfiles' | xargs git add
+	find models -type f -name '*.zip' | grep -v '.eval.zip' | xargs git add
 
 include ${MAKEDIR}leaderboards.mk
 include ${MAKEDIR}config.mk
+
