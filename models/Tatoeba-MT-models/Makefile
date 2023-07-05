@@ -66,6 +66,10 @@ include ${MAKEDIR}eval.mk
 # include ../lib/config.mk
 # include ../lib/eval.mk
 
+
+tttt:
+	echo ${MODEL_METRIC_SCORE}
+
 #-------------------------------------------------
 ## make all evaluation zip-files
 #-------------------------------------------------

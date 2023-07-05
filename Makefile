@@ -23,7 +23,6 @@ all-langpairs:
 
 .PHONY: overview-files
 overview-files: $(OVERVIEW_FILES)
-	@git add $^
 
 update-git:
 	git add $(OVERVIEW_FILES)
@@ -38,3 +37,7 @@ update-git:
 include ${MAKEDIR}leaderboards.mk
 include ${MAKEDIR}config.mk
 
+
+fix-errors:
+	make -C models register-all
+	make all-langpairs
