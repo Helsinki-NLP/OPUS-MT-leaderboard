@@ -3,10 +3,6 @@
 # with existing benchmarks (collected in OPUS-MT-testsets)
 #
 
-PWD      := ${shell pwd}
-REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))../../
-MAKEDIR  := ${REPOHOME}build/
-
 
 MODEL_STORAGE := https://object.pouta.csc.fi/Tatoeba-MT-models
 
@@ -25,6 +21,7 @@ MODEL           ?= ${firstword ${MODELS}}
 MODEL_DIST      ?= ${MODEL}.zip
 MODEL_LANGPAIR   = ${firstword ${subst /, ,${MODEL}}}
 
+PWD             := ${shell pwd}
 MODEL_HOME      := ${PWD}
 MODEL_URL        = ${MODEL_STORAGE}/${MODEL}.zip
 MODEL_YAML       = ${MODEL_STORAGE}/${MODEL}.yml
@@ -60,15 +57,8 @@ MODEL_LANGPAIRS := $(sort ${MODEL_LANGPAIR} \
 		for t in ${TRG_LANGS}; do echo "$$s-$$t"; done done})
 
 
-include ${MAKEDIR}config.mk
-include ${MAKEDIR}eval.mk
-
-# include ../lib/config.mk
-# include ../lib/eval.mk
-
-
-tttt:
-	echo ${MODEL_METRIC_SCORE}
+include ../../build/config.mk
+include ../../build/eval.mk
 
 #-------------------------------------------------
 ## make all evaluation zip-files

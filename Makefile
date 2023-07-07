@@ -1,9 +1,6 @@
 # -*-makefile-*-
 
 
-REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))
-MAKEDIR  := ${REPOHOME}build/
-
 OVERVIEW_FILES := scores/langpairs.txt scores/benchmarks.txt released-models.txt release-history.txt
 
 
@@ -34,8 +31,8 @@ update-git:
 	find models -type f -name '*.logfiles' | xargs git add
 	find models -type f -name '*.zip' | grep -v '.eval.zip' | xargs git add
 
-include ${MAKEDIR}leaderboards.mk
-include ${MAKEDIR}config.mk
+include build/leaderboards.mk
+include build/config.mk
 
 
 fix-errors:
