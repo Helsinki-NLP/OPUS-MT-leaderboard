@@ -1,27 +1,20 @@
 
 # OPUS-MT leaderboard
 
-A repository of scores and leaderboards for OPUS-MT models using various benchmarks.
+A systematic collection of MT evakuaton scores using various benchmarks.
 
-* [model scores for various benchmarks](models)
-* [leaderboards per benchmark](scores)
-* [merged benchmark translations for better comparison (incomplete)](compare)
-
-
-External MT models are also evaluated in the same way and the scores are collected in two separate repositories:
-
+* [Evaluation of OPUS-MT models](models)
 * [Evaluation of external MT models](https://github.com/Helsinki-NLP/External-MT-leaderboard)
 * [Evaluation of contributed translations](https://github.com/Helsinki-NLP/Contributed-MT-leaderboard)
+* [Evaluation and leaderboard recipes](https://github.com/Helsinki-NLP/OPUS-MT-leaderboard-recipes)
+* [Merged benchmark and system translations (incomplete)](compare)
+* [Collection of MT benchmarks](https://github.com/Helsinki-NLP/OPUS-MT-testsets)
 
 
-Makefile recipes for evaluating models, translations and for creating and maintaining leaderboards are implemented in [OPUS-MT-leaderboard-recipes](https://github.com/Helsinki-NLP/OPUS-MT-leaderboard-recipes) and MT benchmarks are taken from [OPUS-MT-OPUS-MT-testsets](https://github.com/Helsinki-NLP/OPUS-MT-testsets).
-
-
-The dashboard for showing leaderboards is available here:
+A dashboard for showing leaderboards is available here:
 
 * [OPUS-MT dashboard code](https://github.com/Helsinki-NLP/OPUS-MT-dashboard)
 * [Live OPUS-MT dashboard](https://opus.nlpl.eu/dashboard/)
-
 
 
 ## Leaderboards
