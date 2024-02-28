@@ -1,0 +1,21 @@
+release: zho-vie/opus-2020-06-17.zip
+release-date: 2020-06-17
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece (spm32k,spm32k)
+subwords:
+   source: spm32k
+   target: spm32k
+subword-models:
+   source: source.spm
+   target: target.spm
+source-languages:
+   - cmn
+target-languages:
+   - vie
+test-data:
+   Tatoeba-test.zho-vie: 438/4093
+BLEU-scores:
+   Tatoeba-test.zho-vie: 20.0
+chr-F-scores:
+   Tatoeba-test.zho-vie: 0.385

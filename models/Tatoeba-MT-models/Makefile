@@ -31,6 +31,10 @@ MODEL_EVAL_URL   = ${MODEL_URL:.zip=.eval.zip}
 WORK_HOME ?= ${PWD}/work
 WORK_DIR  ?= ${WORK_HOME}/${MODEL}
 
+
+MODEL_INFO_FILE  := ${MODEL_DIR}.info
+MODEL_INFO_FILES := $(patsubst %,%.info,${MODELS})
+
 #-------------------------------------------------
 # get supported source and target languages
 #-------------------------------------------------
@@ -96,6 +100,37 @@ eval-new-models:
 
 
 #-------------------------------------------------
+# create model-info-file
+#-------------------------------------------------
+
+.PHONY: model-info
+model-info: ${MODEL_INFO_FILE}
+
+.PHONY: all-model-infos
+all-model-infos: ${MODEL_INFO_FILES}
+
+${MODEL_INFO_FILES}: %.info:
+	mkdir -p $@.d
+	-wget -qq -O $@.d/model.zip ${MODEL_STORAGE}/$(@:.info=).zip
+	-unzip -n -d $@.d/ $@.d/model.zip
+	-../../tools/model_info.py --summary --model $@.d/*.npz > $@
+	-wget -qq -O $(@:.info=).yml ${MODEL_STORAGE}/$(@:.info=).yml
+	-cp $@.d/README.md $(@:.info=).readme
+	-if [ -s $(@:.info=).yml ]; then \
+	  cat $(@:.info=).yml | yq '.source-languages' | cut -f2 -d' ' | tr "\n" ' ' | sed 's/^/source_languages: /' >> $@; echo '' >> $@; \
+	  cat $(@:.info=).yml | yq '.target-languages' | cut -f2 -d' ' | tr "\n" ' ' | sed 's/^/target_languages: /' >> $@; echo '' >> $@; \
+	  cat $(@:.info=).yml | yq '.source-languages' | cut -f2 -d' ' | wc -l | sed 's/^/nr_source_languages: /' >> $@; \
+	  cat $(@:.info=).yml | yq '.target-languages' | cut -f2 -d' ' | wc -l | sed 's/^/nr_target_languages: /' >> $@; \
+	else \
+	  grep '\* source language(s)' $@.d/README.md | sed 's/\* source language(s)/source_languages/' >> $@; \
+	  grep '\* target language(s)' $@.d/README.md | sed 's/\* target language(s)/target_languages/' >> $@; \
+	  grep '\* source language(s)' $@.d/README.md | cut -f2 -d: | wc -l | sed 's/^/nr_source_languages: /' >> $@; \
+	  grep '\* target language(s)' $@.d/README.md | cut -f2 -d: | wc -l | sed 's/^/nr_target_languages: /' >> $@; \
+	fi
+	rm -fr $@.d
+
+
+#-------------------------------------------------
 # fetch model and get supported languages
 #-------------------------------------------------
 
@@ -120,6 +155,10 @@ ${WORK_DIR}/model/decoder.yml:
 		< ${dir $@}preprocess-old.sh > ${dir $@}preprocess.sh
 	chmod +x ${dir $@}preprocess.sh
 
+
+.PHONY: remove-model
+remove-model:
+	rm -fr ${WORK_DIR}/model
 
 
 
