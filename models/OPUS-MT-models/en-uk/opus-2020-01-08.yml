@@ -1,0 +1,12 @@
+release: en-uk/opus-2020-01-08.zip
+release-date: 2020-01-08
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - Tatoeba.en.uk: 50.2
+chr-F-scores:
+   - Tatoeba.en.uk: 0.674

@@ -1,0 +1,19 @@
+release: en-chr/opus-2020-05-23.zip
+release-date: 2020-05-23
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece (spm1k,spm1k)
+subwords:
+   - source: spm1k
+   - target: spm1k
+subword-models:
+   - source: source.spm
+   - target: target.spm
+source-languages:
+   - en
+target-languages:
+   - chr
+BLEU-scores:
+   - bible-uedin.en.chr: 44.6
+chr-F-scores:
+   - bible-uedin.en.chr: 0.569

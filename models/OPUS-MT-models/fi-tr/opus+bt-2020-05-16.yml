@@ -1,0 +1,19 @@
+release: fi-tr/opus+bt-2020-05-16.zip
+release-date: 2020-05-16
+dataset-name: opus+bt
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece (spm32k,spm32k)
+subwords:
+   - source: spm32k
+   - target: spm32k
+subword-models:
+   - source: source.spm
+   - target: target.spm
+source-languages:
+   - fi
+target-languages:
+   - tr
+BLEU-scores:
+   - Tatoeba.fi.tr: 32.1
+chr-F-scores:
+   - Tatoeba.fi.tr: 0.619

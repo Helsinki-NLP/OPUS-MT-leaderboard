@@ -1,0 +1,12 @@
+release: fi+nb+no+nn+ru+sv+en-se+sma+smj+smn+sms/opus+giella-2020-04-18.zip
+release-date: 2020-04-18
+dataset-name: opus+giella
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - giella.fi.sms: 58.4
+chr-F-scores:
+   - giella.fi.sms: 0.776

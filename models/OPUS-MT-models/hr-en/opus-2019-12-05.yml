@@ -1,0 +1,12 @@
+release: hr-en/opus-2019-12-05.zip
+release-date: 2019-12-05
+dataset-name: opus
+modeltype: transformer
+pre-processing: normalization + tokenization + BPE
+subword-models:
+   - source: source.bpe
+   - target: target.bpe
+BLEU-scores:
+   - Tatoeba.hr.en: 58.7
+chr-F-scores:
+   - Tatoeba.hr.en: 0.720

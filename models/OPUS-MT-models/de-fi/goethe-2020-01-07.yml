@@ -1,0 +1,12 @@
+release: de-fi/goethe-2020-01-07.zip
+release-date: 2020-01-07
+dataset-name: opus+goethe
+modeltype: transformer
+pre-processing: normalization + tokenization + BPE
+subword-models:
+   - source: source.bpe
+   - target: target.bpe
+BLEU-scores:
+   - goethe.de.fi: 38.57
+chr-F-scores:
+   - goethe.de.fi: 

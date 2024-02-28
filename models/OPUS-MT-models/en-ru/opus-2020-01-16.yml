@@ -1,0 +1,26 @@
+release: en-ru/opus-2020-01-16.zip
+release-date: 2020-01-16
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - newstest2012.en.ru: 23.7
+   - newstest2013.en.ru: 19.4
+   - newstest2015-enru.en.ru: 21.6
+   - newstest2016-enru.en.ru: 21.0
+   - newstest2017-enru.en.ru: 22.7
+   - newstest2018-enru.en.ru: 19.2
+   - newstest2019-enru.en.ru: 22.3
+   - Tatoeba.en.ru: 46.9
+chr-F-scores:
+   - newstest2012.en.ru: 0.436
+   - newstest2013.en.ru: 0.413
+   - newstest2015-enru.en.ru: 0.440
+   - newstest2016-enru.en.ru: 0.432
+   - newstest2017-enru.en.ru: 0.443
+   - newstest2018-enru.en.ru: 0.413
+   - newstest2019-enru.en.ru: 0.412
+   - Tatoeba.en.ru: 0.656

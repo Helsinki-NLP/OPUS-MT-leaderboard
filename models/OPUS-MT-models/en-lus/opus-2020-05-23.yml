@@ -1,0 +1,19 @@
+release: en-lus/opus-2020-05-23.zip
+release-date: 2020-05-23
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece (spm4k,spm4k)
+subwords:
+   - source: spm4k
+   - target: spm4k
+subword-models:
+   - source: source.spm
+   - target: target.spm
+source-languages:
+   - en
+target-languages:
+   - lus
+BLEU-scores:
+   - JW300.en.lus: 35.3
+chr-F-scores:
+   - JW300.en.lus: 0.567

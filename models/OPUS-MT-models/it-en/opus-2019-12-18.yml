@@ -1,0 +1,16 @@
+release: it-en/opus-2019-12-18.zip
+release-date: 2019-12-18
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - newssyscomb2009.it.en: 35.3
+   - newstest2009.it.en: 34.0
+   - Tatoeba.it.en: 70.9
+chr-F-scores:
+   - newssyscomb2009.it.en: 0.600
+   - newstest2009.it.en: 0.594
+   - Tatoeba.it.en: 0.808

@@ -1,0 +1,12 @@
+release: bi-sv/QED-2020-01-17.zip
+release-date: 2020-01-17
+dataset-name: QED
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - JW300.bi.sv: 22.7
+chr-F-scores:
+   - JW300.bi.sv: 0.403

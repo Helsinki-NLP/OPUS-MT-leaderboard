@@ -1,0 +1,14 @@
+release: mt-en/opus-2020-01-16.zip
+release-date: 2020-01-16
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - JW300.mt.en: 49.0
+   - Tatoeba.mt.en: 53.3
+chr-F-scores:
+   - JW300.mt.en: 0.655
+   - Tatoeba.mt.en: 0.685

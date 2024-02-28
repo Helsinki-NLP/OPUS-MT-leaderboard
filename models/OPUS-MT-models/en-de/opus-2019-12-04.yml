@@ -1,0 +1,36 @@
+release: en-de/opus-2019-12-04.zip
+release-date: 2019-12-04
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - newssyscomb2009.en.de: 22.2
+   - news-test2008.en.de: 22.6
+   - newstest2009.en.de: 21.5
+   - newstest2010.en.de: 23.9
+   - newstest2011.en.de: 21.6
+   - newstest2012.en.de: 22.1
+   - newstest2013.en.de: 25.8
+   - newstest2015-ende.en.de: 29.9
+   - newstest2016-ende.en.de: 35.7
+   - newstest2017-ende.en.de: 28.5
+   - newstest2018-ende.en.de: 42.8
+   - newstest2019-ende.en.de: 39.2
+   - Tatoeba.en.de: 44.2
+chr-F-scores:
+   - newssyscomb2009.en.de: 0.529
+   - news-test2008.en.de: 0.520
+   - newstest2009.en.de: 0.522
+   - newstest2010.en.de: 0.535
+   - newstest2011.en.de: 0.516
+   - newstest2012.en.de: 0.516
+   - newstest2013.en.de: 0.543
+   - newstest2015-ende.en.de: 0.581
+   - newstest2016-ende.en.de: 0.623
+   - newstest2017-ende.en.de: 0.573
+   - newstest2018-ende.en.de: 0.669
+   - newstest2019-ende.en.de: 0.638
+   - Tatoeba.en.de: 0.637

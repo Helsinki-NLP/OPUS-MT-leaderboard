@@ -1,0 +1,28 @@
+release: cs-de/opus-2020-01-20.zip
+release-date: 2020-01-20
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - newssyscomb2009.cs.de: 22.0
+   - news-test2008.cs.de: 21.1
+   - newstest2009.cs.de: 22.2
+   - newstest2010.cs.de: 22.1
+   - newstest2011.cs.de: 21.6
+   - newstest2012.cs.de: 22.2
+   - newstest2013.cs.de: 24.8
+   - newstest2019-csde.cs.de: 23.6
+   - Tatoeba.cs.de: 51.6
+chr-F-scores:
+   - newssyscomb2009.cs.de: 0.525
+   - news-test2008.cs.de: 0.520
+   - newstest2009.cs.de: 0.525
+   - newstest2010.cs.de: 0.527
+   - newstest2011.cs.de: 0.515
+   - newstest2012.cs.de: 0.516
+   - newstest2013.cs.de: 0.538
+   - newstest2019-csde.cs.de: 0.530
+   - Tatoeba.cs.de: 0.687

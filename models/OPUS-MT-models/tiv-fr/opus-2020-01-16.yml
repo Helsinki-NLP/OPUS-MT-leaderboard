@@ -1,0 +1,12 @@
+release: tiv-fr/opus-2020-01-16.zip
+release-date: 2020-01-16
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - JW300.tiv.fr: 22.3
+chr-F-scores:
+   - JW300.tiv.fr: 0.389

@@ -1,0 +1,12 @@
+release: sq-sv/opus-2020-01-16.zip
+release-date: 2020-01-16
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - JW300.sq.sv: 36.2
+chr-F-scores:
+   - JW300.sq.sv: 0.559

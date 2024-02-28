@@ -1,0 +1,19 @@
+release: fi-et/opus-2020-05-20.zip
+release-date: 2020-05-20
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece (spm32k,spm32k)
+subwords:
+   - source: spm32k
+   - target: spm32k
+subword-models:
+   - source: source.spm
+   - target: target.spm
+source-languages:
+   - fi
+target-languages:
+   - et
+BLEU-scores:
+   - infopankki.fi.et: 58.3
+chr-F-scores:
+   - infopankki.fi.et: 0.773

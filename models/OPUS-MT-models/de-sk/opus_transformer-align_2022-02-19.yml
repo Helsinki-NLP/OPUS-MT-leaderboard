@@ -1,0 +1,36 @@
+release: de-sk/opus_transformer-align_2022-02-19.zip
+release-date: 2022-02-19
+dataset-name: opus
+modeltype: transformer-align
+vocabulary:
+   source: opus.spm32k-spm32k.vocab.yml
+   target: opus.spm32k-spm32k.vocab.yml
+pre-processing: normalization + SentencePiece (spm32k,spm32k)
+subwords:
+   source: spm32k
+   target: spm32k
+subword-models:
+   source: source.spm
+   target: target.spm
+source-languages:
+   - de
+target-languages:
+   - sk
+raw-source-languages:
+   - de
+raw-target-languages:
+   - sk
+training-data:
+   de-sk: CCMatrix.de-sk.strict (24693931) DGT.de-sk.strict (3897093) ECB.de-sk.strict (86068) ELITR-ECA.de-sk.strict (43365) EMEA.de-sk.strict (747856) EUbookshop.de-sk.strict (335128) EUconst.de-sk.strict (6115) GNOME.de-sk.strict (127) JRC-Acquis.de-sk.strict (28389) KDE4.de-sk.strict (72205) KDEdoc.de-sk.strict (10801) MultiCCAligned.de-sk.strict (2415997) MultiParaCrawl.de-sk.strict (5281070) OpenSubtitles.de-sk.strict (3287374) PHP.de-sk.strict (25834) QED.de-sk.strict (130746) TED2020.de-sk.strict (93826) TildeMODEL.de-sk.strict (2011415) Ubuntu.de-sk.strict (1859) WikiMatrix.de-sk.strict (91079) XLEnt.de-sk.strict (229529) bible-uedin.de-sk.strict (30627) wikimedia.de-sk.strict (410) 
+validation-data:
+   de-sk: Europarl, 563387
+   total-size-shuffled: 550326
+   devset-selected: top 2500  lines of Europarl.src.shuffled
+   testset-selected: next 2500  lines of Europarl.src.shuffled 
+   devset-unused: added to traindata
+test-data:
+   Europarl.de-sk: 2500/59265
+BLEU-scores:
+   Europarl.de-sk: 29.2
+chr-F-scores:
+   Europarl.de-sk: 0.56574

@@ -1,0 +1,62 @@
+release: en+de+nl+fy+af+da+fo+is+no+nb+nn+sv-en+de+nl+fy+af+da+fo+is+no+nb+nn+sv/opus-2019-12-04.zip
+release-date: 2019-12-04
+dataset-name: opus
+modeltype: transformer
+pre-processing: normalization + tokenization + BPE
+subword-models:
+   - source: source.bpe
+   - target: target.bpe
+BLEU-scores:
+   - newssyscomb2009.de.en: 19.9
+   - newssyscomb2009.en.de: 19.9
+   - news-test2008.de.en: 20.1
+   - news-test2008.en.de: 20.1
+   - newstest2009.de.en: 19.1
+   - newstest2009.en.de: 19.1
+   - newstest2010.de.en: 21.0
+   - newstest2010.en.de: 21.0
+   - newstest2011.de.en: 19.3
+   - newstest2011.en.de: 19.3
+   - newstest2012.de.en: 19.6
+   - newstest2012.en.de: 19.6
+   - newstest2013.de.en: 23.0
+   - newstest2013.en.de: 23.0
+   - newstest2014-deen.de.en: 26.3
+   - newstest2015-ende.de.en: 26.6
+   - newstest2015-ende.en.de: 26.6
+   - newstest2016-ende.de.en: 29.1
+   - newstest2016-ende.en.de: 29.1
+   - newstest2017-ende.de.en: 24.5
+   - newstest2017-ende.en.de: 24.5
+   - newstest2018-ende.de.en: 34.9
+   - newstest2018-ende.en.de: 34.9
+   - newstest2019-deen.de.en: 31.3
+   - newstest2019-ende.en.de: 32.2
+   - Tatoeba.en.sv: 43.3
+chr-F-scores:
+   - newssyscomb2009.de.en: 0.505
+   - newssyscomb2009.en.de: 0.505
+   - news-test2008.de.en: 0.494
+   - news-test2008.en.de: 0.494
+   - newstest2009.de.en: 0.496
+   - newstest2009.en.de: 0.496
+   - newstest2010.de.en: 0.506
+   - newstest2010.en.de: 0.506
+   - newstest2011.de.en: 0.486
+   - newstest2011.en.de: 0.486
+   - newstest2012.de.en: 0.487
+   - newstest2012.en.de: 0.487
+   - newstest2013.de.en: 0.512
+   - newstest2013.en.de: 0.512
+   - newstest2014-deen.de.en: 0.535
+   - newstest2015-ende.de.en: 0.540
+   - newstest2015-ende.en.de: 0.540
+   - newstest2016-ende.de.en: 0.569
+   - newstest2016-ende.en.de: 0.569
+   - newstest2017-ende.de.en: 0.528
+   - newstest2017-ende.en.de: 0.528
+   - newstest2018-ende.de.en: 0.604
+   - newstest2018-ende.en.de: 0.604
+   - newstest2019-deen.de.en: 0.569
+   - newstest2019-ende.en.de: 0.578
+   - Tatoeba.en.sv: 0.630

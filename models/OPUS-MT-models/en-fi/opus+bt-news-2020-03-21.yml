@@ -1,0 +1,12 @@
+release: en-fi/opus+bt-news-2020-03-21.zip
+release-date: 2020-03-21
+dataset-name: opus+bt-news
+modeltype: transformer
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - newstest2019-enfi.en.fi: 25.7
+chr-F-scores:
+   - newstest2019-enfi.en.fi: 0.578

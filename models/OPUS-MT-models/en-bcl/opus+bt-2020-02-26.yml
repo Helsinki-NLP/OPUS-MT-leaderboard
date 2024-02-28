@@ -1,0 +1,12 @@
+release: en-bcl/opus+bt-2020-02-26.zip
+release-date: 2020-02-26
+dataset-name: opus+bt
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - JW300.en.bcl: 54.3
+chr-F-scores:
+   - JW300.en.bcl: 0.722

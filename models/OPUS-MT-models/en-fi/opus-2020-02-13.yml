@@ -1,0 +1,28 @@
+release: en-fi/opus-2020-02-13.zip
+release-date: 2020-02-13
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - newsdev2015-enfi.en.fi: 21.1
+   - newstest2015-enfi.en.fi: 22.7
+   - newstest2016-enfi.en.fi: 24.3
+   - newstest2017-enfi.en.fi: 27.1
+   - newstest2018-enfi.en.fi: 18.0
+   - newstest2019-enfi.en.fi: 22.9
+   - newstestB2016-enfi.en.fi: 19.2
+   - newstestB2017-enfi.en.fi: 22.3
+   - Tatoeba.en.fi: 41.1
+chr-F-scores:
+   - newsdev2015-enfi.en.fi: 0.552
+   - newstest2015-enfi.en.fi: 0.563
+   - newstest2016-enfi.en.fi: 0.572
+   - newstest2017-enfi.en.fi: 0.601
+   - newstest2018-enfi.en.fi: 0.529
+   - newstest2019-enfi.en.fi: 0.548
+   - newstestB2016-enfi.en.fi: 0.537
+   - newstestB2017-enfi.en.fi: 0.560
+   - Tatoeba.en.fi: 0.645

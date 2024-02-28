@@ -1,0 +1,12 @@
+release: fr-lu/opus-2020-01-20.zip
+release-date: 2020-01-20
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - JW300.fr.lu: 25.5
+chr-F-scores:
+   - JW300.fr.lu: 0.471

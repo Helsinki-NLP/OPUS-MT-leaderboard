@@ -1,0 +1,31 @@
+release: cmn+cn+yue+ze_zh+zh_cn+zh_CN+zh_HK+zh_tw+zh_TW+zh_yue+zhs+zht+zh-fi/opus-2020-05-20.zip
+release-date: 2020-05-20
+dataset-name: opus
+modeltype: transformer
+pre-processing: normalization + SentencePiece (spm32k,spm32k)
+subwords:
+   - source: spm32k
+   - target: spm32k
+subword-models:
+   - source: source.spm
+   - target: target.spm
+source-languages:
+   - cmn
+   - cn
+   - yue
+   - ze_zh
+   - zh_cn
+   - zh_CN
+   - zh_HK
+   - zh_tw
+   - zh_TW
+   - zh_yue
+   - zhs
+   - zht
+   - zh
+target-languages:
+   - fi
+BLEU-scores:
+   - opus-test.cmn.fi: 64.3
+chr-F-scores:
+   - opus-test.cmn.fi: 0.693

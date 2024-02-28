@@ -1,0 +1,32 @@
+release: bcl-en/opus+nt+bt-2021-04-01.zip
+release-date: 2021-04-01
+dataset-name: opus+nt+bt
+modeltype: transformer-align
+vocabulary:
+   source: opus+nt+bt.spm32k-spm32k.vocab.yml
+   target: opus+nt+bt.spm32k-spm32k.vocab.yml
+pre-processing: normalization + SentencePiece (spm32k,spm32k)
+subwords:
+   source: spm32k
+   target: spm32k
+subword-models:
+   source: source.spm
+   target: target.spm
+source-languages:
+   - bcl
+target-languages:
+   - en
+training-data:
+   bcl-en: JW300 (470468) new-testament (11623) wiki.aa.en-bcl (969821) wikinews.aa.en-bcl (357946) 
+validation-data:
+   bcl-en: wikimedia, 1153
+   total-size-shuffled: 775
+   devset-selected: top 250  lines of wikimedia.src.shuffled!
+   testset-selected: next 525  lines of wikimedia.src.shuffled!
+   devset-unused: added to traindata
+test-data:
+   wikimedia.bcl-en: 525/27109
+BLEU-scores:
+   wikimedia.bcl-en: 28.2
+chr-F-scores:
+   wikimedia.bcl-en: 0.498

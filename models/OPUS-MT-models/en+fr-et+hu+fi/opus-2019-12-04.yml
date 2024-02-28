@@ -1,0 +1,32 @@
+release: en+fr-et+hu+fi/opus-2019-12-04.zip
+release-date: 2019-12-04
+dataset-name: opus
+modeltype: transformer
+pre-processing: normalization + tokenization + BPE
+subword-models:
+   - source: source.bpe
+   - target: target.bpe
+BLEU-scores:
+   - newsdev2015-enfi.en.fi: 17.6
+   - newsdev2018-enet.en.et: 18.8
+   - newstest2015-enfi.en.fi: 19.1
+   - newstest2016-enfi.en.fi: 20.1
+   - newstest2017-enfi.en.fi: 22.7
+   - newstest2018-enet.en.et: 19.4
+   - newstest2018-enfi.en.fi: 15.5
+   - newstest2019-enfi.en.fi: 19.4
+   - newstestB2016-enfi.en.fi: 16.3
+   - newstestB2017-enfi.en.fi: 18.1
+   - Tatoeba.en.fi: 36.7
+chr-F-scores:
+   - newsdev2015-enfi.en.fi: 0.514
+   - newsdev2018-enet.en.et: 0.504
+   - newstest2015-enfi.en.fi: 0.522
+   - newstest2016-enfi.en.fi: 0.536
+   - newstest2017-enfi.en.fi: 0.558
+   - newstest2018-enet.en.et: 0.512
+   - newstest2018-enfi.en.fi: 0.489
+   - newstest2019-enfi.en.fi: 0.507
+   - newstestB2016-enfi.en.fi: 0.504
+   - newstestB2017-enfi.en.fi: 0.520
+   - Tatoeba.en.fi: 0.604

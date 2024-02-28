@@ -1,0 +1,12 @@
+release: en-sw/opus-2020-01-08.zip
+release-date: 2020-01-08
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - GlobalVoices.en.sw: 24.2
+chr-F-scores:
+   - GlobalVoices.en.sw: 0.527

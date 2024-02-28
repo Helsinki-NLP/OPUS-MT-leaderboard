@@ -1,0 +1,12 @@
+release: en-wal/bible-uedin-2020-01-17.zip
+release-date: 2020-01-17
+dataset-name: bible-uedin
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - JW300.en.wal: 20.2
+chr-F-scores:
+   - JW300.en.wal: 0.471

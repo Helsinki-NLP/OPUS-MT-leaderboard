@@ -1,0 +1,36 @@
+release: en-cs/opus-2019-12-04.zip
+release-date: 2019-12-04
+dataset-name: opus
+modeltype: transformer
+pre-processing: normalization + tokenization + BPE
+subword-models:
+   - source: source.bpe
+   - target: target.bpe
+BLEU-scores:
+   - newssyscomb2009.en.cs: 22.6
+   - news-test2008.en.cs: 20.2
+   - newstest2009.en.cs: 21.2
+   - newstest2010.en.cs: 21.2
+   - newstest2011.en.cs: 22.5
+   - newstest2012.en.cs: 20.2
+   - newstest2013.en.cs: 24.2
+   - newstest2015-encs.en.cs: 24.7
+   - newstest2016-encs.en.cs: 26.9
+   - newstest2017-encs.en.cs: 22.3
+   - newstest2018-encs.en.cs: 22.3
+   - newstest2019-encs.en.cs: 24.3
+   - Tatoeba.en.cs: 48.2
+chr-F-scores:
+   - newssyscomb2009.en.cs: 0.499
+   - news-test2008.en.cs: 0.473
+   - newstest2009.en.cs: 0.488
+   - newstest2010.en.cs: 0.493
+   - newstest2011.en.cs: 0.491
+   - newstest2012.en.cs: 0.468
+   - newstest2013.en.cs: 0.501
+   - newstest2015-encs.en.cs: 0.516
+   - newstest2016-encs.en.cs: 0.534
+   - newstest2017-encs.en.cs: 0.493
+   - newstest2018-encs.en.cs: 0.489
+   - newstest2019-encs.en.cs: 0.499
+   - Tatoeba.en.cs: 0.658

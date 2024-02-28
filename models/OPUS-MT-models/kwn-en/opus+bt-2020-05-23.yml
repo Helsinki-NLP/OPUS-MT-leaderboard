@@ -1,0 +1,19 @@
+release: kwn-en/opus+bt-2020-05-23.zip
+release-date: 2020-05-23
+dataset-name: opus+bt
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece (spm4k,spm4k)
+subwords:
+   - source: spm4k
+   - target: spm4k
+subword-models:
+   - source: source.spm
+   - target: target.spm
+source-languages:
+   - kwn
+target-languages:
+   - en
+BLEU-scores:
+   - JW300.kwn.en: 27.4
+chr-F-scores:
+   - JW300.kwn.en: 0.434

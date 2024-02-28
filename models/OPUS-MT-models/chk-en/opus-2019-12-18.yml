@@ -1,0 +1,12 @@
+release: chk-en/opus-2019-12-18.zip
+release-date: 2019-12-18
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - JW300.chk.en: 31.2
+chr-F-scores:
+   - JW300.chk.en: 0.465

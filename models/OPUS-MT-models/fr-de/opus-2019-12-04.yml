@@ -1,0 +1,30 @@
+release: fr-de/opus-2019-12-04.zip
+release-date: 2019-12-04
+dataset-name: opus
+modeltype: transformer
+pre-processing: normalization + tokenization + BPE
+subword-models:
+   - source: source.bpe
+   - target: target.bpe
+BLEU-scores:
+   - euelections_dev2019.transformer.fr: 25.5
+   - newssyscomb2009.fr.de: 20.5
+   - news-test2008.fr.de: 21.1
+   - newstest2009.fr.de: 20.6
+   - newstest2010.fr.de: 20.9
+   - newstest2011.fr.de: 20.5
+   - newstest2012.fr.de: 21.4
+   - newstest2013.fr.de: 23.5
+   - newstest2019-frde.fr.de: 26.3
+   - Tatoeba.fr.de: 47.8
+chr-F-scores:
+   - euelections_dev2019.transformer.fr: 0.548
+   - newssyscomb2009.fr.de: 0.509
+   - news-test2008.fr.de: 0.507
+   - newstest2009.fr.de: 0.502
+   - newstest2010.fr.de: 0.509
+   - newstest2011.fr.de: 0.494
+   - newstest2012.fr.de: 0.496
+   - newstest2013.fr.de: 0.515
+   - newstest2019-frde.fr.de: 0.566
+   - Tatoeba.fr.de: 0.666

@@ -1,0 +1,12 @@
+release: se+sma+smj+smn+sms+vep+et+fi+kv+krl+nb+no+nn+ru+sv+en-se+sma+smj+smn+sms+vep+et+fi+kv+krl+nb+no+nn+ru+sv+en/opus+giella-2020-04-19.zip
+release-date: 2020-04-19
+dataset-name: opus+giella
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - giella.se.en: 56.0
+chr-F-scores:
+   - giella.se.en: 0.768

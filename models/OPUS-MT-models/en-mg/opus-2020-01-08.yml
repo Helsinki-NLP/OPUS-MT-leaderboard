@@ -1,0 +1,14 @@
+release: en-mg/opus-2020-01-08.zip
+release-date: 2020-01-08
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - GlobalVoices.en.mg: 22.3
+   - Tatoeba.en.mg: 35.5
+chr-F-scores:
+   - GlobalVoices.en.mg: 0.565
+   - Tatoeba.en.mg: 0.548

@@ -1,0 +1,16 @@
+release: ru-fr/opus-2020-01-26.zip
+release-date: 2020-01-26
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - newstest2012.ru.fr: 18.3
+   - newstest2013.ru.fr: 21.6
+   - Tatoeba.ru.fr: 51.5
+chr-F-scores:
+   - newstest2012.ru.fr: 0.497
+   - newstest2013.ru.fr: 0.516
+   - Tatoeba.ru.fr: 0.670

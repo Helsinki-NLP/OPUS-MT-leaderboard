@@ -1,0 +1,14 @@
+release: fi-sv/opus+bt-2020-04-11.zip
+release-date: 2020-04-11
+dataset-name: opus+bt
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - fiskmo_testset.fi.sv: 27.4
+   - Tatoeba.fi.sv: 54.7
+chr-F-scores:
+   - fiskmo_testset.fi.sv: 0.605
+   - Tatoeba.fi.sv: 0.709

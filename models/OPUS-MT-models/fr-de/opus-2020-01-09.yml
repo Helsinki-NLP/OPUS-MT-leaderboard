@@ -1,0 +1,30 @@
+release: fr-de/opus-2020-01-09.zip
+release-date: 2020-01-09
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - euelections_dev2019.transformer-align.fr: 26.4
+   - newssyscomb2009.fr.de: 22.1
+   - news-test2008.fr.de: 22.1
+   - newstest2009.fr.de: 21.6
+   - newstest2010.fr.de: 22.6
+   - newstest2011.fr.de: 21.5
+   - newstest2012.fr.de: 22.4
+   - newstest2013.fr.de: 24.2
+   - newstest2019-frde.fr.de: 27.9
+   - Tatoeba.fr.de: 49.1
+chr-F-scores:
+   - euelections_dev2019.transformer-align.fr: 0.571
+   - newssyscomb2009.fr.de: 0.524
+   - news-test2008.fr.de: 0.524
+   - newstest2009.fr.de: 0.520
+   - newstest2010.fr.de: 0.527
+   - newstest2011.fr.de: 0.518
+   - newstest2012.fr.de: 0.516
+   - newstest2013.fr.de: 0.532
+   - newstest2019-frde.fr.de: 0.595
+   - Tatoeba.fr.de: 0.676

@@ -1,0 +1,12 @@
+release: el-fi/opus-2020-01-08.zip
+release-date: 2020-01-08
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - JW300.el.fi: 25.3
+chr-F-scores:
+   - JW300.el.fi: 0.517

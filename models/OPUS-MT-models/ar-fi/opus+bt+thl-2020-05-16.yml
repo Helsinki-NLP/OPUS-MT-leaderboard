@@ -1,0 +1,19 @@
+release: ar-fi/opus+bt+thl-2020-05-16.zip
+release-date: 2020-05-16
+dataset-name: opus+bt+thl
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece (spm32k,spm32k)
+subwords:
+   - source: spm32k
+   - target: spm32k
+subword-models:
+   - source: source.spm
+   - target: target.spm
+source-languages:
+   - ar
+target-languages:
+   - fi
+BLEU-scores:
+   - infopankki.ar.fi: 49.7
+chr-F-scores:
+   - infopankki.ar.fi: 0.750

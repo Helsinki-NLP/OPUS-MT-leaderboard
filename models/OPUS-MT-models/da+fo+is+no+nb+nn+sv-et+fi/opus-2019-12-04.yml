@@ -1,0 +1,14 @@
+release: da+fo+is+no+nb+nn+sv-et+fi/opus-2019-12-04.zip
+release-date: 2019-12-04
+dataset-name: opus
+modeltype: transformer
+pre-processing: normalization + tokenization + BPE
+subword-models:
+   - source: source.bpe
+   - target: target.bpe
+BLEU-scores:
+   - fiskmo_testset.sv.fi: 22.4
+   - Tatoeba.da.fi: 40.4
+chr-F-scores:
+   - fiskmo_testset.sv.fi: 0.590
+   - Tatoeba.da.fi: 0.637

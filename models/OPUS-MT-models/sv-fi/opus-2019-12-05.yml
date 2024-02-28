@@ -1,0 +1,14 @@
+release: sv-fi/opus-2019-12-05.zip
+release-date: 2019-12-05
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - fiskmo_testset.sv.fi: 26.4
+   - Tatoeba.sv.fi: 44.7
+chr-F-scores:
+   - fiskmo_testset.sv.fi: 0.616
+   - Tatoeba.sv.fi: 0.667

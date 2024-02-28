@@ -1,0 +1,12 @@
+release: fi-en/opus-news-2020-03-21.zip
+release-date: 2020-03-21
+dataset-name: opus-news
+modeltype: transformer
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - newstest2019-fien.fi.en: 31.4
+chr-F-scores:
+   - newstest2019-fien.fi.en: 0.583

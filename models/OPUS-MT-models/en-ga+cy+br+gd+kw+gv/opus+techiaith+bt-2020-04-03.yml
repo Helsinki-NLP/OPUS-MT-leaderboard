@@ -1,0 +1,12 @@
+release: en-ga+cy+br+gd+kw+gv/opus+techiaith+bt-2020-04-03.zip
+release-date: 2020-04-03
+dataset-name: opus+techiaith+bt
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - Tatoeba.en.ga: 21.8
+chr-F-scores:
+   - Tatoeba.en.ga: 0.383

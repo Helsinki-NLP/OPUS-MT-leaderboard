@@ -1,0 +1,16 @@
+release: hi-en/opus-2019-12-05.zip
+release-date: 2019-12-05
+dataset-name: opus
+modeltype: transformer
+pre-processing: normalization + tokenization + BPE
+subword-models:
+   - source: source.bpe
+   - target: target.bpe
+BLEU-scores:
+   - newsdev2014.hi.en: 5.3
+   - newstest2014-hien.hi.en: 6.8
+   - Tatoeba.hi.en: 35.7
+chr-F-scores:
+   - newsdev2014.hi.en: 0.279
+   - newstest2014-hien.hi.en: 0.307
+   - Tatoeba.hi.en: 0.506

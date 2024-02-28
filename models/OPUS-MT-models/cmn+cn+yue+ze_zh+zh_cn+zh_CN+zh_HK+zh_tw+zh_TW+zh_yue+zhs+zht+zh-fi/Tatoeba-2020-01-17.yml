@@ -1,0 +1,12 @@
+release: cmn+cn+yue+ze_zh+zh_cn+zh_CN+zh_HK+zh_tw+zh_TW+zh_yue+zhs+zht+zh-fi/Tatoeba-2020-01-17.zip
+release-date: 2020-01-17
+dataset-name: Tatoeba
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - bible-uedin.cmn.fi: 21.6
+chr-F-scores:
+   - bible-uedin.cmn.fi: 0.497

@@ -1,0 +1,12 @@
+release: pis-es/opus-2020-01-16.zip
+release-date: 2020-01-16
+dataset-name: opus
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - JW300.pis.es: 24.1
+chr-F-scores:
+   - JW300.pis.es: 0.421

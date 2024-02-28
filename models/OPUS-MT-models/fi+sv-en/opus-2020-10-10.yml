@@ -1,0 +1,38 @@
+release: fi+sv-en/opus-2020-10-10.zip
+release-date: 2020-10-10
+dataset-name: opus
+modeltype: transformer
+pre-processing: normalization + SentencePiece (spm32k,spm32k)
+subwords:
+   - source: spm32k
+   - target: spm32k
+subword-models:
+   - source: source.spm
+   - target: target.spm
+source-languages:
+   - fi
+   - sv
+target-languages:
+   - en
+BLEU-scores:
+   - newsdev2015-enfi-fien.fi.en: 25.5
+   - newstest2015-enfi-fien.fi.en: 26.9
+   - newstest2016-enfi-fien.fi.en: 28.6
+   - newstest2017-enfi-fien.fi.en: 31.9
+   - newstest2018-enfi-fien.fi.en: 23.4
+   - newstest2019-fien-fien.fi.en: 28.5
+   - newstestB2016-enfi-fien.fi.en: 23.8
+   - newstestB2017-enfi-fien.fi.en: 27.2
+   - newstestB2017-fien-fien.fi.en: 27.2
+   - opus-test.multi.en: 58.2
+chr-F-scores:
+   - newsdev2015-enfi-fien.fi.en: 0.536
+   - newstest2015-enfi-fien.fi.en: 0.545
+   - newstest2016-enfi-fien.fi.en: 0.567
+   - newstest2017-enfi-fien.fi.en: 0.589
+   - newstest2018-enfi-fien.fi.en: 0.514
+   - newstest2019-fien-fien.fi.en: 0.560
+   - newstestB2016-enfi-fien.fi.en: 0.523
+   - newstestB2017-enfi-fien.fi.en: 0.554
+   - newstestB2017-fien-fien.fi.en: 0.554
+   - opus-test.multi.en: 0.721

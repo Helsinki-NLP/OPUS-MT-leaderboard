@@ -1,0 +1,50 @@
+release: en+fr-en+fr/opus-2019-12-04.zip
+release-date: 2019-12-04
+dataset-name: opus
+modeltype: transformer
+pre-processing: normalization + tokenization + BPE
+subword-models:
+   - source: source.bpe
+   - target: target.bpe
+BLEU-scores:
+   - newsdiscussdev2015-enfr.en.fr: 22.2
+   - newsdiscussdev2015-enfr.fr.en: 23.7
+   - newsdiscusstest2015-enfr.en.fr: 24.6
+   - newsdiscusstest2015-enfr.fr.en: 26.4
+   - newssyscomb2009.en.fr: 21.3
+   - newssyscomb2009.fr.en: 22.3
+   - news-test2008.en.fr: 19.7
+   - news-test2008.fr.en: 20.6
+   - newstest2009.en.fr: 20.8
+   - newstest2009.fr.en: 21.8
+   - newstest2010.en.fr: 22.2
+   - newstest2010.fr.en: 23.2
+   - newstest2011.en.fr: 23.4
+   - newstest2011.fr.en: 24.6
+   - newstest2012.en.fr: 22.0
+   - newstest2012.fr.en: 23.1
+   - newstest2013.en.fr: 22.9
+   - newstest2013.fr.en: 24.1
+   - newstest2014-fren.fr.en: 32.4
+   - Tatoeba.en.fr: 55.8
+chr-F-scores:
+   - newsdiscussdev2015-enfr.en.fr: 0.524
+   - newsdiscussdev2015-enfr.fr.en: 0.524
+   - newsdiscusstest2015-enfr.en.fr: 0.551
+   - newsdiscusstest2015-enfr.fr.en: 0.551
+   - newssyscomb2009.en.fr: 0.515
+   - newssyscomb2009.fr.en: 0.515
+   - news-test2008.en.fr: 0.492
+   - news-test2008.fr.en: 0.492
+   - newstest2009.en.fr: 0.511
+   - newstest2009.fr.en: 0.511
+   - newstest2010.en.fr: 0.521
+   - newstest2010.fr.en: 0.521
+   - newstest2011.en.fr: 0.533
+   - newstest2011.fr.en: 0.533
+   - newstest2012.en.fr: 0.514
+   - newstest2012.fr.en: 0.514
+   - newstest2013.en.fr: 0.514
+   - newstest2013.fr.en: 0.514
+   - newstest2014-fren.fr.en: 0.585
+   - Tatoeba.en.fr: 0.688

@@ -1,0 +1,12 @@
+release: efi-fr/QED-2020-01-17.zip
+release-date: 2020-01-17
+dataset-name: QED
+modeltype: transformer-align
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - JW300.efi.fr: 25.1
+chr-F-scores:
+   - JW300.efi.fr: 0.419

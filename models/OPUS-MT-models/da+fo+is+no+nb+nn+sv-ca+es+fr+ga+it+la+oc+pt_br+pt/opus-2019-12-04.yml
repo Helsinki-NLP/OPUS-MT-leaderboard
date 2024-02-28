@@ -1,0 +1,12 @@
+release: da+fo+is+no+nb+nn+sv-ca+es+fr+ga+it+la+oc+pt_br+pt/opus-2019-12-04.zip
+release-date: 2019-12-04
+dataset-name: opus
+modeltype: transformer
+pre-processing: normalization + tokenization + BPE
+subword-models:
+   - source: source.bpe
+   - target: target.bpe
+BLEU-scores:
+   - Tatoeba.da.pt: 52.1
+chr-F-scores:
+   - Tatoeba.da.pt: 0.684

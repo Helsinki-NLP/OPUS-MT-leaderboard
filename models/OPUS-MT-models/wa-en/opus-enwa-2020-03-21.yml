@@ -1,0 +1,12 @@
+release: wa-en/opus-enwa-2020-03-21.zip
+release-date: 2020-03-21
+dataset-name: opus-enwa
+modeltype: transformer
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - enwa.fr.en: 42.6
+chr-F-scores:
+   - enwa.fr.en: 0.564

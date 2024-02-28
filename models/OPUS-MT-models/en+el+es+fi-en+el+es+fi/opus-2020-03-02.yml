@@ -1,0 +1,52 @@
+release: en+el+es+fi-en+el+es+fi/opus-2020-03-02.zip
+release-date: 2020-03-02
+dataset-name: opus
+modeltype: transformer
+pre-processing: normalization + SentencePiece
+subword-models:
+   - source: source.spm
+   - target: target.spm
+BLEU-scores:
+   - newsdev2015-enfi.en.fi: 16.0
+   - newssyscomb2009.en.es: 29.9
+   - newssyscomb2009.es.en: 29.7
+   - news-test2008.en.es: 27.3
+   - news-test2008.es.en: 27.3
+   - newstest2009.en.es: 28.4
+   - newstest2009.es.en: 28.4
+   - newstest2010.en.es: 34.0
+   - newstest2010.es.en: 34.0
+   - newstest2011.en.es: 35.1
+   - newstest2012.en.es: 35.4
+   - newstest2013.en.es: 31.9
+   - newstest2015-enfi.en.fi: 17.8
+   - newstest2016-enfi.en.fi: 19.0
+   - newstest2017-enfi.en.fi: 21.2
+   - newstest2018-enfi.en.fi: 13.9
+   - newstest2019-enfi.en.fi: 18.8
+   - newstestB2016-enfi.en.fi: 14.9
+   - newstestB2017-enfi.en.fi: 16.9
+   - simplification.en.en: 63.0
+   - Tatoeba.en.fi: 56.7
+chr-F-scores:
+   - newsdev2015-enfi.en.fi: 0.498
+   - newssyscomb2009.en.es: 0.570
+   - newssyscomb2009.es.en: 0.569
+   - news-test2008.en.es: 0.549
+   - news-test2008.es.en: 0.548
+   - newstest2009.en.es: 0.564
+   - newstest2009.es.en: 0.564
+   - newstest2010.en.es: 0.599
+   - newstest2010.es.en: 0.599
+   - newstest2011.en.es: 0.600
+   - newstest2012.en.es: 0.602
+   - newstest2013.en.es: 0.576
+   - newstest2015-enfi.en.fi: 0.509
+   - newstest2016-enfi.en.fi: 0.521
+   - newstest2017-enfi.en.fi: 0.539
+   - newstest2018-enfi.en.fi: 0.478
+   - newstest2019-enfi.en.fi: 0.503
+   - newstestB2016-enfi.en.fi: 0.491
+   - newstestB2017-enfi.en.fi: 0.503
+   - simplification.en.en: 0.798
+   - Tatoeba.en.fi: 0.719
