@@ -32,7 +32,7 @@ WORK_HOME ?= ${PWD}/work
 WORK_DIR  ?= ${WORK_HOME}/${MODEL}
 
 
-MODEL_INFO_FILE  := ${MODEL_DIR}.info
+MODEL_INFO_FILE  := $(patsubst %,%.info,${MODEL})
 MODEL_INFO_FILES := $(patsubst %,%.info,${MODELS})
 
 #-------------------------------------------------
@@ -139,7 +139,7 @@ ${MODEL_INFO_FILES}: %.info:
 fetch-model: ${WORK_DIR}/model/decoder.yml
 
 ## fetch the model (either from local release dir or from the model storage)
-${WORK_DIR}/model/decoder.yml:
+${WORK_DIR}/model/decoder.yml: ${MODEL_INFO_FILE}
 	mkdir -p ${dir $@}
 	if [ -e ${MODEL_HOME}/${MODEL_DIST} ]; then \
 	  cp ${MODEL_HOME}/${MODEL_DIST} ${dir $@}model.zip; \

@@ -1,7 +1,8 @@
 # -*-makefile-*-
 
 
-OVERVIEW_FILES := scores/langpairs.txt scores/benchmarks.txt released-models.txt release-history.txt
+OVERVIEW_FILES := scores/langpairs.txt scores/benchmarks.txt models/modelsize.txt \
+		released-models.txt release-history.txt
 
 
 .PHONY: all
