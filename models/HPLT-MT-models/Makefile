@@ -29,11 +29,18 @@ WORK_DIR   := ${WORK_HOME}/${MODEL}
 # get supported source and target languages
 #-------------------------------------------------
 
-MODEL_SRCLANG := $(word 2,$(subst -, ,${MODEL}))
-MODEL_TRGLANG := $(word 3,$(subst -, ,${MODEL}))
-SRC_LANGS     := $(shell iso639 -3 $(MODEL_SRCLANG))
-TRG_LANGS     := $(shell iso639 -3 $(MODEL_TRGLANG))
+# original model languages in 2-letter codes
 
+MODEL_SRCLANG   := $(word 2,$(subst -, ,${MODEL}))
+MODEL_TRGLANG   := $(word 3,$(subst -, ,${MODEL}))
+MODEL_LANGPAIR  := $(MODEL_SRCLANG)-$(MODEL_TRGLANG)
+
+
+# languages in 3-letter codes
+# (note that all variables can include more than one value)
+
+SRC_LANGS       := $(shell iso639 -3 $(MODEL_SRCLANG))
+TRG_LANGS       := $(shell iso639 -3 $(MODEL_TRGLANG))
 MODEL_LANGPAIRS := $(SRC_LANGS)-$(TRG_LANGS)
 
 
@@ -81,7 +88,7 @@ ${MODEL_INFO_FILES}: %.info:
 fetch-model: ${WORK_DIR}/model/model.npz.best-chrf.npz
 
 ## fetch the model (either from local release dir or from the model storage)
-${WORK_DIR}/model/model.npz.best-chrf.npz:
+${WORK_DIR}/model/model.npz.best-chrf.npz: ${MODEL_INFO_FILE}
 	mkdir -p ${dir $@}
 	wget -qq -O $@ ${MODEL_HF_DIR}/${MODEL}/resolve/main/model.npz.best-chrf.npz?download=true
 	wget -qq -O $(dir $@)model.spm ${MODEL_HF_DIR}/${MODEL}/resolve/main/model.${MODEL_LANGPAIR}.spm?download=true
