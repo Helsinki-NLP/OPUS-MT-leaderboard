@@ -1,7 +1,7 @@
 
-MODEL_STORAGE := https://object.pouta.csc.fi/HPLT-MT-models
-MODEL_HF_DIR  := https://huggingface.co/HPLT
-
+MODEL_STORAGE  := https://object.pouta.csc.fi/HPLT-MT-models
+MODEL_HF_DIR   := https://huggingface.co/HPLT
+MODEL_HPLT_GIT := https://raw.githubusercontent.com/hplt-project/HPLT-MT-Models
 
 TRG_LANGUAGES  := ar bs ca et eu fi ga gl ho hr is mt nn sq sw zh_hant
 LANGPAIRS      := $(foreach l,${TRG_LANGUAGES},$(l)-en en-$(l))
@@ -92,25 +92,13 @@ ${WORK_DIR}/model/model.npz.best-chrf.npz: ${MODEL_INFO_FILE}
 	mkdir -p ${dir $@}
 	wget -qq -O $@ ${MODEL_HF_DIR}/${MODEL}/resolve/main/model.npz.best-chrf.npz?download=true
 	wget -qq -O $(dir $@)model.spm ${MODEL_HF_DIR}/${MODEL}/resolve/main/model.${MODEL_LANGPAIR}.spm?download=true
-	wget -qq -O $(dir $@)decoder.yml https://raw.githubusercontent.com/hplt-project/HPLT-MT-Models/main/v1.0/inference/inference_config.yml
+#	wget -qq -O $(dir $@)decoder.yml ${MODEL_HPLT_GIT}/main/v1.0/inference/inference_config.yml
 
 
 .PHONY: remove-model
 remove-model:
 	rm -fr ${WORK_DIR}/model
 
-
-
-
-#-------------------------------------------------
-# create input file
-#-------------------------------------------------
-
-.PHONY: input
-input: ${SYSTEM_INPUT}
-
-${SYSTEM_INPUT}: ${TESTSET_SRC}
-	cp $< $@
 
 #-------------------------------------------------
 # create output file (translation)
@@ -120,26 +108,23 @@ ${SYSTEM_INPUT}: ${TESTSET_SRC}
 output: ${SYSTEM_OUTPUT}
 
 ${SYSTEM_OUTPUT}: ${TESTSET_SRC}
+	@${MAKE} -s ${WORK_DIR}/model/model.npz.best-chrf.npz
 	@echo "... create $(MODEL)/$(notdir $@)"
-	@mkdir -p $(dir $@)
-	@mkdir -p ${MODEL_DIR}
-	@${MAKE} -s ${SYSTEM_INPUT}
+	@mkdir -p $(dir $@) ${MODEL_DIR}
 	@echo "Translating sentences from $(notdir $<) to ${TRG}"          > $@.log
 	@echo ""                                                          >> $@.log
-	if [ -s ${SYSTEM_INPUT} ]; then \
+	if [ -s ${TESTSET_SRC} ]; then \
 	    echo " - nr of sentences to translate:"                       >> $@.log; \
 	    cat $< | wc -l                                                >> $@.log; \
-	    echo " - size of sentences to translate:"                     >> $@.log; \
-	    cat ${SYSTEM_INPUT} | wc                                      >> $@.log; \
+	    echo " - size of testset to translate:"                       >> $@.log; \
+	    cat ${TESTSET_SRC} | wc                                       >> $@.log; \
 	    ${LOAD_ENV} && ${MONITOR} ${MARIAN_DECODER} \
-		--input ${SYSTEM_INPUT} \
+		--input ${TESTSET_SRC} \
 		--models ${WORK_DIR}/model/model.npz.best-chrf.npz \
 		--vocabs ${WORK_DIR}/model/model.spm ${WORK_DIR}/model/model.spm \
-		${MARIAN_DECODER_FLAGS}                                  2>> $@.log |\
-	    sed 's/ //g;s/▁/ /g' | sed 's/^ *//;s/ *$$//' > $@; \
+		${MARIAN_DECODER_FLAGS}                             > $@ 2>> $@.log; \
 	fi
 	@mv $@.log $(patsubst %.output,%.log,$@)
-	@rm -f ${SYSTEM_INPUT}
 
 
 # --config ${WORK_DIR}/model/decoder.yml \
