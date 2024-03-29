@@ -3,14 +3,14 @@ MODEL_STORAGE  := https://object.pouta.csc.fi/HPLT-MT-models
 MODEL_HF_DIR   := https://huggingface.co/HPLT
 MODEL_HPLT_GIT := https://raw.githubusercontent.com/hplt-project/HPLT-MT-Models
 
-TRG_LANGUAGES  := ar bs ca et eu fi ga gl ho hr is mt nn sq sw zh_hant
+TRG_LANGUAGES  := ar bs ca et eu fi ga gl hi hr is mt nn sq sw zh_hant
 LANGPAIRS      := $(foreach l,${TRG_LANGUAGES},$(l)-en en-$(l))
 
 MODEL_VERSION  := v1.0
 MODEL_VARIANTS := hplt hplt_opus
 
 
-MODELS := $(foreach m,$(MODEL_VARIANTS),$(foreach l,$(LANGPAIRS),translate-$(l)-${MODEL_VERSION}-$(m)))
+MODELS := $(foreach m,$(MODEL_VARIANTS),$(foreach l,$(LANGPAIRS),$(l)/translate-$(l)-${MODEL_VERSION}-$(m)))
 MODEL  ?= ${firstword ${MODELS}}
 
 
@@ -18,9 +18,10 @@ MODEL_INFO_FILE  := $(patsubst %,%.info,${MODEL})
 MODEL_INFO_FILES := $(patsubst %,%.info,${MODELS})
 
 
-
 PWD        := ${shell pwd}
 MODEL_HOME := ${PWD}
+MODEL_URL  := ${MODEL_HF_DIR}/$(notdir ${MODEL})
+
 WORK_HOME  := ${PWD}/work
 WORK_DIR   := ${WORK_HOME}/${MODEL}
 
@@ -31,8 +32,8 @@ WORK_DIR   := ${WORK_HOME}/${MODEL}
 
 # original model languages in 2-letter codes
 
-MODEL_SRCLANG   := $(word 2,$(subst -, ,${MODEL}))
-MODEL_TRGLANG   := $(word 3,$(subst -, ,${MODEL}))
+MODEL_SRCLANG   := $(word 2,$(subst -, ,$(notdir ${MODEL})))
+MODEL_TRGLANG   := $(word 3,$(subst -, ,$(notdir ${MODEL})))
 MODEL_LANGPAIR  := $(MODEL_SRCLANG)-$(MODEL_TRGLANG)
 
 
@@ -55,6 +56,14 @@ include ../../build/eval.mk
 .PHONY: all
 all: eval-models
 
+fix:
+	for l in ${TRG_LANGUAGES}; do \
+	  mkdir $$l-en; \
+	  mv translate-$$l-en-* $$l-en/; \
+	  mkdir en-$$l; \
+	  mv translate-en-$$l-* en-$$l/; \
+	done
+
 
 #-------------------------------------------------
 # create model-info-file
@@ -68,7 +77,7 @@ all-model-infos: ${MODEL_INFO_FILES}
 
 ${MODEL_INFO_FILES}: %.info:
 	mkdir -p $@.d
-	-wget -qq -O $@.d/model.npz ${MODEL_HF_DIR}/${MODEL}/resolve/main/model.npz.best-chrf.npz?download=true
+	-wget -qq -O $@.d/model.npz ${MODEL_HF_DIR}/$(notdir ${MODEL})/resolve/main/model.npz.best-chrf.npz?download=true
 	-../../tools/model_info.py --summary --model $@.d/*.npz > $@
 	echo "source languages: ${SRC_LANGS}" >> $@
 	echo "target languages: ${TRG_LANGS}" >> $@
@@ -81,8 +90,6 @@ ${MODEL_INFO_FILES}: %.info:
 #-------------------------------------------------
 
 
-# https://huggingface.co/HPLT/translate-hi-en-v1.0-hplt_opus/resolve/main/model.npz.best-chrf.npz?download=true
-
 ## fetch only the model
 .PHONY: fetch-model
 fetch-model: ${WORK_DIR}/model/model.npz.best-chrf.npz
@@ -90,8 +97,8 @@ fetch-model: ${WORK_DIR}/model/model.npz.best-chrf.npz
 ## fetch the model (either from local release dir or from the model storage)
 ${WORK_DIR}/model/model.npz.best-chrf.npz: ${MODEL_INFO_FILE}
 	mkdir -p ${dir $@}
-	wget -qq -O $@ ${MODEL_HF_DIR}/${MODEL}/resolve/main/model.npz.best-chrf.npz?download=true
-	wget -qq -O $(dir $@)model.spm ${MODEL_HF_DIR}/${MODEL}/resolve/main/model.${MODEL_LANGPAIR}.spm?download=true
+	wget -qq -O $@ ${MODEL_HF_DIR}/$(notdir ${MODEL})/resolve/main/model.npz.best-chrf.npz?download=true
+	wget -qq -O $(dir $@)model.spm ${MODEL_HF_DIR}/$(notdir ${MODEL})/resolve/main/model.${MODEL_LANGPAIR}.spm?download=true
 #	wget -qq -O $(dir $@)decoder.yml ${MODEL_HPLT_GIT}/main/v1.0/inference/inference_config.yml
 
 
