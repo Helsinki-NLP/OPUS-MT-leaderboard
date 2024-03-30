@@ -21,6 +21,8 @@ MODEL_INFO_FILES := $(patsubst %,%.info,${MODELS})
 PWD        := ${shell pwd}
 MODEL_HOME := ${PWD}
 MODEL_URL  := ${MODEL_HF_DIR}/$(notdir ${MODEL})
+# MODEL_URL  := HPLT-MT-models/${MODEL}
+
 
 WORK_HOME  := ${PWD}/work
 WORK_DIR   := ${WORK_HOME}/${MODEL}
@@ -55,15 +57,6 @@ include ../../build/eval.mk
 
 .PHONY: all
 all: eval-models
-
-fix:
-	for l in ${TRG_LANGUAGES}; do \
-	  mkdir $$l-en; \
-	  mv translate-$$l-en-* $$l-en/; \
-	  mkdir en-$$l; \
-	  mv translate-en-$$l-* en-$$l/; \
-	done
-
 
 #-------------------------------------------------
 # create model-info-file
