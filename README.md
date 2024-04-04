@@ -1,7 +1,7 @@
 
 # OPUS-MT leaderboard
 
-A systematic collection of MT evakuaton scores using various benchmarks.
+A systematic collection of MT evaluation scores using various benchmarks.
 
 * [Evaluation of OPUS-MT models](models)
 * [Evaluation of external MT models](https://github.com/Helsinki-NLP/External-MT-leaderboard)
