@@ -1,0 +1,33 @@
+# opus+nt+bt-2021-03-30.zip
+
+* dataset: opus+nt+bt
+* model: transformer-align
+* source language(s): en
+* target language(s): bcl
+* model: transformer-align
+* pre-processing: normalization + SentencePiece (spm12k,spm32k)
+* download: [opus+nt+bt-2021-03-30.zip](https://object.pouta.csc.fi/OPUS-MT-models/en-bcl/opus+nt+bt-2021-03-30.zip)
+## Training data:  opus+nt+bt
+
+* en-bcl: JW300 (470468) new-testament (11623) wiki.aa (43432) 
+* en-bcl: total size = 525523
+* total size (opus+nt+bt): 525475
+
+
+## Validation data
+
+* bcl-en: wikimedia, 1153
+* total-size-shuffled: 775
+
+* devset-selected: top 250  lines of wikimedia.src.shuffled!
+* testset-selected: next 525  lines of wikimedia.src.shuffled!
+* devset-unused: added to traindata
+
+* test set translations: [opus+nt+bt-2021-03-30.test.txt](https://object.pouta.csc.fi/OPUS-MT-models/en-bcl/opus+nt+bt-2021-03-30.test.txt)
+* test set scores: [opus+nt+bt-2021-03-30.eval.txt](https://object.pouta.csc.fi/OPUS-MT-models/en-bcl/opus+nt+bt-2021-03-30.eval.txt)
+
+## Benchmarks
+
+| testset | BLEU  | chr-F | #sent | #words | BP |
+|---------|-------|-------|-------|--------|----|
+| wikimedia.en-bcl 	| 17.3 	| 0.426 	| 525 	| 28399 	| 0.840 |

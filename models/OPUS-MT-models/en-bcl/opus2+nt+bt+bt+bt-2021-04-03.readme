@@ -1,0 +1,33 @@
+# opus2+nt+bt+bt+bt-2021-04-03.zip
+
+* dataset: opus2+nt+bt+bt+bt
+* model: transformer-align
+* source language(s): en
+* target language(s): bcl
+* model: transformer-align
+* pre-processing: normalization + SentencePiece (spm12k,spm32k)
+* download: [opus2+nt+bt+bt+bt-2021-04-03.zip](https://object.pouta.csc.fi/OPUS-MT-models/en-bcl/opus2+nt+bt+bt+bt-2021-04-03.zip)
+## Training data:  opus2+nt+bt+bt+bt
+
+* en-bcl: JW300 (470468) new-testament (11623) wiki.aa (45474) wiki.aa_opus+nt+bt-2021-04-01 (45474) 
+* en-bcl: total size = 573039
+* total size (opus2+nt+bt+bt+bt): 572969
+
+
+## Validation data
+
+* bcl-en: wikimedia, 1153
+* total-size-shuffled: 775
+
+* devset-selected: top 250  lines of wikimedia.src.shuffled!
+* testset-selected: next 525  lines of wikimedia.src.shuffled!
+* devset-unused: added to traindata
+
+* test set translations: [opus2+nt+bt+bt+bt-2021-04-03.test.txt](https://object.pouta.csc.fi/OPUS-MT-models/en-bcl/opus2+nt+bt+bt+bt-2021-04-03.test.txt)
+* test set scores: [opus2+nt+bt+bt+bt-2021-04-03.eval.txt](https://object.pouta.csc.fi/OPUS-MT-models/en-bcl/opus2+nt+bt+bt+bt-2021-04-03.eval.txt)
+
+## Benchmarks
+
+| testset | BLEU  | chr-F | #sent | #words | BP |
+|---------|-------|-------|-------|--------|----|
+| wikimedia.en-bcl 	| 23.9 	| 0.497 	| 525 	| 28399 	| 0.820 |

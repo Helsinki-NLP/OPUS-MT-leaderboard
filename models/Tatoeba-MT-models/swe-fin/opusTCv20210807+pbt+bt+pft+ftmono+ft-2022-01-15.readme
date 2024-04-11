@@ -1,0 +1,20 @@
+# opusTCv20210807+pbt+bt-2022-01-15.zip
+
+* dataset: opusTCv20210807+pbt+bt
+* model: transformer-big
+* source language(s): swe
+* target language(s): fin
+* raw source language(s): swe
+* raw target language(s): fin
+* model: transformer-big
+* pre-processing: normalization + SentencePiece (spm32k,spm32k)
+* download: [opusTCv20210807+pbt+bt-2022-01-15.zip](https://object.pouta.csc.fi/OPUS-MT-dev/swe-fin/opusTCv20210807+pbt+bt-2022-01-15.zip)
+* test set translations: [opusTCv20210807+pbt+bt-2022-01-15.test.txt](https://object.pouta.csc.fi/OPUS-MT-dev/swe-fin/opusTCv20210807+pbt+bt-2022-01-15.test.txt)
+* test set scores: [opusTCv20210807+pbt+bt-2022-01-15.eval.txt](https://object.pouta.csc.fi/OPUS-MT-dev/swe-fin/opusTCv20210807+pbt+bt-2022-01-15.eval.txt)
+
+## Benchmarks
+
+| testset | BLEU  | chr-F | #sent | #words | BP |
+|---------|-------|-------|-------|--------|----|
+| fiskmo_testset.swe-fin 	| 31.3 	| 65.385 	| 523 	| 7638 	| 0.983 |
+| Tatoeba-test-v2021-08-07.swe-fin 	| 45.5 	| 67.892 	| 2841 	| 15621 	| 0.957 |

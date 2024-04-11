@@ -1,0 +1,27 @@
+# opusTCv20210807+nopar+ft95-jointvoc_transformer-tiny11-align_2022-01-27.zip
+
+* dataset: opusTCv20210807+nopar+ft95
+* model: transformer-tiny11-align
+* source language(s): eng
+* target language(s): fin
+* raw source language(s): eng
+* raw target language(s): fin
+* model: transformer-tiny11-align
+* pre-processing: normalization + SentencePiece (jointspm32k,jointspm32k)
+* download: [opusTCv20210807+nopar+ft95-jointvoc_transformer-tiny11-align_2022-01-27.zip](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-fin/opusTCv20210807+nopar+ft95-jointvoc_transformer-tiny11-align_2022-01-27.zip)
+* test set translations: [opusTCv20210807+nopar+ft95-jointvoc_transformer-tiny11-align_2022-01-27.test.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-fin/opusTCv20210807+nopar+ft95-jointvoc_transformer-tiny11-align_2022-01-27.test.txt)
+* test set scores: [opusTCv20210807+nopar+ft95-jointvoc_transformer-tiny11-align_2022-01-27.eval.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-fin/opusTCv20210807+nopar+ft95-jointvoc_transformer-tiny11-align_2022-01-27.eval.txt)
+
+## Benchmarks
+
+| testset | BLEU  | chr-F | #sent | #words | BP |
+|---------|-------|-------|-------|--------|----|
+| newsdev2015-enfi.eng-fin 	| 19.7 	| 0.54291 	| 1500 	| 23375 	| 1.000 |
+| newstest2015-enfi.eng-fin 	| 21.9 	| 0.56107 	| 1370 	| 19968 	| 1.000 |
+| newstest2016-enfi.eng-fin 	| 23.9 	| 0.57192 	| 3000 	| 48116 	| 1.000 |
+| newstest2017-enfi.eng-fin 	| 26.4 	| 0.59879 	| 3002 	| 45718 	| 1.000 |
+| newstest2018-enfi.eng-fin 	| 17.0 	| 0.52230 	| 3000 	| 45475 	| 1.000 |
+| newstest2019-enfi.eng-fin 	| 22.6 	| 0.55070 	| 1997 	| 38369 	| 0.978 |
+| newstestB2016-enfi.eng-fin 	| 18.6 	| 0.53394 	| 3000 	| 45766 	| 1.000 |
+| newstestB2017-enfi.eng-fin 	| 21.3 	| 0.55568 	| 3002 	| 45506 	| 1.000 |
+| Tatoeba-test-v2021-08-07.eng-fin 	| 36.6 	| 0.62561 	| 10000 	| 60832 	| 0.987 |

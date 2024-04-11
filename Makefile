@@ -27,6 +27,7 @@ update-git:
 	git ls-files -o --exclude-standard > untracked-files.txt
 	grep '^scores/.*\.txt$$' untracked-files.txt | xargs -n 1000 git add
 	grep '^models/.*\.txt$$' untracked-files.txt | xargs -n 1000 git add
+	grep '^models/.*\.info$$' untracked-files.txt | xargs -n 1000 git add
 	grep '^models/.*\.registered$$' untracked-files.txt | xargs -n 1000 git add
 	grep '^models/.*\.output$$' untracked-files.txt | xargs -n 1000 git add
 	grep '^models/.*\.eval$$' untracked-files.txt | xargs -n 1000 git add

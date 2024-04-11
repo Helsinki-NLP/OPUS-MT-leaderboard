@@ -1,0 +1,20 @@
+# opus4m+btTCv20210807-2021-09-30.zip
+
+* dataset: opus4m+btTCv20210807
+* model: transformer
+* source language(s): eng
+* target language(s): akl bcl ceb fil gor hil ibg ilo pag pam sxn war
+* model: transformer
+* pre-processing: normalization + SentencePiece (spm32k,spm32k)
+* a sentence initial language token is required in the form of `>>id<<` (id = valid target language ID)
+* valid language labels: >>agk<< >>agz<< >>akl<< >>akl_Latn<< >>atd<< >>atl<< >>bcl<< >>bgs<< >>bkd<< >>blf<< >>bln<< >>bno<< >>bnq<< >>bto<< >>ceb<< >>cgc<< >>cps<< >>fbl<< >>fil<< >>gor<< >>hil<< >>ibg<< >>ibl<< >>ify<< >>ilk<< >>ilo<< >>kak<< >>krj<< >>kyj<< >>kyk<< >>lbl<< >>loc<< >>mba<< >>mbb<< >>mbd<< >>mbi<< >>mbs<< >>mbt<< >>mdh<< >>mkx<< >>mog<< >>mqk<< >>mrw<< >>msb<< >>msm<< >>mta<< >>obo<< >>pag<< >>pam<< >>rbl<< >>rth<< >>sgd<< >>snl<< >>sxn<< >>tbl<< >>tdn<< >>tne<< >>tnt<< >>tnw<< >>tom<< >>txs<< >>ubl<< >>war<<
+* download: [opus4m+btTCv20210807-2021-09-30.zip](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-phi/opus4m+btTCv20210807-2021-09-30.zip)
+* test set translations: [opus4m+btTCv20210807-2021-09-30.test.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-phi/opus4m+btTCv20210807-2021-09-30.test.txt)
+* test set scores: [opus4m+btTCv20210807-2021-09-30.eval.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-phi/opus4m+btTCv20210807-2021-09-30.eval.txt)
+
+## Benchmarks
+
+| testset | BLEU  | chr-F | #sent | #words | BP |
+|---------|-------|-------|-------|--------|----|
+| Tatoeba-test-v2021-08-07.eng-multi 	| 12.4 	| 0.355 	| 4081 	| 26965 	| 1.000 |
+| Tatoeba-test-v2021-08-07.multi-multi 	| 12.4 	| 0.355 	| 4081 	| 26965 	| 1.000 |
