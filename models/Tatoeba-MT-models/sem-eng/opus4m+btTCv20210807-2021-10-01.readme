@@ -1,0 +1,25 @@
+# opus4m+btTCv20210807-2021-10-01.zip
+
+* dataset: opus4m+btTCv20210807
+* model: transformer
+* source language(s): acm afb amh apc ara arc arq ary arz hbo heb jpa mlt oar phn syr tig tir tmr
+* target language(s): eng
+* model: transformer
+* pre-processing: normalization + SentencePiece (spm32k,spm32k)
+* a sentence initial language token is required in the form of `>>id<<` (id = valid target language ID)
+* valid language labels: 
+* download: [opus4m+btTCv20210807-2021-10-01.zip](https://object.pouta.csc.fi/Tatoeba-MT-models/sem-eng/opus4m+btTCv20210807-2021-10-01.zip)
+* test set translations: [opus4m+btTCv20210807-2021-10-01.test.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/sem-eng/opus4m+btTCv20210807-2021-10-01.test.txt)
+* test set scores: [opus4m+btTCv20210807-2021-10-01.eval.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/sem-eng/opus4m+btTCv20210807-2021-10-01.eval.txt)
+
+## Benchmarks
+
+| testset | BLEU  | chr-F | #sent | #words | BP |
+|---------|-------|-------|-------|--------|----|
+| Tatoeba-test-v2021-08-07.multi-eng 	| 42.1 	| 0.592 	| 10000 	| 74081 	| 0.991 |
+| Tatoeba-test-v2021-08-07.multi-multi 	| 42.1 	| 0.592 	| 10000 	| 74081 	| 0.991 |
+| tico19-test.amh-eng 	| 9.8 	| 0.252 	| 2100 	| 56848 	| 1.000 |
+| tico19-test.ara-eng 	| 35.1 	| 0.621 	| 2100 	| 56347 	| 1.000 |
+| tico19-test.en-ti_ER.tir-eng 	| 34.7 	| 0.462 	| 2100 	| 56848 	| 1.000 |
+| tico19-test.en-ti_ET.tir-eng 	| 33.4 	| 0.452 	| 2100 	| 56848 	| 1.000 |
+| tico19-test.tir-eng 	| 30.6 	| 0.426 	| 2100 	| 56848 	| 1.000 |

@@ -1,0 +1,20 @@
+# opus1m+bt-tuned4eng2bel-2021-04-16.zip
+
+* dataset: opus1m+bt-tuned4eng2bel
+* model: transformer-align
+* source language(s): eng
+* target language(s): bel
+* model: transformer-align
+* pre-processing: normalization + SentencePiece (spm32k,spm32k)
+* a sentence initial language token is required in the form of `>>id<<` (id = valid target language ID)
+* valid language labels: >>bel<< >>bel_Latn<< >>orv<< >>orv_Cyrl<< >>rue<< >>rus<< >>ukr<<
+* download: [opus1m+bt-tuned4eng2bel-2021-04-16.zip](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-zle/opus1m+bt-tuned4eng2bel-2021-04-16.zip)
+* test set translations: [opus1m+bt-tuned4eng2bel-2021-04-16.test.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-zle/opus1m+bt-tuned4eng2bel-2021-04-16.test.txt)
+* test set scores: [opus1m+bt-tuned4eng2bel-2021-04-16.eval.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-zle/opus1m+bt-tuned4eng2bel-2021-04-16.eval.txt)
+
+## Benchmarks
+
+| testset | BLEU  | chr-F | #sent | #words | BP |
+|---------|-------|-------|-------|--------|----|
+| Tatoeba-test.eng-bel 	| 24.1 	| 0.502 	| 2500 	| 16237 	| 0.995 |
+| Tatoeba-test.eng-multi 	| 4.1 	| 0.206 	| 10000 	| 63596 	| 1.000 |

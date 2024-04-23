@@ -1,0 +1,20 @@
+# opus4m+btTCv20210807-2021-09-30.zip
+
+* dataset: opus4m+btTCv20210807
+* model: transformer
+* source language(s): eng
+* target language(s): bos bul chu cnr hbs hrv mkd slv srp
+* model: transformer
+* pre-processing: normalization + SentencePiece (spm32k,spm32k)
+* a sentence initial language token is required in the form of `>>id<<` (id = valid target language ID)
+* valid language labels: >>bos<< >>bos_Cyrl<< >>bos_Latn<< >>bul<< >>chu<< >>cnr<< >>cnr_Latn<< >>hbs<< >>hbs_Cyrl<< >>hrv<< >>kjv<< >>mkd<< >>slv<< >>srp<< >>srp_Cyrl<< >>srp_Latn<< >>svm<<
+* download: [opus4m+btTCv20210807-2021-09-30.zip](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-zls/opus4m+btTCv20210807-2021-09-30.zip)
+* test set translations: [opus4m+btTCv20210807-2021-09-30.test.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-zls/opus4m+btTCv20210807-2021-09-30.test.txt)
+* test set scores: [opus4m+btTCv20210807-2021-09-30.eval.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-zls/opus4m+btTCv20210807-2021-09-30.eval.txt)
+
+## Benchmarks
+
+| testset | BLEU  | chr-F | #sent | #words | BP |
+|---------|-------|-------|-------|--------|----|
+| Tatoeba-test-v2021-08-07.eng-multi 	| 32.2 	| 0.493 	| 10000 	| 63924 	| 0.911 |
+| Tatoeba-test-v2021-08-07.multi-multi 	| 32.2 	| 0.493 	| 10000 	| 63924 	| 0.911 |

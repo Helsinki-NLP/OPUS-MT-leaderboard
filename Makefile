@@ -24,13 +24,28 @@ overview-files: $(OVERVIEW_FILES)
 
 update-git:
 	git add $(OVERVIEW_FILES)
-	find scores -type f -name '*.txt' | xargs git add
-	find models -type f -name '*.txt' | xargs git add
-	find models -type f -name '*.registered' | xargs git add
-	find models -type f -name '*.output' | xargs git add
-	find models -type f -name '*.eval' | xargs git add
-	find models -type f -name '*.logfiles' | xargs git add
-	find models -type f -name '*.zip' | grep -v '.eval.zip' | xargs git add
+	git ls-files -o --exclude-standard > untracked-files.txt
+	grep '^scores/.*\.txt$$' untracked-files.txt | xargs -n 1000 git add
+	grep '^models/.*\.txt$$' untracked-files.txt | xargs -n 1000 git add
+	grep '^models/.*\.info$$' untracked-files.txt | xargs -n 1000 git add
+	grep '^models/.*\.readme$$' untracked-files.txt | xargs -n 1000 git add
+	grep '^models/.*\.registered$$' untracked-files.txt | xargs -n 1000 git add
+	grep '^models/.*\.output$$' untracked-files.txt | xargs -n 1000 git add
+	grep '^models/.*\.eval$$' untracked-files.txt | xargs -n 1000 git add
+	grep '^models/.*\.logfiles$$' untracked-files.txt | xargs -n 1000 git add
+	grep '^models/.*\.zip$$' untracked-files.txt | grep -v '.eval.zip' | xargs -n 1000 git add
+	rm -f untracked-files.txt
+
+## the commands below become much too slow with many files 
+##
+#	find scores -type f -name '*.txt' | xargs -n 1000 git add
+#	find models -type f -name '*.txt' | xargs -n 1000 git add
+#	find models -type f -name '*.registered' | xargs -n 1000 git add
+#	find models -type f -name '*.output' | xargs -n 1000 git add
+#	find models -type f -name '*.eval' | xargs -n 1000 git add
+#	find models -type f -name '*.logfiles' | xargs -n 1000 git add
+#	find models -type f -name '*.zip' | grep -v '.eval.zip' | xargs -n 1000 git add
+
 
 include build/leaderboards.mk
 include build/config.mk

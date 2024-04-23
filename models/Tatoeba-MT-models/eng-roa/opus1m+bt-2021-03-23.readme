@@ -1,0 +1,56 @@
+# opus1m+bt-2021-03-24.zip
+
+* dataset: opus1m+bt
+* model: transformer-align
+* source language(s): arg eng
+* target language(s): ast cat cbk cos egl eng ext fra frm gcf glg hat ind ita jak lad lij lld lmo max mfe min mol msa mwl oci osp pap pms pob por roh ron scn spa tmw vec wln zlm zsm
+* model: transformer-align
+* pre-processing: normalization + SentencePiece (spm32k,spm32k)
+* a sentence initial language token is required in the form of `>>id<<` (id = valid target language ID)
+* valid language labels: >>fra<< >>spa<< >>roh<< >>zlm_Latn<< >>cos<< >>ext<< >>mfe<< >>scn<< >>lad<< >>mwl<< >>ast<< >>hat<< >>pob<< >>pap<< >>lmo<< >>vec<< >>pms<< >>glg<< >>cat<< >>msa_Latn<< >>wln<< >>ind<< >>ron<< >>por<< >>ita<< >>oci<< >>lij<< >>jak_Latn<< >>eng<< >>min<< >>zlm<< >>mol<< >>cbk_Latn<<
+* download: [opus1m+bt-2021-03-24.zip](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-roa/opus1m+bt-2021-03-24.zip)
+* test set translations: [opus1m+bt-2021-03-24.test.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-roa/opus1m+bt-2021-03-24.test.txt)
+* test set scores: [opus1m+bt-2021-03-24.eval.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/eng-roa/opus1m+bt-2021-03-24.eval.txt)
+
+## Benchmarks
+
+| testset | BLEU  | chr-F | #sent | #words | BP |
+|---------|-------|-------|-------|--------|----|
+| newsdiscussdev2015-enfr.eng-fra 	| 28.3 	| 0.560 	| 1500 	| 27986 	| 1.000 |
+| newsdiscusstest2015-enfr.eng-fra 	| 33.1 	| 0.594 	| 1500 	| 28027 	| 0.992 |
+| newssyscomb2009.eng-fra 	| 26.4 	| 0.558 	| 502 	| 12334 	| 0.997 |
+| news-test2008.eng-fra 	| 23.9 	| 0.529 	| 2051 	| 52685 	| 0.992 |
+| newstest2009.eng-fra 	| 25.6 	| 0.548 	| 2525 	| 69278 	| 0.978 |
+| newstest2010.eng-fra 	| 27.8 	| 0.563 	| 2489 	| 66043 	| 0.985 |
+| Tatoeba-test.eng-arg 	| 9.3 	| 0.311 	| 105 	| 405 	| 1.000 |
+| Tatoeba-test.eng-ast 	| 26.3 	| 0.492 	| 99 	| 720 	| 0.986 |
+| Tatoeba-test.eng-cat 	| 45.4 	| 0.654 	| 1631 	| 12342 	| 0.989 |
+| Tatoeba-test.eng-cbk 	| 4.8 	| 0.262 	| 1498 	| 10591 	| 0.993 |
+| Tatoeba-test.eng-cos 	| 36.2 	| 0.616 	| 5 	| 45 	| 0.907 |
+| Tatoeba-test.eng-egl 	| 0.4 	| 0.127 	| 84 	| 438 	| 0.963 |
+| Tatoeba-test.eng-ext 	| 4.8 	| 0.337 	| 69 	| 353 	| 1.000 |
+| Tatoeba-test.eng-fra 	| 40.8 	| 0.613 	| 10000 	| 80759 	| 0.973 |
+| Tatoeba-test.eng-frm 	| 1.0 	| 0.209 	| 18 	| 211 	| 1.000 |
+| Tatoeba-test.eng-gcf 	| 0.8 	| 0.121 	| 99 	| 560 	| 0.922 |
+| Tatoeba-test.eng-glg 	| 41.9 	| 0.632 	| 1008 	| 7828 	| 0.978 |
+| Tatoeba-test.eng-hat 	| 33.7 	| 0.529 	| 64 	| 416 	| 0.951 |
+| Tatoeba-test.eng-ita 	| 43.1 	| 0.656 	| 10000 	| 65498 	| 0.952 |
+| Tatoeba-test.eng-lad 	| 10.6 	| 0.324 	| 629 	| 3354 	| 1.000 |
+| Tatoeba-test.eng-lad_Latn 	| 11.3 	| 0.354 	| 582 	| 3097 	| 1.000 |
+| Tatoeba-test.eng-lij 	| 4.6 	| 0.289 	| 94 	| 711 	| 0.973 |
+| Tatoeba-test.eng-lld 	| 0.8 	| 0.214 	| 21 	| 228 	| 0.937 |
+| Tatoeba-test.eng-lmo 	| 10.5 	| 0.314 	| 17 	| 124 	| 1.000 |
+| Tatoeba-test.eng-mfe 	| 83.6 	| 0.898 	| 7 	| 36 	| 1.000 |
+| Tatoeba-test.eng-multi 	| 39.7 	| 0.609 	| 10000 	| 73684 	| 0.968 |
+| Tatoeba-test.eng-mwl 	| 19.5 	| 0.576 	| 4 	| 21 	| 1.000 |
+| Tatoeba-test.eng-oci 	| 10.0 	| 0.332 	| 841 	| 5219 	| 0.914 |
+| Tatoeba-test.eng-osp 	| 10.8 	| 0.365 	| 3 	| 20 	| 1.000 |
+| Tatoeba-test.eng-pap 	| 52.0 	| 0.699 	| 70 	| 376 	| 1.000 |
+| Tatoeba-test.eng-pms 	| 12.6 	| 0.338 	| 268 	| 2244 	| 0.945 |
+| Tatoeba-test.eng-por 	| 42.2 	| 0.643 	| 10000 	| 75353 	| 0.969 |
+| Tatoeba-test.eng-roh 	| 20.4 	| 0.456 	| 16 	| 198 	| 1.000 |
+| Tatoeba-test.eng-ron 	| 34.4 	| 0.590 	| 5000 	| 36833 	| 0.971 |
+| Tatoeba-test.eng-scn 	| 42.5 	| 0.531 	| 4 	| 42 	| 1.000 |
+| Tatoeba-test.eng-spa 	| 46.5 	| 0.664 	| 10000 	| 77291 	| 0.973 |
+| Tatoeba-test.eng-vec 	| 14.1 	| 0.325 	| 19 	| 127 	| 0.839 |
+| Tatoeba-test.eng-wln 	| 15.3 	| 0.328 	| 89 	| 520 	| 0.957 |

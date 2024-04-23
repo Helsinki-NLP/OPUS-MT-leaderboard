@@ -1,0 +1,22 @@
+# opusTCv20210807+nopar+ft95-2022-01-18.zip
+
+* dataset: opusTCv20210807+nopar+ft95
+* model: transformer-tiny11-align
+* source language(s): swe
+* target language(s): fin
+* raw source language(s): swe
+* raw target language(s): fin
+* model: transformer-tiny11-align
+* pre-processing: normalization + SentencePiece (spm32k,spm32k)
+* download: [opusTCv20210807+nopar+ft95-2022-01-18.zip](https://object.pouta.csc.fi/OPUS-MT-dev/swe-fin/opusTCv20210807+nopar+ft95-2022-01-18.zip)
+* test set translations: [opusTCv20210807+nopar+ft95-2022-01-18.test.txt](https://object.pouta.csc.fi/OPUS-MT-dev/swe-fin/opusTCv20210807+nopar+ft95-2022-01-18.test.txt)
+* test set scores: [opusTCv20210807+nopar+ft95-2022-01-18.eval.txt](https://object.pouta.csc.fi/OPUS-MT-dev/swe-fin/opusTCv20210807+nopar+ft95-2022-01-18.eval.txt)
+
+## Benchmarks
+
+| testset | BLEU  | chr-F | #sent | #words | BP |
+|---------|-------|-------|-------|--------|----|
+| fiskmo_testset.swe-fin 	| 26.9 	| 62.387 	| 523 	| 7638 	| 0.985 |
+| Tatoeba-test-v2021-08-07.intgemm8.alphas.swe-fin 	| 43.1 	| 66.558 	| 2841 	| 15621 	| 0.963 |
+| Tatoeba-test-v2021-08-07.intgemm8.swe-fin 	| 43.6 	| 66.880 	| 2841 	| 15621 	| 0.962 |
+| Tatoeba-test-v2021-08-07.swe-fin 	| 43.8 	| 67.332 	| 2841 	| 15621 	| 0.966 |

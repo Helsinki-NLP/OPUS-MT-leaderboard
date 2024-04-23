@@ -1,0 +1,19 @@
+# opusTCv20210807_transformer-big_2022-06-23.zip
+
+* dataset: opusTCv20210807
+* model: transformer-big
+* source language(s): deu
+* target language(s): heb
+* raw source language(s): deu
+* raw target language(s): heb
+* model: transformer-big
+* pre-processing: normalization + SentencePiece (spm32k,spm32k)
+* download: [opusTCv20210807_transformer-big_2022-06-23.zip](https://object.pouta.csc.fi/Tatoeba-MT-models/deu-heb/opusTCv20210807_transformer-big_2022-06-23.zip)
+* test set translations: [opusTCv20210807_transformer-big_2022-06-23.test.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/deu-heb/opusTCv20210807_transformer-big_2022-06-23.test.txt)
+* test set scores: [opusTCv20210807_transformer-big_2022-06-23.eval.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/deu-heb/opusTCv20210807_transformer-big_2022-06-23.eval.txt)
+
+## Benchmarks
+
+| testset | BLEU  | chr-F | #sent | #words | BP |
+|---------|-------|-------|-------|--------|----|
+| Tatoeba-test-v2021-08-07.deu-heb 	| 37.9 	| 0.58990 	| 3090 	| 20341 	| 0.990 |

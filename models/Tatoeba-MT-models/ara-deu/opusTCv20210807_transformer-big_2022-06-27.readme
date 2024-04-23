@@ -1,0 +1,19 @@
+# opusTCv20210807_transformer-big_2022-06-27.zip
+
+* dataset: opusTCv20210807
+* model: transformer-big
+* source language(s): afb apc ara arq arz
+* target language(s): deu
+* raw source language(s): afb apc ara arq arz
+* raw target language(s): deu
+* model: transformer-big
+* pre-processing: normalization + SentencePiece (spm32k,spm32k)
+* download: [opusTCv20210807_transformer-big_2022-06-27.zip](https://object.pouta.csc.fi/Tatoeba-MT-models/ara-deu/opusTCv20210807_transformer-big_2022-06-27.zip)
+* test set translations: [opusTCv20210807_transformer-big_2022-06-27.test.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/ara-deu/opusTCv20210807_transformer-big_2022-06-27.test.txt)
+* test set scores: [opusTCv20210807_transformer-big_2022-06-27.eval.txt](https://object.pouta.csc.fi/Tatoeba-MT-models/ara-deu/opusTCv20210807_transformer-big_2022-06-27.eval.txt)
+
+## Benchmarks
+
+| testset | BLEU  | chr-F | #sent | #words | BP |
+|---------|-------|-------|-------|--------|----|
+| Tatoeba-test-v2021-08-07.multi-deu 	| 45.4 	| 0.63880 	| 1208 	| 8360 	| 0.968 |
