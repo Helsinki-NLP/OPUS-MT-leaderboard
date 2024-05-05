@@ -16,10 +16,11 @@
 REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))../
 MAKEDIR  := ${REPOHOME}build/
 
-include ${MAKEDIR}env.mk
+# include ${MAKEDIR}env.mk
+include ${MAKEDIR}config.mk
 include ${MAKEDIR}remove.mk
 include ${MAKEDIR}misc.mk
-include ${MAKEDIR}slurm.mk
+# include ${MAKEDIR}slurm.mk
 
 
 reorganize:
