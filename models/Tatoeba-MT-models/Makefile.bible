@@ -1,0 +1,76 @@
+
+
+
+BIBLE_MODELS = \
+aav-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-29 \
+afa-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-29 \
+alv-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+bat-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+bnt-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+cau-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+cdc-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+cel-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+cus-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-aav/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-29 \
+deu+eng+fra+por+spa-afa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-29 \
+deu+eng+fra+por+spa-art/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-bat/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-bnt/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-cau/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-dra/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-fiu/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-gem/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-gmq/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-gmw/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-iir/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-inc/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-ine/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-itc/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-map/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-mkh/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-mul/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-phi/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-poz/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-pqe/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-pqw/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-roa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-sem/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-sit/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-sla/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-trk/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-urj/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+deu+eng+fra+por+spa-zhx/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+dmn-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+fiu-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+gem-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+gmq-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+gmw-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+iir-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+inc-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+ine-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+ira-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+itc-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+mkh-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+mul-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+nic-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+phi-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+poz-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+roa-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+sem-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+sit-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+sla-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+tai-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+trk-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+urj-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+xgn-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
+zhx-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30
+
+# pqe-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30
+# pqw-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30
+
+
+bible-eval-jobs:
+	for m in ${BIBLE_MODELS}; do \
+	  make MODEL=$$m print-model-info; \
+	  make HPC_TIME=12:00 MODEL=$$m eval-model.submit; \
+	done
