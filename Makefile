@@ -25,15 +25,15 @@ overview-files: $(OVERVIEW_FILES)
 update-git:
 	git add $(OVERVIEW_FILES)
 	git ls-files -o --exclude-standard > untracked-files.txt
-	grep '^scores/.*\.txt$$' untracked-files.txt | xargs -n 1000 git add
-	grep '^models/.*\.txt$$' untracked-files.txt | xargs -n 1000 git add
-	grep '^models/.*\.info$$' untracked-files.txt | xargs -n 1000 git add
-	grep '^models/.*\.readme$$' untracked-files.txt | xargs -n 1000 git add
-	grep '^models/.*\.registered$$' untracked-files.txt | xargs -n 1000 git add
-	grep '^models/.*\.output$$' untracked-files.txt | xargs -n 1000 git add
-	grep '^models/.*\.eval$$' untracked-files.txt | xargs -n 1000 git add
-	grep '^models/.*\.logfiles$$' untracked-files.txt | xargs -n 1000 git add
-	grep '^models/.*\.zip$$' untracked-files.txt | grep -v '.eval.zip' | xargs -n 1000 git add
+	grep '^scores/.*\.txt$$' untracked-files.txt | xargs -n 500 git add
+	grep '^models/.*\.txt$$' untracked-files.txt | xargs -n 500 git add
+	grep '^models/.*\.info$$' untracked-files.txt | xargs -n 500 git add
+	grep '^models/.*\.readme$$' untracked-files.txt | xargs -n 500 git add
+	grep '^models/.*\.registered$$' untracked-files.txt | xargs -n 500 git add
+	grep '^models/.*\.output$$' untracked-files.txt | xargs -n 500 git add
+	grep '^models/.*\.eval$$' untracked-files.txt | xargs -n 500 git add
+	grep '^models/.*\.logfiles$$' untracked-files.txt | xargs -n 500 git add
+	grep '^models/.*\.zip$$' untracked-files.txt | grep -v '.eval.zip' | xargs -n 500 git add
 	rm -f untracked-files.txt
 
 ## the commands below become much too slow with many files 
