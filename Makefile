@@ -29,7 +29,8 @@ update-git:
 	grep '^models/.*\.output$$' untracked-files.txt | xargs -n 500 git add
 	grep '^models/.*\.eval$$' untracked-files.txt | xargs -n 500 git add
 	grep '^models/.*\.logfiles$$' untracked-files.txt | xargs -n 500 git add
-	grep '^models/.*\.zip$$' untracked-files.txt | grep -v '.eval.zip' | xargs -n 500 git add
+	grep '^models/.*\.zip$$' untracked-files.txt \
+	| grep -v '.eval.zip' | grep -v 'model.zip' | xargs -n 500 git add
 	rm -f untracked-files.txt
 	git commit -am 'scores tables updated'
 
