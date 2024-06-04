@@ -147,7 +147,7 @@ ${WORK_DIR}/model/decoder.yml: ${MODEL_INFO_FILE}
 	else \
 	  ${WGET} -q -O ${dir $@}model.zip ${MODEL_URL}; \
 	fi
-	unzip -d ${dir $@} ${dir $@}model.zip
+	unzip -n -d ${dir $@} ${dir $@}model.zip
 ## fix an old problem with the pre-process script
 	mv ${dir $@}preprocess.sh ${dir $@}preprocess-old.sh
 	sed -e 's#perl -C -pe.*$$#perl -C -pe  "s/(?!\\n)\\p{C}/ /g;" |#' \

@@ -1,22 +1,18 @@
 # -*-makefile-*-
 
 
-OVERVIEW_FILES := scores/langpairs.txt scores/benchmarks.txt models/modelsize.txt \
-		released-models.txt release-history.txt
+OVERVIEW_FILES := scores/langpairs.txt \
+		scores/benchmarks.txt \
+		models/modelsize.txt \
+		released-models.txt \
+		release-history.txt
 
 
 .PHONY: all
-all: scores
-	find scores -name '*unsorted*' -empty -delete
-	${MAKE} -s updated-leaderboards
+all: scores/bleu_scores.db
+	${MAKE} -C models register-all
 	${MAKE} -s overview-files
-
-
-.PHONY: all-langpairs
-all-langpairs:
-	@find scores -name '*unsorted*' -empty -delete
-	${MAKE} -s refresh-leaderboards
-	${MAKE} -s overview-files
+	${MAKE} update-git
 
 
 .PHONY: overview-files
@@ -35,6 +31,7 @@ update-git:
 	grep '^models/.*\.logfiles$$' untracked-files.txt | xargs -n 500 git add
 	grep '^models/.*\.zip$$' untracked-files.txt | grep -v '.eval.zip' | xargs -n 500 git add
 	rm -f untracked-files.txt
+	git commit -am 'scores tables updated'
 
 ## the commands below become much too slow with many files 
 ##
@@ -51,6 +48,20 @@ include build/leaderboards.mk
 include build/config.mk
 
 
-fix-errors:
-	make -C models register-all
-	make all-langpairs
+# old style: need to update all kind of score files
+
+.PHONY: all-files
+all-files: scores
+	find scores -name '*unsorted*' -empty -delete
+	${MAKE} -s updated-leaderboards
+	${MAKE} -s overview-files
+
+# old style: update score files (like above but for many language pairs)
+
+.PHONY: all-langpairs
+all-langpairs:
+	@find scores -name '*unsorted*' -empty -delete
+	${MAKE} -s refresh-leaderboards
+	${MAKE} -s overview-files
+
+
