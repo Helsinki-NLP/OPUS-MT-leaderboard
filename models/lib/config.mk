@@ -158,12 +158,13 @@ endif
 
 ifeq ($(wildcard ${MODEL_TESTSETS}),)
   MAKE_BENCHMARK_FILE := $(foreach lp,${LANGPAIRS},\
-	$(shell grep '^${lp}	' ${LANGPAIR_TO_TESTSETS} | \
+	$(shell mkdir -p $(dir ${MODEL_TESTSETS}) && \
+		grep '^${lp}	' ${LANGPAIR_TO_TESTSETS} | \
 		cut -f2 | tr ' ' "\n" | \
 		sed 's|^|${lp}/|' >> ${MODEL_TESTSETS}))
 endif
 
-AVAILABLE_BENCHMARKS := $(shell cut -f1 ${MODEL_TESTSETS})
+AVAILABLE_BENCHMARKS := $(shell if [ -e ${MODEL_TESTSETS} ]; then cut -f1 ${MODEL_TESTSETS}; fi)
 TESTED_BENCHMARKS    := $(sort $(shell cut -f1,2 ${MODEL_SCORES} | tr "\t" '/'))
 MISSING_BENCHMARKS   := $(filter-out ${TESTED_BENCHMARKS},${AVAILABLE_BENCHMARKS})
 

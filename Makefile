@@ -14,6 +14,10 @@ all: scores/bleu_scores.db
 	${MAKE} -s overview-files
 	${MAKE} update-git
 
+#	${MAKE} -C models all
+##	${MAKE} -C models register-all
+##	${MAKE} -C models upload-all
+
 
 .PHONY: overview-files
 overview-files: $(OVERVIEW_FILES)

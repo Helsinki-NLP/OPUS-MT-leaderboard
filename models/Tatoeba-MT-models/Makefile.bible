@@ -1,5 +1,92 @@
 
 
+MULTILINGUAL_BIBLE_MODELS = mul-mul/opusTCv20230926+bt+jhubc_transformer-big_2024-08-17
+
+BIG_ENG_BIBLE_MODELS = \
+mul-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+mul-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18
+
+ENG_BIBLE_MODELS = \
+aav-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+afa-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+alv-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+art-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+bat-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+ber-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+bnt-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+cau-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+cdc-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+cel-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+dra-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+fiu-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+gem-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+gmq-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+gmw-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+iir-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+inc-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+ine-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+itc-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+map-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+mkh-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+nic-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+phi-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+poz-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+pqe-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+pqw-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+roa-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+sai-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+sem-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+sit-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+sla-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+tai-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+tup-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+urj-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+xgn-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+zhx-eng/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17
+
+GER_BIBLE_MODELS = \
+aav-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+afa-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+alv-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+art-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+bat-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+ber-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+bnt-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+cau-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+dra-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+gmw-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+iir-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+inc-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+ine-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+itc-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+map-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+mkh-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+nic-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+phi-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+sai-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+sem-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+sla-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+tup-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18 \
+urj-deu+eng+nld/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-18
+
+ROA_BIBLE_MODELS = \
+aav-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+afa-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+alv-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+art-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+bnt-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+fiu-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+gem-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+gmw-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+itc-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+map-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+mkh-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+nic-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+poz-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+pqw-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17 \
+urj-fra+ita+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-08-17
+
+
 MASSIVE_BIBLE_MODELS = \
 deu+eng+fra+por+spa-ine/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
 ine-deu+eng+fra+por+spa/opusTCv20230926max50+bt+jhubc_transformer-big_2024-05-30 \
@@ -79,6 +166,38 @@ bible-eval-jobs:
 
 massive-bible-eval-jobs:
 	for m in ${MASSIVE_BIBLE_MODELS}; do \
+	  make MODEL=$$m print-model-info; \
+	  make HPC_MEM=64g HPC_TIME=36:00 MODEL=$$m eval-model.submit; \
+	done
+
+
+
+multilingual-bible-eval-jobs:
+	for m in ${MULTILINGUAL_BIBLE_MODELS}; do \
+	  make MODEL=$$m print-model-info; \
+	  make HPC_MEM=64g HPC_TIME=36:00 MODEL=$$m METRICS="bleu spbleu chrf chrf++" eval-model.submit; \
+	done
+
+eng-bible-eval-jobs:
+	for m in ${ENG_BIBLE_MODELS}; do \
+	  make MODEL=$$m print-model-info; \
+	  make HPC_MEM=64g HPC_TIME=12:00 MODEL=$$m eval-model.submit; \
+	done
+
+ger-bible-eval-jobs:
+	for m in ${GER_BIBLE_MODELS}; do \
+	  make MODEL=$$m print-model-info; \
+	  make HPC_MEM=64g HPC_TIME=12:00 MODEL=$$m eval-model.submit; \
+	done
+
+roa-bible-eval-jobs:
+	for m in ${ROA_BIBLE_MODELS}; do \
+	  make MODEL=$$m print-model-info; \
+	  make HPC_MEM=64g HPC_TIME=12:00 MODEL=$$m eval-model.submit; \
+	done
+
+big-eng-bible-eval-jobs:
+	for m in ${BIG_ENG_BIBLE_MODELS}; do \
 	  make MODEL=$$m print-model-info; \
 	  make HPC_MEM=64g HPC_TIME=36:00 MODEL=$$m eval-model.submit; \
 	done

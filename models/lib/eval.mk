@@ -138,6 +138,7 @@ get-available-benchmarks: ${MODEL_TESTSETS}
 
 ${MODEL_TESTSETS}: ${LANGPAIR_TO_TESTSETS}
 	rm -f $@
+	mkdir -p $(dir $@)
 	@l=$(foreach lp,${LANGPAIRS},\
 		$(shell grep '^${lp}	' ${LANGPAIR_TO_TESTSETS} | \
 			cut -f2 | tr ' ' "\n" | \
